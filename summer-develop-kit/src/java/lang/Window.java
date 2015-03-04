@@ -5,7 +5,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.event.Event;
 import org.w3c.event.EventException;
-import org.w3c.event.EventListener;
+import org.w3c.event.EventHandler;
 import org.w3c.event.EventTarget;
 import org.w3c.file.Blob;
 
@@ -248,9 +248,6 @@ public native interface Global {
 //}
 //Window implements WindowTimers;
 
-public function void EventHandler(Event event);
-
-
 public native interface ApplicationCache extends EventTarget {
 
 	  // update status
@@ -413,6 +410,43 @@ public native interface Location {
 	public native void assign(String url);
 	public native void replace(String url);
 	public native void reload();
+	
+	/**
+	 * Specifies an anchor name in the URL.  
+	 */
+	public native String hash{}
+	
+	/**
+	 * Specifies the host and domain name, or IP address, of a network host.   
+	 */
+	public native String host{}
+	
+	/**
+	 * Specifies the host:port portion of the URL.  
+	 */
+	public native String hostname{} 
+	
+	/**
+	 * Specifies the entire URL.   
+	 */
+	public native String href{}
+	
+	/**
+	 * Specifies the URL-path portion of the URL.  
+	 */
+	public native String pathname{} 
+	/**
+	 * Specifies the communications port that the server uses.  
+	 */
+	public native String port{} 
+	/**
+	 * Specifies the beginning of the URL, including the colon.   
+	 */
+	public native String protocol{}
+	/**
+	 * Specifies a query. 
+	 */
+	public native String search{}
 }
 
 public native interface History {
@@ -483,9 +517,9 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 	
 //	[NoInterfaceObject]
 	public interface NavigatorStorageUtils {
-//	  readonly attribute 
-	  public native boolean cookieEnabled{}
-	  public native void yieldForStorageUpdates();
+//	 	 readonly attribute 
+		public native boolean cookieEnabled{}
+		public native void yieldForStorageUpdates();
 	}
 	
 //	[NoInterfaceObject]
@@ -519,18 +553,18 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 	}
 
 	public native interface Plugin {
-//	  readonly attribute 
-	  public native String name{}
-//	  readonly attribute 
-	  public native String description{}
-//	  readonly attribute 
-	  public native String filename{}
-//	  readonly attribute unsigned 
-	  public native long length{}
-//	  getter 
-	  public native MimeType this[long index]{}
-//	  getter MimeType? namedItem(String name);
-	  public native MimeType this[String name];
+//	  	readonly attribute 
+		public native String name{}
+//	  	readonly attribute 
+		public native String description{}
+//	  	readonly attribute 
+		public native String filename{}
+//	  	readonly attribute unsigned 
+		public native long length{}
+//	 	 getter 
+		public native MimeType this[long index]{}
+//	  	getter MimeType? namedItem(String name);
+		public native MimeType this[String name];
 	}
 
 	public native interface MimeType {
@@ -608,17 +642,17 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 
 		// states
 //		const unsigned 
-		public static final short UNSENT = 0;
+		public native static final short UNSENT = 0;
 //		const unsigned 
-		public static final short OPENED = 1;
+		public native static final short OPENED = 1;
 //		const unsigned 
-		public static final short HEADERS_RECEIVED = 2;
+		public native static final short HEADERS_RECEIVED = 2;
 //		const unsigned 
-		public static final short LOADING = 3;
+		public native static final short LOADING = 3;
 //		const unsigned 
-		public static final short DONE = 4;
+		public native static final short DONE = 4;
 //		readonly attribute unsigned 
-		public short readyState{}
+		public native short readyState{}
 
 		// request
 		public native void open(String method, String url);
@@ -657,30 +691,30 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 //	    readonly attribute 
 	    public native Document responseXML{}
 
-	    public native void addEventListener(String type, EventListener listener, boolean useCapture);
-	    public native void removeEventListener(String type, EventListener listener, boolean useCapture);
+	    public native void addEventListener(String type, EventHandler listener, boolean useCapture);
+	    public native void removeEventListener(String type, EventHandler listener, boolean useCapture);
 	    public native boolean dispatchEvent(Event evt) throws EventException;
 	    
 		  // event handlers
 //		  attribute 
-			public EventHandler onloadstart{}
+		public EventHandler onloadstart{}
 //		  attribute 
-			public EventHandler onprogress{}
+		public EventHandler onprogress{}
 //		  attribute 
-			public EventHandler onabort{}
+		public EventHandler onabort{}
 //		  attribute 
-			public EventHandler onerror{}
+		public EventHandler onerror{}
 //		  attribute 
-			public EventHandler onload{}
+		public EventHandler onload{}
 //		  attribute 
-			public EventHandler ontimeout{}
+		public EventHandler ontimeout{}
 //		  attribute 
-			public EventHandler onloadend{}
+		public EventHandler onloadend{}
 
-			public native  void addEventListenerNS(String namespaceURI, String type,
-					EventListener listener, boolean useCapture);
-			public native void removeEventListenerNS(String namespaceURI, String type,
-					EventListener listener, boolean useCapture);
+		public native  void addEventListenerNS(String namespaceURI, String type,
+				EventHandler listener, boolean useCapture);
+		public native void removeEventListenerNS(String namespaceURI, String type,
+				EventHandler listener, boolean useCapture);
 	}
 	
 	public native class FormData {

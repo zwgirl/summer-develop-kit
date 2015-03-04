@@ -7,7 +7,7 @@ import java.util.NotifyCollectionChangedEvent;
 
 import org.w3c.dom.Node;
 import org.w3c.event.Event;
-import org.w3c.event.EventListener;
+import org.w3c.event.EventHandler;
 import org.w3c.html.HTMLElement; 
  
 public interface MarkupExtension {
@@ -207,7 +207,7 @@ public final class BindingExpression {
 		}  
 	}
 	
-	public EventListener handle = (Event e)->{updateSource();};
+	public EventHandler handle = (Event e)->{updateSource();};
 	
 	public PropertyChange propertyChange = (PropertyChangeEvent e)->{updateTarget();};
 	

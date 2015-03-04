@@ -7,23 +7,39 @@ import org.w3c.views.AbstractView;
 //http://www.w3.org/TR/2009/WD-DOM-Level-3-Events-20090908/#events-keyboardevents
 //Introduced in DOM Level 2:
 public native interface EventTarget {
-	public native void addEventListener(final String type, final EventListener listener, final boolean useCapture);
-	public native void removeEventListener(final String type, final EventListener listener, final boolean useCapture);
+	public native void addEventListener(final String type, final EventHandler listener, final boolean useCapture);
+	public native void removeEventListener(final String type, final EventHandler listener, final boolean useCapture);
 	public native boolean dispatchEvent(final Event evt) throws EventException;
 	// Introduced in DOM Level 3:
 	public native void addEventListenerNS(final String namespaceURI, 
 	                                     final String type, 
-	                                     final EventListener listener, 
+	                                     final EventHandler listener, 
 	                                     final boolean useCapture);
 	// Introduced final DOM Level 3:
 	public native void removeEventListenerNS(final String namespaceURI, 
 	                                        final String type, 
-	                                        final EventListener listener, 
+	                                        final EventHandler listener, 
 	                                        final boolean useCapture);
 }
 
-//Introduced final DOM Level 2:
-public function void EventListener(final Event evt);
+//[Callback=FunctionOnly, NoInterfaceObject]
+public function void EventHandler(final Event event);
+
+public function void UIEventHandler(final UIEvent event);
+
+public function void MouseEventHandler(final MouseEvent event);
+
+public function void KeyboardEventHandler(final KeyboardEvent event);
+
+public function void MouseWheelEventHandler(final MouseWheelEvent event);
+
+public function void WheelEventHandler(final WheelEvent event);
+
+public function void TextEventHandler(final TextEvent event);
+
+public function void MutationEventHandler(final MutationEvent event);
+
+public function void MutationNameEventHandler(final MutationNameEvent event);
 
 //Introduced final DOM Level 2:
 public native interface Event {

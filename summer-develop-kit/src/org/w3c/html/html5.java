@@ -9,13 +9,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.event.Event;
-import org.w3c.event.EventListener;
+import org.w3c.event.EventHandler;
 import org.w3c.event.EventTarget;
+import org.w3c.event.KeyboardEventHandler;
 import org.w3c.event.MouseEvent;
+import org.w3c.event.MouseEventHandler;
+import org.w3c.event.MouseWheelEventHandler;
 import org.w3c.file.File;
 import org.w3c.range.Range;
 import org.w3c.views.AbstractView;
-import org.w3c.webstorage.Storage;
 
 /*
  * Copyright 2004-2009 Apple Computer, Inc., Mozilla Foundation, and Opera Software ASA.
@@ -190,148 +192,153 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
   }
 
   public native interface HTMLElement extends Element, EventTarget {
-    // DOM tree accessors
-    NodeList getElementsByClassName(final String classNames);
+	  // DOM tree accessors
+	  NodeList getElementsByClassName(final String classNames);
 
-    // dynamic markup insertion
-//             attribute 
-    native String innerHTML{}
-//             attribute 
-    String outerHTML{}
-    void insertAdjacentHTML(final String position, final String text);
+	  // dynamic markup insertion
+	  //             attribute 
+	  native String innerHTML{}
+	  //             attribute 
+	  public native String outerHTML{}
+	  public native void insertAdjacentHTML(final String position, final String text);
 
     // metadata attributes
 //             attribute 
-    native String id{}
+	  public native String id{}
 //             attribute 
-    native String title{}
+	  public native String title{}
 //             attribute 
-    native String lang{}
+	  public native String lang{}
 //             attribute 
-    native String dir{}
+	  public native String dir{}
 //             attribute 
-    native String className{}
+	  public native String className{}
 //    readonly attribute 
-    native DOMTokenList classList{}
+	  public native DOMTokenList classList{}
 //    readonly attribute 
-    native DOMStringMap dataset{}
+	  public native DOMStringMap dataset{}
 
     // user interaction
 //             attribute
-    native boolean hidden{}
-    void click(); 
-    void scrollIntoView();
-    void scrollIntoView(final boolean top);
+	  public native boolean hidden{}
+	  public void click(); 
+	  public void scrollIntoView();
+	  public void scrollIntoView(final boolean top);
 //             attribute 
-    native long tabIndex{}
-    void focus();
-    void blur();
+	  public native long tabIndex{}
+	  public void focus();
+	  public  void blur();
 //             attribute 
-    native boolean draggable{}
+	  public native boolean draggable{}
 //             attribute 
-    native String contentEditable{}
+	  public native String contentEditable{}
 //    readonly attribute 
-    native boolean isContentEditable{}
+	  public native boolean isContentEditable{}
 //             attribute 
-    native HTMLMenuElement contextMenu{}
+	  public native HTMLMenuElement contextMenu{}
 //             attribute 
-    native boolean spellcheck{}
+	  public native boolean spellcheck{}
 
     // styling
 //    readonly attribute 
-    native CSSStyleDeclaration style{}
+	  public native CSSStyleDeclaration style{}
 
-    // event handler DOM attributes
-//             attribute 
-    native EventListener onabort{}
-//             attribute 
-    native EventListener onblur{}
-//             attribute 
-    native EventListener onchange{}
-//             attribute 
-    native EventListener onclick{}
-//             attribute 
-    native EventListener oncontextmenu{}
-//             attribute 
-    native EventListener ondblclick{}
-//             attribute 
-    native EventListener ondrag{}
-//             attribute 
-    native EventListener ondragend{}
-//             attribute 
-    native EventListener ondragenter{}
-//             attribute 
-    native EventListener ondragleave{}
-//             attribute 
-    native EventListener ondragover{}
-//             attribute
-    native EventListener ondragstart{}
-//             attribute 
-    native EventListener ondrop{}
-//             attribute
-    native EventListener onerror{}
-//             attribute 
-    native EventListener onfocus{}
-//             attribute 
-    native EventListener onkeydown{}
-//             attribute
-    native EventListener onkeypress{}
-//             attribute 
-    native EventListener onkeyup{}
-//             attribute 
-    native EventListener onload{}
-//             attribute 
-    native EventListener onmousedown{}
-//             attribute 
-    native EventListener onmousemove{}
-//             attribute 
-    native EventListener onmouseout{}
-//             attribute 
-    native EventListener onmouseover{}
-//             attribute 
-    native EventListener onmouseup{}
-//             attribute 
-    native EventListener onmousewheel{}
-//             attribute 
-    native EventListener onscroll{}
-//             attribute 
-    native EventListener onselect{} 
-//             attribute 
-    native EventListener onsubmit{}
+	// event handler IDL attributes
+      public native EventHandler onabort{}
+      public native EventHandler onblur{}
+      public native EventHandler oncanplay{}
+      public native EventHandler oncanplaythrough{}
+      public native EventHandler onchange{}
+      public native MouseEventHandler onclick{}
+      public native EventHandler oncontextmenu{}
+      public native EventHandler oncuechange{}
+      public native MouseEventHandler ondblclick{}
+      public native EventHandler ondrag{}
+      public native EventHandler ondragend{}
+      public native EventHandler ondragenter{}
+      public native EventHandler ondragleave{}
+      public native EventHandler ondragover{}
+      public native EventHandler ondragstart{}
+      public native EventHandler ondrop{}
+      public native EventHandler ondurationchange{}
+      public native EventHandler onemptied{}
+      public native EventHandler onended{}
+      public native EventHandler onerror{}
+      public native EventHandler onfocus{}
+      public native EventHandler oninput{}
+      public native EventHandler oninvalid{}
+      public native KeyboardEventHandler onkeydown{}
+      public native KeyboardEventHandler onkeypress{}
+      public native KeyboardEventHandler onkeyup{}
+      public native EventHandler onload{}
+      public native EventHandler onloadeddata{}
+      public native EventHandler onloadedmetadata{}
+      public native EventHandler onloadstart{}
+      public native MouseEventHandler onmousedown{}
+      public native MouseEventHandler onmousemove{}
+      public native MouseEventHandler onmouseout{}
+      public native MouseEventHandler onmouseover{}
+      public native MouseEventHandler onmouseup{}
+      public native MouseWheelEventHandler onmousewheel{}
+      public native EventHandler onpause{}
+      public native EventHandler onplay{}
+      public native EventHandler onplaying{}
+      public native EventHandler onprogress{}
+      public native EventHandler onratechange{}
+      public native EventHandler onreadystatechange{}
+      public native EventHandler onreset{}
+      public native EventHandler onscroll{}
+      public native EventHandler onseeked{}
+      public native EventHandler onseeking{}
+      public native EventHandler onselect{}
+      public native EventHandler onshow{}
+      public native EventHandler onstalled{}
+      public native EventHandler onsubmit{}
+      public native EventHandler onsuspend{}
+      public native EventHandler ontimeupdate{}
+      public native EventHandler onvolumechange{}
+      public native EventHandler onwaiting{}
+    
+	  public native EventHandler oncancel{}
+	  //[LenientThis] 
+	  public native MouseEventHandler onmouseenter{}
+	  //[LenientThis] 
+	  public native MouseEventHandler onmouseleave{}
+	  public native EventHandler onresize{}
      
-    public Template template{ 
-    	&{ 
-    		return this["__template"] == undefined ? null : (Template)this["__template"];
-    	} 
-    	+{
-    		this["__template"] = value;
-    	}
-    }
+	  public Template template{ 
+		  &{ 
+			  return this["__template"] == undefined ? null : (Template)this["__template"];
+		  } 
+		  +{
+			  this["__template"] = value;
+		  }
+	  }
     
-    public Template itemTemplate{
-    	&{
-    		return this["__itemTemplate"] == undefined ? null : (Template)this["__itemTemplate"];
-    	}
-    	+{
-    		this["__itemTemplate"] = value; 
-    	}
-    }
-    
-    public DataContext dataContext{
-    	&{
-    		if(this["__dataContext"] === undefined){
-    			return ((HTMLElement)parentNode).dataContext;
-    		} else {
-    			return (DataContext)this["__dataContext"];
-    		}
-    	}
-    	+{
-    		if(this["__dataContext"] == value){ 
-    			return;
-    		}
-    		this["__dataContext"] = value;
-    	}
-    }
+	  public Template itemTemplate{
+		  &{
+			  return this["__itemTemplate"] == undefined ? null : (Template)this["__itemTemplate"];
+		  }
+		  +{
+			  this["__itemTemplate"] = value; 
+		  }
+	  }
+	  
+	  public DataContext dataContext{
+		  &{
+			  if(this["__dataContext"] === undefined){
+				  return ((HTMLElement)parentNode).dataContext;
+			  } else {
+				  return (DataContext)this["__dataContext"];
+			  }
+		  }
+		  +{
+			  if(this["__dataContext"] == value){ 
+				  return;
+			  }
+			  this["__dataContext"] = value;
+		  }
+	  }
   }
 
   public native interface base /*HTMLBaseElement*/ extends HTMLElement {
@@ -398,27 +405,27 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 
   public native interface body/*HTMLBodyElement*/ extends HTMLElement {
 //    attribute 
-	  native EventListener onbeforeunload{}
+	  native EventHandler onbeforeunload{}
 //      attribute 
-	  native EventListener onerror{}     // XXX defined in HTMLDocument
+	  native EventHandler onerror{}     // XXX defined in HTMLDocument
 //     attribute 
-	  native EventListener onhashchange{}
+	  native EventHandler onhashchange{}
 //    attribute 
-	  native EventListener onload{}      // XXX defined in HTMLDocument
+	  native EventHandler onload{}      // XXX defined in HTMLDocument
 //             attribute 
-	  native EventListener onmessage{}
+	  native EventHandler onmessage{}
 //             attribute
-	  native EventListener onoffline{}
+	  native EventHandler onoffline{}
 //     attribute 
-	  native EventListener ononline{}
+	  native EventHandler ononline{}
 //     attribute 
-	  native EventListener onpopstate{}
+	  native EventHandler onpopstate{}
 //      attribute 
-	  native EventListener onresize{}
+	  native EventHandler onresize{}
 //      attribute 
-	  native EventListener onstorage{}
+	  native EventHandler onstorage{}
 //      attribute 
-	  native EventListener onunload{}
+	  native EventHandler onunload{}
   }
   
   public native interface head /*HTMLHeadElement*/ extends HTMLElement {}
@@ -1187,8 +1194,6 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //             attribute unsigned 
       native long selectionEnd{}
       void setSelectionRange(final /*unsigned*/ long start, final /*unsigned*/ long end);
-      
-      native EventListener oninput{}
   }
 
   public native interface button /*HTMLButtonElement*/ extends HTMLElement {
@@ -1483,174 +1488,9 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native form form{}
   }
 
-//  typedef Window /*WindowProxy*/Window ;
-//  [IndexGetter, NameGetter=OverrideBuiltins]
-  public native interface Window {
-    // the current browsing context
-//    readonly attribute
-	  /*WindowProxy*/
-	  native Window  window{}
-//    readonly attribute 
-	  /*WindowProxy*/
-	  native Window  self{}
-//             attribute 
-	  native String name{}
-//    [PutForwards=href] readonly attribute 
-	  native Location location{}
-//    readonly attribute 
-	  native History history{}
-//    readonly attribute 
-	  native UndoManager undoManager{}
-	  native Selection getSelection();
-//    [Replaceable] readonly attribute 
-	  native BarProp locationbar{}
-//    [Replaceable] readonly attribute 
-	  native BarProp menubar{}
-//    [Replaceable] readonly attribute 
-	  native BarProp personalbar{}
-//    [Replaceable] readonly attribute 
-	  native BarProp scrollbars{}
-//    [Replaceable] readonly attribute
-	  BarProp statusbar{}
-//    [Replaceable] readonly attribute 
-	  native BarProp toolbar{}
-	  void close();
-	  void focus();
-	  void blur();
-
-    // other browsing contexts
-//    readonly attribute 
-	  /*WindowProxy*/
-	  native Window  frames{}
-//    readonly attribute unsigned 
-	  native long length{}
-//    readonly attribute 
-	  /*WindowProxy*/
-	  native Window  top{}
-//    [Replaceable] readonly attribute 
-	  /*WindowProxy*/
-	  native Window  opener{}
-//    readonly attribute 
-	  /*WindowProxy*/
-	  native Window  parent{}
-//    readonly attribute 
-	  native Element frameElement{}
-	  /*WindowProxy*/Window  open();
-	  /*WindowProxy*/Window  open(final String url);
-	  /*WindowProxy*/Window  open(final String url, final String target);
-	  /*WindowProxy*/Window  open(final String url, final String target, final String features);
-	  /*WindowProxy*/Window  open(final String url, final String target, final String features, final String replace);
-
-    // the user agent
-//    readonly attribute 
-	  native Navigator navigator{}
-//    readonly attribute 
-	  native Storage localStorage{}
-//    readonly attribute 
-	  native Storage sessionStorage{}
-//	  Database openDatabase(final String name, final String version, final String displayName, final /*unsigned*/ long estimatedSize);
-//	  readonly attribute 
-	  native ApplicationCache applicationCache{}
-
-	  // user prompts
-	  void alert(final String message);
-	  boolean confirm(final String message);
-	  String prompt(final String message);
-	  String prompt(final String message, final /*optional*/ String defaultValue);
-	  void print();
-	  Object showModalDialog(final String url);
-	  Object showModalDialog(final String url, final /*optional*/ Object argument);
-
-    // cross-document messaging
-	  void postMessage(final Object message, final String targetOrigin);
-	  void postMessage(final Object message, final /*MessagePortArray*/MessagePort[] ports, final String targetOrigin);
-
-    // event handler DOM attributes
-//	  attribute 
-	  native EventListener onabort{}
-//	  attribute
-	  native EventListener onbeforeunload{}
-//	     attribute 
-	  native EventListener onblur{}
-//	     attribute 
-	  native EventListener onchange{}
-//	     attribute 
-	  native EventListener onclick{}
-//	     attribute 
-	  native EventListener oncontextmenu{}
-//	     attribute 
-	  native EventListener ondblclick{}
-//	     attribute 
-	  native EventListener ondrag{}
-//	     attribute 
-	  native EventListener ondragend{}
-//	     attribute 
-	  native EventListener ondragenter{}
-//	     attribute 
-	  native EventListener ondragleave{}
-//	     attribute 
-	  native EventListener ondragover{}
-//	     attribute
-	  native EventListener ondragstart{}
-//	     attribute
-	  native EventListener ondrop{}
-//	     attribute 
-	  native EventListener onerror{}
-//	     attribute 
-	  native EventListener onfocus{}
-//	     attribute 
-	  native EventListener onhashchange{}
-//	     attribute 
-	  native EventListener onkeydown{}
-//	     attribute 
-	  native EventListener onkeypress{}
-//	     attribute 
-	  native EventListener onkeyup{}
-//	     attribute
-	  native EventListener onload{}
-//	     attribute 
-	  native EventListener onmessage{}
-//	     attribute 
-	  native EventListener onmousedown{}
-//	     attribute 
-	  native EventListener onmousemove{}
-//	     attribute 
-	  native EventListener onmouseout{}
-//	     attribute 
-	  native EventListener onmouseover{}
-//	     attribute
-	  native EventListener onmouseup{}
-//	     attribute 
-	  native EventListener onmousewheel{}
-//	     attribute 
-	  native EventListener ononline{}
-//	     attribute 
-	  native EventListener onoffline{}
-//	     attribute 
-	  native EventListener onpopstate{}
-//	     attribute 
-	  native EventListener onresize{}
-//	     attribute 
-	  native EventListener onscroll{}
-//	     attribute 
-	  native EventListener onselect{}
-//	     attribute 
-	  native EventListener onstorage{}
-//	     attribute
-	  native EventListener onsubmit{}
-//	     attribute 
-	  native EventListener onunload{}
-  }
-
   public native interface BarProp {
 //             attribute 
 	  boolean visible{}
-  }
-
-//  [Callback=FunctionOnly, NoInterfaceObject]
-  @FunctionalInterface
-  public native interface EventHandler {
-	  void handle(final Event event);
   }
 
 //  Window implements WindowModal;
@@ -1719,21 +1559,21 @@ public native interface NavigatorAbilities {
 
     // events
 //             attribute 
-	  native EventListener onchecking{}
+	  native EventHandler onchecking{}
 //             attribute 
-	  native EventListener onerror{}
+	  native EventHandler onerror{}
 //             attribute 
-	  native EventListener onnoupdate{}
+	  native EventHandler onnoupdate{}
 //             attribute
-	  native EventListener ondownloading{}
+	  native EventHandler ondownloading{}
 //             attribute 
-	  native EventListener onprogress{}
+	  native EventHandler onprogress{}
 //             attribute 
-	  native EventListener onupdateready{}
+	  native EventHandler onupdateready{}
 //             attribute 
-	  native EventListener oncached{}
+	  native EventHandler oncached{}
 //             attribute 
-	  native EventListener onobsolete{}
+	  native EventHandler onobsolete{}
 
   }
 
@@ -1894,7 +1734,7 @@ public native interface NavigatorAbilities {
 
     // event handler attributes
 //             attribute 
-	  EventListener onmessage{}
+	  EventHandler onmessage{}
   }
 
 //  Window implements WindowTimers;
@@ -2004,7 +1844,7 @@ interface TextTrack extends EventTarget {
 	void removeCue(TextTrackCue cue);
 
 	//           attribute 
-	native EventListener oncuechange{}
+	native EventHandler oncuechange{}
 }
 
 interface TextTrackCueList {
@@ -2029,9 +1869,9 @@ interface TextTrackCue extends EventTarget {
 	native boolean pauseOnExit{}
 
 //	           attribute 
-	native EventListener onenter{}
+	native EventHandler onenter{}
 //	           attribute 
-	native EventListener onexit{}
+	native EventHandler onexit{}
 }
 
 public native interface keygen /*HTMLKeygenElement*/ extends HTMLElement {

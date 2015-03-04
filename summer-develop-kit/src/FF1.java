@@ -2,7 +2,7 @@ import org.w3c.html.*;
 import org.w3c.dom.*;
 import org.summer.ui.*;
 import org.w3c.event.Event;
-import org.w3c.event.EventListener;
+import org.w3c.event.EventHandler;
 import org.w3c.event.KeyboardEvent;
 
 import java.util.*;
@@ -71,6 +71,12 @@ public class FF1 implements INotifyPropertyChanged{
 		 	</tr> 
 		 </tbody>
 		</table> 
+		
+		<form > 0
+		<input type="range" id="a" value="50" /> 100
+        + <input type="number" id="b" value="50" />
+		=<output name="x" htmlFor="a b"></output>
+		</form>
 		</body> 
 	</html>  
 	
@@ -130,7 +136,7 @@ public class FF1 implements INotifyPropertyChanged{
 		}  
 	}
 	 
-	public EventListener click = (Event event) ->{
+	public EventHandler click = (Event event) ->{
 		this.name = "tom" + index ++ ;
 		alert(event.target.toString());
 	};
@@ -158,7 +164,7 @@ public class FF1 implements INotifyPropertyChanged{
 		}
 	}    
 	
-	EventListener test = (Event event)->{
+	EventHandler test = (Event event)->{
 		if(event.target != ((HTMLDocument)document).body){
 			return;
 		}
@@ -173,7 +179,7 @@ public class FF1 implements INotifyPropertyChanged{
 
 	}
 	
-	public EventListener returnNav = (Event event)->{
+	public EventHandler returnNav = (Event event)->{
 		KeyboardEvent keyEvt = (KeyboardEvent) event;
 		if(keyEvt != undefined && keyEvt.target != undefined){ 
 			HTMLElement srcEle=(HTMLElement) keyEvt.target; 
