@@ -41,6 +41,10 @@ public function void MutationEventHandler(final MutationEvent event);
 
 public function void MutationNameEventHandler(final MutationNameEvent event);
 
+public function Object OnErrorEventHandler(String event1, String source, long lineno, long column, Object error);
+
+public function String OnBeforeUnloadEventHandler(Event event);
+
 //Introduced final DOM Level 2:
 public native interface Event {
 

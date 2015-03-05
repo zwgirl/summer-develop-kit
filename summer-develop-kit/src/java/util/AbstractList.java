@@ -340,13 +340,6 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
          */
         int lastRet = -1;
 
-        /**
-         * The modCount value that the iterator believes that the backing
-         * List should have.  If this expectation is violated, the iterator
-         * has detected concurrent modification.
-         */
-        int expectedModCount = modCount;
-
         public boolean hasNext() {
             return cursor != size;
         }
@@ -372,16 +365,10 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
                 if (lastRet < cursor)
                     cursor--;
                 lastRet = -1;
-                expectedModCount = modCount;
 //            } catch (IndexOutOfBoundsException e) {
 //                throw new ConcurrentModificationException();
 //            }
         }
-
-//        final void checkForComodification() {
-//            if (modCount != expectedModCount)
-//                throw new ConcurrentModificationException();
-//        }
     }
 
     private class ListItr extends Itr implements ListIterator<E> {
@@ -400,7 +387,6 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
                 lastRet = cursor = i;
                 return previous;
             } catch (Error e) {
-//                checkForComodification();
                 throw new NoSuchElementException();
             }
         }
@@ -418,7 +404,6 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
                 throw new IllegalStateException();
 //            try {
                 AbstractList.this.set(lastRet, e);
-                expectedModCount = modCount;
 //            } catch (IndexOutOfBoundsException ex) {
 //                throw new ConcurrentModificationException();
 //            }
@@ -430,7 +415,6 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
                 AbstractList.this.addAt(i, e);
                 lastRet = -1;
                 cursor = i + 1;
-                expectedModCount = modCount;
 //            } catch (IndexOutOfBoundsException ex) {
 //                throw new ConcurrentModificationException();
 //            }
@@ -473,9 +457,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      *         {@code (fromIndex > toIndex)}
      */
     public List<E> subList(int fromIndex, int toIndex) {
-        return (this instanceof RandomAccess ?
-                new RandomAccessSubList<>(this, fromIndex, toIndex) :
-                new SubList<>(this, fromIndex, toIndex));
+        return new SubList<>(this, fromIndex, toIndex);
     }
 
     // Comparison and hashing
@@ -590,7 +572,6 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      * does not wish to provide fail-fast iterators, this field may be
      * ignored.
      */
-    protected transient int modCount = 0;
 
     private void rangeCheckForAdd(int index) {
         if (index < 0 || index > size)
@@ -618,7 +599,6 @@ class SubList<E> extends AbstractList<E> {
         l = list;
         offset = fromIndex;
         _size = toIndex - fromIndex;
-        this.modCount = l.modCount;
     }
 
     public E set(int index, E element) {
@@ -640,21 +620,18 @@ class SubList<E> extends AbstractList<E> {
     public void addAt(int index, E element) {
         rangeCheckForAdd(index);
         l.addAt(index+offset, element);
-        this.modCount = l.modCount;
         _size++;
     }
 
     public E removeAt(int index) {
         rangeCheck(index);
         E result = l.removeAt(index+offset);
-        this.modCount = l.modCount;
         _size--;
         return result;
     }
 
     protected void removeRange(int fromIndex, int toIndex) {
         l.removeRange(fromIndex+offset, toIndex+offset);
-        this.modCount = l.modCount;
         _size -= (toIndex-fromIndex);
     }
 
@@ -669,7 +646,6 @@ class SubList<E> extends AbstractList<E> {
             return false;
 
         l.addAll(offset+index, c);
-        this.modCount = l.modCount;
         _size += cSize;
         return true;
     }
@@ -716,7 +692,6 @@ class SubList<E> extends AbstractList<E> {
 
             public void remove() {
                 i.remove();
-                SubList.this.modCount = l.modCount;
                 _size--;
             }
 
@@ -726,7 +701,6 @@ class SubList<E> extends AbstractList<E> {
 
             public void add(E e) {
                 i.add(e);
-                SubList.this.modCount = l.modCount;
                 _size++;
             }
         };
@@ -748,15 +722,5 @@ class SubList<E> extends AbstractList<E> {
 
     private String outOfBoundsMsg(int index) {
         return "Index: "+index+", Size: "+size;
-    }
-}
-
-class RandomAccessSubList<E> extends SubList<E> implements RandomAccess {
-    RandomAccessSubList(AbstractList<E> list, int fromIndex, int toIndex) {
-        super(list, fromIndex, toIndex);
-    }
-
-    public List<E> subList(int fromIndex, int toIndex) {
-        return new RandomAccessSubList<>(this, fromIndex, toIndex);
     }
 }

@@ -7,6 +7,8 @@ import org.w3c.event.Event;
 import org.w3c.event.EventException;
 import org.w3c.event.EventHandler;
 import org.w3c.event.EventTarget;
+import org.w3c.event.OnBeforeUnloadEventHandler;
+import org.w3c.event.OnErrorEventHandler;
 import org.w3c.file.Blob;
 
 /**
@@ -735,4 +737,34 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 		public native void removeItem(String key);
 		public native void clear();
 	}
+
+	//[Constructor(String type, optional StorageEventInit eventInitDict)]
+	public native class StorageEvent implements Event {
+		public native StorageEvent(String type);
+		public native StorageEvent(String type, Object eventInitDict);
+	//  readonly attribute 
+		String key{}
+	//  readonly attribute 
+		String oldValue{}
+	//  readonly attribute 
+		String newValue{}
+	//  readonly attribute 
+		String url{}
+	//  readonly attribute 
+		Storage storageArea{}
+		public native void stopPropagation();
+		public native void preventDefault();
+		public native void initEvent(String eventTypeArg, boolean canBubbleArg, boolean cancelableArg);
+		public native void stopImmediatePropagation();
+		public native void initEventNS(String namespaceURIArg, String eventTypeArg, boolean canBubbleArg, boolean cancelableArg);
+	}
+
+	//dictionary 
+	//public class StorageEventInit extends EventInit {
+//		public String key{}
+//		public String oldValue{}
+//		public String newValue{}
+//		public String url{}
+//		public Storage storageArea{}
+	//}
 	

@@ -62,29 +62,6 @@ public interface ListIterator<E> extends Iterator<E> {
 
     /**
      * Returns {@code true} if this list iterator has more elements when
-     * traversing the list in the forward direction. (In other words,
-     * returns {@code true} if {@link #next} would return an element rather
-     * than throwing an exception.)
-     *
-     * @return {@code true} if the list iterator has more elements when
-     *         traversing the list in the forward direction
-     */
-    boolean hasNext();
-
-    /**
-     * Returns the next element in the list and advances the cursor position.
-     * This method may be called repeatedly to iterate through the list,
-     * or intermixed with calls to {@link #previous} to go back and forth.
-     * (Note that alternating calls to {@code next} and {@code previous}
-     * will return the same element repeatedly.)
-     *
-     * @return the next element in the list
-     * @throws NoSuchElementException if the iteration has no next element
-     */
-    E next();
-
-    /**
-     * Returns {@code true} if this list iterator has more elements when
      * traversing the list in the reverse direction.  (In other words,
      * returns {@code true} if {@link #previous} would return an element
      * rather than throwing an exception.)
@@ -132,22 +109,6 @@ public interface ListIterator<E> extends Iterator<E> {
 
 
     // Modification Operations
-
-    /**
-     * Removes from the list the last element that was returned by {@link
-     * #next} or {@link #previous} (optional operation).  This call can
-     * only be made once per call to {@code next} or {@code previous}.
-     * It can be made only if {@link #add} has not been
-     * called after the last call to {@code next} or {@code previous}.
-     *
-     * @throws UnsupportedOperationException if the {@code remove}
-     *         operation is not supported by this list iterator
-     * @throws IllegalStateException if neither {@code next} nor
-     *         {@code previous} have been called, or {@code remove} or
-     *         {@code add} have been called after the last call to
-     *         {@code next} or {@code previous}
-     */
-    void remove();
 
     /**
      * Replaces the last element returned by {@link #next} or

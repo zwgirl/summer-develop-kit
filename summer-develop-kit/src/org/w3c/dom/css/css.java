@@ -107,7 +107,7 @@ public native interface CSSUnknownRule extends CSSRule {
 }
 
 // Introduced in DOM Level 2:
-public native interface CSSStyleDeclaration extends CSS2Properties{
+public native interface CSSStyleDeclaration extends CSS2Properties, Transition, Animation{
 // attribute 
 	native String cssText{}
  // throws DOMException) on setting
@@ -748,6 +748,27 @@ public native interface CSS2Properties {
 	String zIndex{}
  // throws DOMException) on setting
 
+}
+
+//Introduced in CSS 3
+public native interface Transition {
+	public native String transition{}
+	public native String transitionDelay{}
+	public native String transitionDuration{}
+	public native String transitionProperty{}
+	public native String transitionTimingFunction{}
+}
+
+public native interface Animation {
+	public native String animation{}
+	public native String animationName{}
+	public native String animationDuration{}
+	public native String animationTimingFunction{}
+	public native String animationDelay{}
+	public native String animationIterationCount{}
+	public native String animationDirection{}
+	public native String animationFillMode{}
+	public native String animationPlayState{}
 }
 
 // Introduced in DOM Level 2:

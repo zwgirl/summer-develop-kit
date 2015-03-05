@@ -3,7 +3,7 @@ package org.w3c.file;
 
 import org.w3c.event.Event;
 import org.w3c.event.EventException;
-import org.w3c.event.EventListener;
+import org.w3c.event.EventHandler;
 import org.w3c.event.EventTarget;
 
 public native class File extends Blob {
@@ -11,7 +11,8 @@ public native class File extends Blob {
 //  readonly attribute 
 	public native String name{}
 //  readonly attribute 
-	/*Date*/public native long lastModifiedDate{}
+	/*Date*/
+	public native long lastModifiedDate{}
 
 }
 	
@@ -27,17 +28,20 @@ public native interface FileList {
 // Constructor(sequence<(ArrayBuffer or ArrayBufferView or Blob or DOMString)> blobParts, optional BlobPropertyBag options), Exposed=Window,Worker] 
 public native class Blob {
 	public native Blob();
-	public native Blob(ArrayBuffer[] blobParts); 
-	public native Blob(ArrayBuffer[] blobParts, /*optional*/ Object options); 
+//	public native Blob(ArrayBuffer[] blobParts); 
+//	public native Blob(ArrayBuffer[] blobParts, /*optional*/ Object options); 
+//	
+//	public native Blob(ArrayBufferView[] blobParts);
+//	public native Blob(ArrayBufferView[] blobParts, Object options);
+//	
+//	public native Blob(Blob[] blobParts); 	
+//	public native Blob(Blob[] blobParts, Object options); 
+//	
+//	public native Blob(String[] blobParts);
+//	public native Blob(String[] blobParts, Object options);
 	
-	public native Blob(ArrayBufferView[] blobParts);
-	public native Blob(ArrayBufferView[] blobParts, Object options);
-	
-	public native Blob(Blob[] blobParts); 	
-	public native Blob(Blob[] blobParts, Object options); 
-	
-	public native Blob(String[] blobParts);
-	public native Blob(String[] blobParts, Object options);
+	public native Blob(Array<?> blobParts);
+	public native Blob(Array<?> blobParts, Object options);
 					
 //	 readonly attribute unsigned 
 	public native long size{}
@@ -92,7 +96,7 @@ public native class FileReader implements EventTarget {
   	public native Object result{}
 
   	//  readonly attribute 
-  	public native DOMError/*?*/ error{}
+  	public native Error/*?*/ error{}
 
   // event handler attributes
   	//  attribute 
@@ -108,8 +112,10 @@ public native class FileReader implements EventTarget {
   	//  attribute 
   	public native EventHandler onloadend{}
   	
-	public native void addEventListener(String type, EventListener listener, boolean useCapture);
-	public native void removeEventListener(String type, EventListener listener, boolean useCapture);
+	public native void addEventListener(String type, EventHandler listener, boolean useCapture);
+	public native void removeEventListener(String type, EventHandler listener, boolean useCapture);
 	public native boolean dispatchEvent(Event evt) throws EventException;
+	public native void addEventListenerNS(String namespaceURI, String type, EventHandler listener, boolean useCapture);
+	public native void removeEventListenerNS(String namespaceURI, String type, EventHandler listener, boolean useCapture);
 
 }

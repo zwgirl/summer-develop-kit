@@ -1,4 +1,4 @@
-import org.w3c.html.*; 
+﻿import org.w3c.html.*; 
 import org.w3c.dom.*;
 import org.summer.ui.*;
 import org.w3c.event.Event;
@@ -15,9 +15,19 @@ public class FF1 implements INotifyPropertyChanged{
 			</script> 
 			
 			<style type="text/css">   
+				.item:hover {
+				  animation: 1s rainbow infinite;
+				}
+			
+				@keyframes rainbow {
+				  0% { background-color: yellow; }
+				  100% { background: blue; }
+				} 
 			</style>
 		</head>  
-		<body onclick = "test"> 
+		<body onclick = "test">  
+	
+			  
 			for dsddsd if do
 				
 		<p style.border = "5px solid red">
@@ -131,7 +141,7 @@ public class FF1 implements INotifyPropertyChanged{
 			String oldValue = this._style;
 			this._style = value;
 			if(oldValue != value){
-				notify(new PropertyChangeEvent(this, "style", oldValue, value));
+				notify(this, new PropertyChangeEvent("style"));
 			}
 		}  
 	}
@@ -150,16 +160,16 @@ public class FF1 implements INotifyPropertyChanged{
 			String oldValue = this._name1;
 			this._name1 = value;
 			if(oldValue != value){
-				notify(new PropertyChangeEvent(this, "name", oldValue, value));
+				notify(this, new PropertyChangeEvent("name"));
 			}
 		}  
 	} 
 	
-	protected void notify(PropertyChangeEvent event){
+	protected void notify(Object source, PropertyChangeEvent event){
 		PropertyChange[] handlers = (PropertyChange[])listeners[event.propertyName];
 		if(handlers != undefined){
 			handlers.forEach((PropertyChange value, int index, Array<PropertyChange> array)->{
-				value(event);
+				value(source, event);
 			});
 		}
 	}    
@@ -189,7 +199,7 @@ public class FF1 implements INotifyPropertyChanged{
 		} 
 	};
 
-	public void addListener(String propName, PropertyChange handler) {
+	public void addPropertyChangeListener(String propName, PropertyChange handler) {
 		PropertyChange[] handlers = (PropertyChange[])listeners[propName];
 		if(handlers == undefined){
 			handlers = new Array<PropertyChange>();
@@ -198,7 +208,7 @@ public class FF1 implements INotifyPropertyChanged{
 		handlers.push(handler);
 	}
 
-	public void removeListener(String propName, PropertyChange handler) {
+	public void removePropertyChangeListener(String propName, PropertyChange handler) {
 		PropertyChange[] handlers = (PropertyChange[])listeners[propName];
 		if(handlers != undefined){
 			handlers.forEach((PropertyChange value, int index, Array<PropertyChange> array)->{

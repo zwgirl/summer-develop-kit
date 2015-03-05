@@ -6,7 +6,7 @@ import org.w3c.html.*;
  *
  */
 public class SelectTemplate1 extends ItemTemplate {
-	  <p >
+	  <p className = "item">
 	  	<input value = {Binding property="name" mode = "TwoWay"} />
 	  	<Text data = {Binding property="age" mode = "OneWay"} />
 	  </p> 

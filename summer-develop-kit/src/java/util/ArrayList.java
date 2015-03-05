@@ -100,7 +100,7 @@ package java.util;
  */
 
 public class ArrayList<E> extends AbstractList<E>
-        implements List<E>, RandomAccess, Cloneable, java.io.Serializable
+        implements List<E>, Cloneable, java.io.Serializable
 {
     private static final long serialVersionUID = 8683452581122892189L;
     /**
@@ -212,7 +212,7 @@ public class ArrayList<E> extends AbstractList<E>
                     return i;
         } else {
             for (int i = 0; i < _size; i++)
-                if (o.equals(elementData[i]))
+                if (o === elementData[i])
                     return i;
         }
         return -1;
@@ -232,7 +232,7 @@ public class ArrayList<E> extends AbstractList<E>
                     return i;
         } else {
             for (int i = _size-1; i >= 0; i--)
-                if (o.equals(elementData[i]))  
+                if (o === elementData[i])  
                     return i;
         }  
         return -1; 
@@ -245,15 +245,16 @@ public class ArrayList<E> extends AbstractList<E>
      * @return a clone of this <tt>ArrayList</tt> instance
      */
     public Object clone() {
-        try {
-            ArrayList<?> v = (ArrayList<?>) super.clone();
+//        try {
+//            ArrayList<E> v = (ArrayList<E>) super.clone();
 //            v.elementData = Arrays.copyOf(elementData, size);
-            v.modCount = 0;
-            return v;
-        } catch (CloneNotSupportedException e) {
-            // this shouldn't happen, since we are Cloneable
-            throw new Error(0, e.message);
-        }
+//            v.modCount = 0;
+//            return v;
+//        } catch (CloneNotSupportedException e) {
+//            // this shouldn't happen, since we are Cloneable
+//            throw new Error(0, e.message);
+//        }
+    	throw new Error();
     }
 
     /**
@@ -273,13 +274,6 @@ public class ArrayList<E> extends AbstractList<E>
     public E[] toArray() {
     	return elementData.slice();
     }
-
-//    // Positional Access Operations
-//
-//    @SuppressWarnings("unchecked")
-//    E elementData(int index) {
-//        return (E) elementData[index];
-//    }
 
     /**
      * Returns the element at the specified position in this list.
@@ -318,7 +312,6 @@ public class ArrayList<E> extends AbstractList<E>
      * @return <tt>true</tt> (as specified by {@link Collection#add})
      */
     public boolean add(E e) {
-//        ensureCapacityInternal(size + 1);  // Increments modCount!!
         elementData[_size++] = e;
         return true;
     }
@@ -334,12 +327,8 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public void addAt(int index, E element) {
         rangeCheckForAdd(index);
-
-//        ensureCapacityInternal(size + 1);  // Increments modCount!!
-//        System.arraycopy(elementData, index, elementData, index + 1,
-//                         size - index);
-        elementData[index] = element;
-        _size++;
+        elementData.splice(index, 0, element);
+        size++;
     }
 
     /**
@@ -354,7 +343,6 @@ public class ArrayList<E> extends AbstractList<E>
     public E removeAt(int index) {
         rangeCheck(index);
 
-        modCount++;
         E oldValue = (E) elementData[index];
         elementData.splice(index, 1);
         _size--;
@@ -384,7 +372,7 @@ public class ArrayList<E> extends AbstractList<E>
                 }
         } else {
             for (int index = 0; index < _size; index++)
-                if (o.equals(elementData[index])) {
+                if (o === elementData[index]) {
                     fastRemove(index);
                     return true;
                 }
@@ -397,12 +385,6 @@ public class ArrayList<E> extends AbstractList<E>
      * return the value removed.
      */
     private void fastRemove(int index) {
-        modCount++;
-//        int numMoved = _size - index - 1;
-//        if (numMoved > 0)
-//            System.arraycopy(elementData, index+1, elementData, index,
-//                             numMoved);
-//        elementData[--size] = null; // clear to let GC do its work
         _size--;
         elementData.splice(index, 1);
     }
@@ -412,13 +394,7 @@ public class ArrayList<E> extends AbstractList<E>
      * be empty after this call returns.
      */
     public void clear() {
-        modCount++;
-
-//        // clear to let GC do its work
-//        for (int i = 0; i < size; i++)
-//            elementData[i] = null;
         elementData.length = 0;
-
         _size = 0;
     }
 
@@ -482,18 +458,8 @@ public class ArrayList<E> extends AbstractList<E>
      *          toIndex < fromIndex})
      */
     protected void removeRange(int fromIndex, int toIndex) {
-        modCount++;
-//        int numMoved = size - toIndex;
-//        System.arraycopy(elementData, toIndex, elementData, fromIndex,
-//                         numMoved);
-
-        // clear to let GC do its work
-        int newSize = _size - (toIndex-fromIndex);
-//        for (int i = newSize; i < size; i++) {
-//            elementData[i] = null;
-//        }
         this.elementData.splice(fromIndex, toIndex-fromIndex);
-        _size = newSize;
+        _size -= toIndex-fromIndex;
     }
 
     /**
@@ -540,7 +506,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @see Collection#contains(Object)
      */
     public boolean removeAll(Collection<?> c) {
-        Objects.requireNonNull(c);
+        if(c == null) throw new Error(0, "c may not be null!");
         return batchRemove(c, false);
     }
 
@@ -561,7 +527,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @see Collection#contains(Object)
      */
     public boolean retainAll(Collection<?> c) {
-        Objects.requireNonNull(c);
+        if(c == null) throw new Error(0, "c may not be null!");
         return batchRemove(c, true);
     }
 
@@ -576,77 +542,21 @@ public class ArrayList<E> extends AbstractList<E>
         } finally {
             // Preserve behavioral compatibility with AbstractCollection,
             // even if c.contains() throws.
-//            if (r != size) {
-//                System.arraycopy(elementData, r,
-//                                 elementData, w,
-//                                 size - r);
-                
+            if (r != size) {
+            	elementData.concat(elementData.slice(r, _size));
                 w += _size - r;
-//            }
+            }
             if (w != _size) {
                 // clear to let GC do its work
                 for (int i = w; i < size; i++)
                     elementData[i] = null;
-                modCount += _size - w;
                 _size = w;
                 modified = true;
             }
         }
+        
         return modified;
     }
-
-//    /**
-//     * Save the state of the <tt>ArrayList</tt> instance to a stream (that
-//     * is, serialize it).
-//     *
-//     * @serialData The length of the array backing the <tt>ArrayList</tt>
-//     *             instance is emitted (int), followed by all of its elements
-//     *             (each an <tt>Object</tt>) in the proper order.
-//     */
-//    private void writeObject(java.io.ObjectOutputStream s)
-//        throws java.io.IOException{
-//        // Write out element count, and any hidden stuff
-//        int expectedModCount = modCount;
-//        s.defaultWriteObject();
-//
-//        // Write out size as capacity for behavioural compatibility with clone()
-//        s.writeInt(size);
-//
-//        // Write out all elements in the proper order.
-//        for (int i=0; i<size; i++) {
-//            s.writeObject(elementData[i]);
-//        }
-//
-//        if (modCount != expectedModCount) {
-//            throw new ConcurrentModificationException();
-//        }
-//    }
-//
-//    /**
-//     * Reconstitute the <tt>ArrayList</tt> instance from a stream (that is,
-//     * deserialize it).
-//     */
-//    private void readObject(java.io.ObjectInputStream s)
-//        throws java.io.IOException, ClassNotFoundException {
-//        elementData = EMPTY_ELEMENTDATA;
-//
-//        // Read in size, and any hidden stuff
-//        s.defaultReadObject();
-//
-//        // Read in capacity
-//        s.readInt(); // ignored
-//
-//        if (size > 0) {
-//            // be like clone(), allocate array based upon size not capacity
-//            ensureCapacityInternal(size);
-//
-//            Object[] a = elementData;
-//            // Read in all elements in the proper order.
-//            for (int i=0; i<size; i++) {
-//                a[i] = s.readObject();
-//            }
-//        }
-//    }
 
     /**
      * Returns a list iterator over the elements in this list (in proper
@@ -695,13 +605,11 @@ public class ArrayList<E> extends AbstractList<E>
     private class Itr implements Iterator<E> {
         int cursor;       // index of next element to return
         int lastRet = -1; // index of last element returned; -1 if no such
-        int expectedModCount = modCount;
 
         public boolean hasNext() {
             return cursor != _size; 
         }
 
-        @SuppressWarnings("unchecked")
         public E next() {
             int i = cursor;
             if (i >= _size)
@@ -718,20 +626,19 @@ public class ArrayList<E> extends AbstractList<E>
                 ArrayList.this.remove(lastRet);
                 cursor = lastRet;
                 lastRet = -1;
-                expectedModCount = modCount;
         }
 
         @Override
         public void forEachRemaining(Consumer<? super E> consumer) {
-            Objects.requireNonNull(consumer);
+            if(consumer == null) throw new Error(1, "consumer may not be null!");
             final int size = ArrayList.this._size;
             int i = cursor;
             if (i >= size) {
                 return;
             }
             final E[] elementData = ArrayList.this.elementData;
-            while (i != size && modCount == expectedModCount) {
-                consumer((E) elementData[i++]);
+            while (i != size) {
+                consumer(elementData[i++]);
             }
             // update once at end of iteration to reduce heap write traffic
             cursor = i;
@@ -782,7 +689,6 @@ public class ArrayList<E> extends AbstractList<E>
             ArrayList.this.addAt(i, e);
             cursor = i + 1;
             lastRet = -1;
-            expectedModCount = modCount;
         }
     }
 
@@ -830,11 +736,11 @@ public class ArrayList<E> extends AbstractList<E>
                                                ") > toIndex(" + toIndex + ")");
     }
 
-    private class SubList extends AbstractList<E> implements RandomAccess {
+    private class SubList extends AbstractList<E> {
         private final AbstractList<E> parent;
         private final int parentOffset;
         private final int offset;
-        int _size;
+        private int _size;
 
         SubList(AbstractList<E> parent,
                 int offset, int fromIndex, int toIndex) {
@@ -842,7 +748,6 @@ public class ArrayList<E> extends AbstractList<E>
             this.parentOffset = fromIndex;
             this.offset = offset + fromIndex;
             this._size = toIndex - fromIndex;
-            this.modCount = ArrayList.this.modCount;
         }
 
         public E set(int index, E e) {
@@ -861,22 +766,17 @@ public class ArrayList<E> extends AbstractList<E>
         	&{
                 return this._size;
         	}
-        	+{
-        		this._size = value;
-        	}
         }
 
         public void add(int index, E e) {
             rangeCheckForAdd(index);
             parent.addAt(parentOffset + index, e);
-            this.modCount = parent.modCount;
             this._size++;
         }
 
         public E remove(int index) {
             rangeCheck(index);
             E result = parent.removeAt(parentOffset + index);
-            this.modCount = parent.modCount;
             this._size--;
             return result;
         }
@@ -884,7 +784,6 @@ public class ArrayList<E> extends AbstractList<E>
         protected void removeRange(int fromIndex, int toIndex) {
             parent.removeRange(parentOffset + fromIndex,
                                parentOffset + toIndex);
-            this.modCount = parent.modCount;
             this._size -= toIndex - fromIndex;
         }
 
@@ -901,7 +800,6 @@ public class ArrayList<E> extends AbstractList<E>
                 return false;
 
             parent.addAll(parentOffset + index, c);
-            this.modCount = parent.modCount;
             this._size += cSize;
             return true;
         }
@@ -917,15 +815,12 @@ public class ArrayList<E> extends AbstractList<E>
             return new ListIterator<E>() {
                 int cursor = index;
                 int lastRet = -1;
-                int expectedModCount = ArrayList.this.modCount;
 
                 public boolean hasNext() {
                     return cursor != SubList.this.size;
                 }  
 
-                @SuppressWarnings("unchecked")
                 public E next() {
-                    checkForComodification(); 
                     int i = cursor;
                     if (i >= SubList.this.size)
                         throw new NoSuchElementException();
@@ -939,7 +834,6 @@ public class ArrayList<E> extends AbstractList<E>
                 }
 
                 public E previous() {
-                    checkForComodification();
                     int i = cursor - 1;
                     if (i < 0)
                         throw new NoSuchElementException();
@@ -956,12 +850,11 @@ public class ArrayList<E> extends AbstractList<E>
                         return;
                     }
                     final E[] elementData = ArrayList.this.elementData;
-                    while (i != size && modCount == expectedModCount) {
+                    while (i != size) {
                         consumer((E) elementData[offset + (i++)]);
                     }
                     // update once at end of iteration to reduce heap write traffic
                     lastRet = cursor = i;
-                    checkForComodification();
                 }
 
                 public int nextIndex() {
@@ -975,33 +868,25 @@ public class ArrayList<E> extends AbstractList<E>
                 public void remove() {
                     if (lastRet < 0)
                         throw new IllegalStateException();
-                    checkForComodification();
 
                     SubList.this.remove(lastRet);
                     cursor = lastRet;
                     lastRet = -1;
-                    expectedModCount = ArrayList.this.modCount;
                 }
 
                 public void set(E e) {
                     if (lastRet < 0)
                         throw new IllegalStateException();
-                    checkForComodification();
 
                     ArrayList.this.set(offset + lastRet, e);
                 }
 
                 public void add(E e) {
-                    checkForComodification();
 
                     int i = cursor; 
                     SubList.this.add(i, e);
                     cursor = i + 1;
                     lastRet = -1;
-                    expectedModCount = ArrayList.this.modCount;
-                }
-
-                final void checkForComodification() {
                 }
             };
         }
@@ -1028,10 +913,9 @@ public class ArrayList<E> extends AbstractList<E>
 
     @Override
     public void forEach(Consumer<? super E> action) {
-        final int expectedModCount = modCount;
         final E[] elementData = (E[]) this.elementData;
         final int size = this._size;
-        for (int i=0; modCount == expectedModCount && i < size; i++) {
+        for (int i=0; i < size; i++) {
             action(elementData[i]);
         }
     }
@@ -1043,9 +927,8 @@ public class ArrayList<E> extends AbstractList<E>
         // will leave the collection unmodified
         int removeCount = 0;
         final BitSet removeSet = new BitSet(size);
-        final int expectedModCount = modCount;
         final int size = this._size;
-        for (int i=0; modCount == expectedModCount && i < size; i++) {
+        for (int i=0; i < size; i++) {
             final E element = (E) elementData[i];
             if (filter(element)) { 
                 removeSet.set(i);
@@ -1065,7 +948,6 @@ public class ArrayList<E> extends AbstractList<E>
                 elementData[k] = null;  // Let gc do its work
             }
             this.size = newSize;
-            modCount++;
         }
 
         return anyToRemove;
@@ -1073,17 +955,14 @@ public class ArrayList<E> extends AbstractList<E>
 
     @Override
     public void replaceAll(Operator<? super E, E> operator) { 
-        final int expectedModCount = modCount;
         final int size = this._size;
-        for (int i=0; modCount == expectedModCount && i < size; i++) {
+        for (int i=0; i < size; i++) {
             elementData[i] = operator(elementData[i]);
         }
-        modCount++;
     }
 
     @Override
     public void sort(Comparator<? super E> c) {
         this.elementData.sort((Comparator<E>) c);
-        modCount++;
     }
 }

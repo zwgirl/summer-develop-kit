@@ -3,7 +3,6 @@ package java.lang;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.NotifyCollectionChangedEvent;
 
 import org.w3c.dom.Node;
 import org.w3c.event.Event;
@@ -209,7 +208,7 @@ public final class BindingExpression {
 	
 	public EventHandler handle = (Event e)->{updateSource();};
 	
-	public PropertyChange propertyChange = (PropertyChangeEvent e)->{updateTarget();};
+	public PropertyChange propertyChange = (Object source, PropertyChangeEvent e)->{updateTarget();};
 	
 	public void invalidate(Object data){
 		updateTarget();
@@ -286,7 +285,7 @@ public final class DataContext {
 		_bindings.push(be);
 		if(this._dataItem instanceof INotifyPropertyChanged){
 			if(!be.binding.isDirectBinding){
-				((INotifyPropertyChanged) this._dataItem).addListener(be.binding.property, be.propertyChange);
+				((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener(be.binding.property, be.propertyChange);
 			}
 		}
 	}
@@ -306,7 +305,7 @@ public final class DataContext {
 		_itemControls.push(ic);
 		if(this._dataItem instanceof INotifyPropertyChanged){
 //			if(!ic.isDirectBinding){
-				((INotifyPropertyChanged) this._dataItem).addListener(ic.path, ic.propertyChange);
+				((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener(ic.path, ic.propertyChange);
 //			}
 		}
 	}
@@ -365,28 +364,28 @@ public final class DataContext {
 		if(this._dataItem != null && this._dataItem instanceof INotifyPropertyChanged){  
 			INotifyPropertyChanged oldPc = (INotifyPropertyChanged) this._dataItem;
 			for(int i=0, length = _dependents.length; i<length; i++){
-				oldPc.removeListener(_dependents[i].property, _dependents[i]::propertyChange);
+				oldPc.removePropertyChangeListener(_dependents[i].property, _dependents[i]::propertyChange);
 			}
 			
 			for(int i=0, length = _bindings.length; i<length; i++){
-				oldPc.removeListener(_bindings[i].binding.property, _bindings[i].propertyChange);
+				oldPc.removePropertyChangeListener(_bindings[i].binding.property, _bindings[i].propertyChange);
 			}
 		}
 		
 		if(newDataItem != null && newDataItem instanceof INotifyPropertyChanged){
 			INotifyPropertyChanged newPc = (INotifyPropertyChanged) newDataItem;
 			for(int i=0, length = _dependents.length; i<length; i++){
-				newPc.addListener(_dependents[i].property, _dependents[i]::propertyChange);
+				newPc.addPropertyChangeListener(_dependents[i].property, _dependents[i]::propertyChange);
 			}
 			
 			for(int i=0, length = _bindings.length; i<length; i++){
-				newPc.addListener(_bindings[i].binding.property, _bindings[i].propertyChange);
+				newPc.addPropertyChangeListener(_bindings[i].binding.property, _bindings[i].propertyChange);
 			}
 		}
 	}
 
-	public void propertyChange(PropertyChangeEvent e) {
-		this.dataItem = e.newValue;
+	public void propertyChange(Object source, PropertyChangeEvent e) {
+		this.dataItem = source[e.propertyName];
 	}
 	
 	public void invalidate(Object data){
@@ -439,8 +438,6 @@ public class DataPath implements MarkupExtension {
 		return new (__lc("java.lang.DataContext"))(this._property, this._mode, '2');
 	} -*/;
 }
-
-public function void CollectionChanged(NotifyCollectionChangedEvent event);
 
 public class ItemsConfig implements MarkupExtension{
 	private Class<ItemsControl> _itemControlClazz;
@@ -533,7 +530,7 @@ public class ItemsControl {
 			}
 			if(this._dataItem != null){
 				if(this._dataItem instanceof INotifyCollectionChanged){
-					((INotifyCollectionChanged)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
+					((INotifyCollectionChanged<?>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
 				}
 			}
 
@@ -567,17 +564,17 @@ public class ItemsControl {
 		}
 	}
 	
-	protected CollectionChanged onCollectionChanged = (NotifyCollectionChangedEvent event) ->{
+	protected CollectionChanged onCollectionChanged = (CollectionChangedEvent event) ->{
 		switch(event.Action){
 		case Add:
-			List<?> items = event.NewItems;
+			Array<?> items = event.NewItems;
 			for(Object item : items){
 				Node root = itemTemplate.createRoot(container);
 				container.appendChild(root);
 				itemTemplate.createChild(root);
 			}
 		case Remove:
-			List<?> items1 = event.NewItems;
+			Array<?> items1 = event.NewItems;
 			for(Object item : items1){
 				Node child = nodesMap.get(item);
 				container.removeChild(child);
@@ -589,20 +586,9 @@ public class ItemsControl {
 		}
 	};
 	
-	public PropertyChange propertyChange = (PropertyChangeEvent event)->{
-		this.dataItem = event.newValue;
+	public PropertyChange propertyChange = (Object source, PropertyChangeEvent event)->{
+		this.dataItem = source[event.propertyName];
 	};
 }
 
-public enum NotifyCollectionChangedAction{
-	Add,
-	Move,
-	Remove,
-	Replace,
-	Reset;
-}
 
-public interface INotifyCollectionChanged {
-	public void addCollectionChangedListener(CollectionChanged listener);
-	public void removeCollectionChangedListener(CollectionChanged listener);
-}

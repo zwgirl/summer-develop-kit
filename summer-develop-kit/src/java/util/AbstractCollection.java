@@ -131,13 +131,13 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      */
     public E[] toArray() {
         // Estimate size of array; be prepared to see more or fewer elements
-        Object[] r = new Array<Object>(); 
+        E[] r = (Array<E>)new Array<Object>(); 
         Iterator<E> it = iterator();
-        int i = size;
+        int i = 0;
         while (it.hasNext()) {  
             r[i++] = it.next();
         }
-        return (Array<E>) r; //(r.length <= size()) ? r : r.slice(0, size());
+        return r;
     }
 
     /**
@@ -296,7 +296,6 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #contains(Object)
      */
     public boolean retainAll(Collection<?> c) {
-        Objects.requireNonNull(c);
         boolean modified = false;
         Iterator<E> it = iterator();
         while (it.hasNext()) {
@@ -330,7 +329,6 @@ public abstract class AbstractCollection<E> implements Collection<E> {
             it.remove();
         }
     }
-
 
     //  String conversion
 
