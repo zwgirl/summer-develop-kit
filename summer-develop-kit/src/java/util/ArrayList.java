@@ -99,14 +99,10 @@ package java.util;
  * @since   1.2
  */
 
-public class ArrayList<E> extends AbstractList<E>
+public class ArrayList<E> extends AbstractList<E> 
         implements List<E>, Cloneable, java.io.Serializable
 {
     private static final long serialVersionUID = 8683452581122892189L;
-    /**
-     * Shared empty array instance used for empty instances.
-     */
-    private static final Object[] EMPTY_ELEMENTDATA = {}; 
 
     /**
      * The array buffer into which the elements of the ArrayList are stored.
@@ -134,9 +130,8 @@ public class ArrayList<E> extends AbstractList<E>
     public ArrayList(int initialCapacity) {
         super();
         if (initialCapacity < 0)
-            throw new IllegalArgumentException("Illegal Capacity: "+
-                                               initialCapacity);
-        this.elementData = (Array<E>) new Object[initialCapacity];
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
+        this.elementData = new Array<E>();
     }
 
     /**
@@ -145,7 +140,7 @@ public class ArrayList<E> extends AbstractList<E>
     @Overload("2")
     public ArrayList() { 
         super();
-        this.elementData = (Array<E>) EMPTY_ELEMENTDATA;
+        this.elementData = new Array<E>();
     }
 
     /**
@@ -542,13 +537,13 @@ public class ArrayList<E> extends AbstractList<E>
         } finally {
             // Preserve behavioral compatibility with AbstractCollection,
             // even if c.contains() throws.
-            if (r != size) {
+            if (r != _size) {
             	elementData.concat(elementData.slice(r, _size));
                 w += _size - r;
             }
             if (w != _size) {
                 // clear to let GC do its work
-                for (int i = w; i < size; i++)
+                for (int i = w; i < _size; i++)
                     elementData[i] = null;
                 _size = w;
                 modified = true;
@@ -607,7 +602,7 @@ public class ArrayList<E> extends AbstractList<E>
         int lastRet = -1; // index of last element returned; -1 if no such
 
         public boolean hasNext() {
-            return cursor != _size; 
+            return cursor != _size;  
         }
 
         public E next() {
@@ -787,12 +782,10 @@ public class ArrayList<E> extends AbstractList<E>
             this._size -= toIndex - fromIndex;
         }
 
-        @Overload("1")
         public boolean addAll(Collection<? extends E> c) {
             return addAll(this.size, c);
         }
 
-        @Overload("2")
         public boolean addAllAt(int index, Collection<? extends E> c) {
             rangeCheckForAdd(index);
             int cSize = c.size;
@@ -843,7 +836,7 @@ public class ArrayList<E> extends AbstractList<E>
                 }
 
                 public void forEachRemaining(Consumer<? super E> consumer) {
-                    Objects.requireNonNull(consumer);
+                    if(consumer == null) throw new Error(0, "consumer may not be null!");
                     final int size = SubList.this._size;
                     int i = cursor;
                     if (i >= size) {
@@ -913,7 +906,6 @@ public class ArrayList<E> extends AbstractList<E>
 
     @Override
     public void forEach(Consumer<? super E> action) {
-        final E[] elementData = (E[]) this.elementData;
         final int size = this._size;
         for (int i=0; i < size; i++) {
             action(elementData[i]);

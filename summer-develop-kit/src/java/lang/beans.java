@@ -12,10 +12,15 @@ public interface PropertyChangeListener{
 	void propertyChange(PropertyChangeEvent evt);
 }
 
-public interface INotifyPropertyChanged {
+public interface INotifyPropertyChanged { 
 	void addPropertyChangeListener(String propName, PropertyChange handler);
 	void removePropertyChangeListener(String propName, PropertyChange handler);
 }
+
+public interface INotifyCollectionChanged<T> {
+	public void addCollectionChangedListener(CollectionChanged<T> listener);
+	public void removeCollectionChangedListener(CollectionChanged<T> listener);
+} 
 
 public function void CollectionChanged<T>(CollectionChangedEvent<T> event);
 
@@ -25,11 +30,6 @@ public enum CollectionChangedAction{
 	Remove,
 	Replace,
 	Reset;
-}
-
-public interface INotifyCollectionChanged<T> {
-	public void addCollectionChangedListener(CollectionChanged<T> listener);
-	public void removeCollectionChangedListener(CollectionChanged<T> listener);
 }
 
 /// Arguments for the CollectionChanged event.
@@ -46,6 +46,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   
   /// Construct a NotifyCollectionChangedEventArgs that describes a reset change.
   /// <param name="action">The action that caused the event (must be Reset).</param>
+  @Overload("1")
   public CollectionChangedEvent(CollectionChangedAction action)
   {
       if (action != CollectionChangedAction.Reset) 
@@ -57,6 +58,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// Construct a NotifyCollectionChangedEventArgs that describes a one-item change.
   /// <param name="action">The action that caused the event; can only be Reset, Add or Remove action.</param> 
   /// <param name="changedItem">The item affected by the change.</param>
+  @Overload("2")
   public CollectionChangedEvent(CollectionChangedAction action, T changedItem) 
   { 
       if ((action != CollectionChangedAction.Add) && (action != CollectionChangedAction.Remove)
@@ -80,6 +82,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// <param name="action">The action that caused the event.</param>
   /// <param name="changedItem">The item affected by the change.</param>
   /// <param name="index">The index where the change occurred.</param>
+  @Overload("3")
   public CollectionChangedEvent(CollectionChangedAction action, T changedItem, int index) 
   {
       if ((action != CollectionChangedAction.Add) && (action != CollectionChangedAction.Remove) 
@@ -106,6 +109,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// </summary> 
   /// <param name="action">The action that caused the event.</param>
   /// <param name="changedItems">The items affected by the change.</param>
+  @Overload("4")
   public CollectionChangedEvent(CollectionChangedAction action, Array<T> changedItems)
   { 
       if ((action != CollectionChangedAction.Add) && (action != CollectionChangedAction.Remove)
@@ -134,6 +138,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// <param name="action">The action that caused the event.</param>
   /// <param name="changedItems">The items affected by the change.</param>
   /// <param name="startingIndex">The index where the change occurred.</param>
+  @Overload("5")
   public CollectionChangedEvent(CollectionChangedAction action, Array<T> changedItems, int startingIndex) 
   {
       if ((action != CollectionChangedAction.Add) && (action != CollectionChangedAction.Remove) 
@@ -164,6 +169,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// <param name="action">Can only be a Replace action.</param> 
   /// <param name="newItem">The new item replacing the original item.</param> 
   /// <param name="oldItem">The original item that is replaced.</param>
+  @Overload("6")
   public CollectionChangedEvent(CollectionChangedAction action, T newItem, T oldItem) 
   {
       if (action != CollectionChangedAction.Replace)
@@ -177,6 +183,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// <param name="newItem">The new item replacing the original item.</param>
   /// <param name="oldItem">The original item that is replaced.</param> 
   /// <param name="index">The index of the item being replaced.</param>
+  @Overload("7")
   public CollectionChangedEvent(CollectionChangedAction action, T newItem, T oldItem, int index) 
   { 
       if (action != CollectionChangedAction.Replace)
@@ -189,6 +196,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// <param name="action">Can only be a Replace action.</param>
   /// <param name="newItems">The new items replacing the original items.</param> 
   /// <param name="oldItems">The original items that are replaced.</param>
+  @Overload("8")
   public CollectionChangedEvent(CollectionChangedAction action, Array<T> newItems, Array<T> oldItems)
   {
       if (action != CollectionChangedAction.Replace) 
@@ -206,6 +214,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// <param name="newItems">The new items replacing the original items.</param> 
   /// <param name="oldItems">The original items that are replaced.</param>
   /// <param name="startingIndex">The starting index of the items being replaced.</param>
+  @Overload("9")
   public CollectionChangedEvent(CollectionChangedAction action, Array<T> newItems, Array<T> oldItems, int startingIndex)
   { 
       if (action != CollectionChangedAction.Replace)
@@ -223,6 +232,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// <param name="changedItem">The item affected by the change.</param>
   /// <param name="index">The new index for the changed item.</param>
   /// <param name="oldIndex">The old index for the changed item.</param>
+  @Overload("10")
   public CollectionChangedEvent(CollectionChangedAction action, Object changedItem, int index, int oldIndex) 
   {
       if (action != CollectionChangedAction.Move) 
@@ -239,6 +249,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// <param name="changedItems">The items affected by the change.</param>
   /// <param name="index">The new index for the changed items.</param>
   /// <param name="oldIndex">The old index for the changed items.</param>
+  @Overload("11")
   public CollectionChangedEvent(CollectionChangedAction action, Array<T> changedItems, int index, int oldIndex) 
   {
       if (action != CollectionChangedAction.Move) 
@@ -250,6 +261,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   }
 
   /// Construct a NotifyCollectionChangedEventArgs with given fields (no validation). Used by WinRT marshaling. 
+  @Overload("12")
   public CollectionChangedEvent(CollectionChangedAction action, Array<T> newItems, Array<T> oldItems, int newIndex, int oldIndex)
   { 
       _action = action;
@@ -332,3 +344,4 @@ public class PropertyChangeEvent {
     	}
     }
 }
+

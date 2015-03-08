@@ -3,7 +3,7 @@ package java.util;
 
 import java.util.List;
 
-public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,INotifyCollectionChanged<T>, INotifyPropertyChanged { 
+public class ObservableCollection<T> extends ArrayList<T> implements INotifyCollectionChanged<T>, List<T>, INotifyPropertyChanged { 
 	private static final long serialVersionUID = 1L;
 
 	public static final String SIZE = "size";
@@ -13,12 +13,15 @@ public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,IN
     // Occurs when the collection changes, either by adding or removing an item.
     private transient CollectionChanged<T>[] collectionChangedListeners = new Array<CollectionChanged<T>>(); // Map<String, Array<CollectionChanged>>; 
     
+    @Overload("1")
     public ObservableCollection()  { super(); } 
 
+    @Overload("2")
     public ObservableCollection(List<T> list) {
         copyFrom(list);
     }
 
+    @Overload("3")
     public ObservableCollection(Iterable<T> collection) {
         if (collection == null) 
             throw new Error(0, "collection may not be null!");
@@ -56,17 +59,27 @@ public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,IN
         super.removeAt(index); 
 
         onPropertyChanged(this, new PropertyChangeEvent(SIZE));
-        onCollectionChanged(CollectionChangedAction.Remove, removedItem, index);
+        onCollectionChanged3(CollectionChangedAction.Remove, removedItem, index);
 		return removedItem;
     }
     
     public boolean remove(Object o){
+    	if(super.remove(o)){
+            onPropertyChanged(this, new PropertyChangeEvent(SIZE));
+            onCollectionChanged3(CollectionChangedAction.Remove, (T) o, -1);
+            return true;
+    	};
 		return false;
     }
     
     public boolean add(T t){
+    	if(super.add(t)){
+    		int i = this.size;  
+            onPropertyChanged(this, new PropertyChangeEvent(SIZE));
+            onCollectionChanged3(CollectionChangedAction.Add, t, -1);
+    		return true;
+    	}
 		return false;
-    	
     }
 
     // Called by base class Collection&lt;T&gt; when an item is added to list;
@@ -75,7 +88,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,IN
         super.addAt(index, item);
 
         onPropertyChanged(this, new PropertyChangeEvent(SIZE)); 
-        onCollectionChanged(CollectionChangedAction.Add, item, index); 
+        onCollectionChanged3(CollectionChangedAction.Add, item, index); 
     } 
 
     // Called by base class Collection&lt;T&gt; when an item is set in list;
@@ -85,7 +98,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,IN
         super.set(index, item);
 
         onPropertyChanged(this, new PropertyChangeEvent(SIZE));
-        onCollectionChanged(CollectionChangedAction.Replace, originalItem, item, index);
+        onCollectionChanged41(CollectionChangedAction.Replace, originalItem, item, index);
 		return originalItem;
     }
 
@@ -95,16 +108,18 @@ public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,IN
         T removedItem = super.removeAt(oldIndex); 
         super.addAt(newIndex, removedItem);  
 
-        onCollectionChanged(CollectionChangedAction.Move, removedItem, newIndex, oldIndex);
+        onCollectionChanged4(CollectionChangedAction.Move, removedItem, newIndex, oldIndex);
     }
 
     // Raises a PropertyChanged event (per <see cref="INotifyPropertyChanged" />). 
     protected void onPropertyChanged(Object source, PropertyChangeEvent e) { 
         if (this.propertyChangeListeners != null) {
         	PropertyChange[] propertyChanges = (PropertyChange[])this.propertyChangeListeners[e.propertyName];
-        	propertyChanges.forEach((PropertyChange callback, int index, Array<PropertyChange> array)->{
-        		callback(source, e);
-        	});
+        	if(propertyChanges != null){
+            	propertyChanges.forEach((PropertyChange callback, int index, Array<PropertyChange> array)->{
+            		callback(source, e);
+            	});
+        	}
         } 
     }
 
@@ -120,17 +135,17 @@ public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,IN
     } 
 
     // Helper to raise CollectionChanged event to any listeners 
-    private void onCollectionChanged(CollectionChangedAction action, T item, int index) { 
+    private void onCollectionChanged3(CollectionChangedAction action, T item, int index) { 
         onCollectionChanged(new CollectionChangedEvent<T>(action, item, index));
     }
 
     // Helper to raise CollectionChanged event to any listeners
-    private void onCollectionChanged(CollectionChangedAction action, T item, int index, int oldIndex) {
+    private void onCollectionChanged4(CollectionChangedAction action, T item, int index, int oldIndex) {
         onCollectionChanged(new CollectionChangedEvent<T>(action, item, index, oldIndex)); 
     }
 
     // Helper to raise CollectionChanged event to any listeners 
-    private void onCollectionChanged(CollectionChangedAction action, T oldItem, T newItem, int index) { 
+    private void onCollectionChanged41(CollectionChangedAction action, T oldItem, T newItem, int index) { 
         onCollectionChanged(new CollectionChangedEvent<T>(action, newItem, oldItem, index));
     } 
 
@@ -143,6 +158,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,IN
 		PropertyChange[] listeners = (PropertyChange[])this.propertyChangeListeners[propName];
 		if(listeners == null){
 			listeners = new Array<PropertyChange>();
+			this.propertyChangeListeners[propName] = listeners;
 		}
 		
 		listeners.push(handler);
@@ -151,7 +167,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements List<T> ,IN
 	public void removePropertyChangeListener(String propName, PropertyChange handler) {
 		PropertyChange[] listeners = (PropertyChange[])this.propertyChangeListeners[propName];
 		if(listeners == null){
-			listeners = new Array<PropertyChange>();
+			return;
 		}
 		
 		listeners.forEach((PropertyChange handler1, int index, Array<PropertyChange> array)->{

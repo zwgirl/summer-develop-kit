@@ -476,6 +476,15 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native String hreflang{}
 //             attribute 
 	  native String type{}
+	  
+	  public Class<?> page{
+		  &{
+			  return (Class<?>)this["__page"];
+		  }
+		  +{
+			  this["__page"] = value;
+		  }
+	  }
   }
 
   public native interface time /*HTMLTimeElement*/ extends HTMLElement {

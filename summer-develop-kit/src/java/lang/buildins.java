@@ -24,15 +24,15 @@ public final class Class<T> /*implements java.io.Serializable*/ {
 	private final Class<?>[] _interfaces; 
 	private final Class<? super T> _baseType; 
 	private final int _type;
-	private final Object _constructor;   
+	private final Object _factory;   
 	
 	/*
 	 * Constructor. Only the Java Virtual Machine creates Class
 	 * objects.
 	 */
-	public Class(String name, Object ctor, Class<? super T> baseType, Class<?>[] interfaces, int type) {
+	public Class(String name, Object factory, Class<? super T> baseType, Class<?>[] interfaces, int type) {
 		this._name = name; 
-		this._constructor = ctor; 
+		this._factory = factory; 
 		this._id = __index++;
 		this._type = type; 
 		this._interfaces = interfaces;
@@ -109,7 +109,7 @@ public final class Class<T> /*implements java.io.Serializable*/ {
 	
 	public Object factory {
 		&{
-			return this._constructor;
+			return this._factory;
 		}
 	}
   
@@ -155,7 +155,7 @@ public final class Class<T> /*implements java.io.Serializable*/ {
 	}
   
 	public native Object newInstance()/*-{
-	  	return new (this.ctor)();
+	  	return new (this._factory)();
   	}-*/;
 }
 
@@ -1181,7 +1181,6 @@ public abstract class ItemTemplate {
 	public final Node create(Node parent, Object item){
 		Node root = createRoot(parent);
 		root.dataContext = new DataContext(item);
-		parent.appendChild(root);
 		createChild(root);
 		return root;
 	}

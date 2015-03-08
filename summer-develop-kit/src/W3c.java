@@ -1,6 +1,5 @@
 import org.w3c.html.*;
 import org.w3c.dom.*;
-import org.summer.ui.*;
 import org.w3c.event.Event;
 public class W3c {
 	<html> 

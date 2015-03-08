@@ -2,7 +2,6 @@
 package java.lang;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.w3c.dom.Node;
 import org.w3c.event.Event;
@@ -126,24 +125,6 @@ public final class BindingExpression {
 	  			updateTarget();
   		}
 	}
-	
-//	public BindingExpression(Node target, String targetProperty, String targetProperty1, Binding binding) { 
-//  		this._binding = binding;
-//  		this._targetProperty = targetProperty;
-//  		this._targetProperty = targetProperty1;
-//  		this._target = target;
-//  		
-//  		switch(_binding.mode){
-//	  		case TwoWay:
-//	  			if(target instanceof HTMLElement){
-//		  			attachTarget((HTMLElement)_target, _targetProperty);
-//	  			}
-//	  		case OneWay:
-//	  			_target.dataContext.addBinding(this);
-//	  		case OneTime:
-//	  			updateTarget();
-//  		}
-//	}
 
 	public void updateSource() {
 		if(_binding.isDirectBinding){
@@ -441,7 +422,7 @@ public class DataPath implements MarkupExtension {
 
 public class ItemsConfig implements MarkupExtension{
 	private Class<ItemsControl> _itemControlClazz;
-	private ItemTemplate _template;
+	private Class<ItemTemplate> _template;
 	private String _path;   //property
 	
 	public ItemsConfig(Object option){
@@ -452,7 +433,7 @@ public class ItemsConfig implements MarkupExtension{
 		}
 		
 		if(option["itemTemplate"] != null){
-			this._template = (ItemTemplate) option["itemTemplate"];
+			this._template = (Class<ItemTemplate>) option["itemTemplate"];
 		}
 		if(option["path"] != null){
 			this._path = (String) option["path"];
@@ -468,7 +449,7 @@ public class ItemsConfig implements MarkupExtension{
 		}
 	}
 	
-	public ItemTemplate itemTemplate{
+	public Class<ItemTemplate> itemTemplate{
 		&{
 			return this._template;
 		}
@@ -488,20 +469,19 @@ public class ItemsConfig implements MarkupExtension{
 	
 	public native Object provideValue(Node target, String property, String targetProperty1) /*-{
 		var r = new (this._itemControlClazz.factory)(target, this._path, this._template);
-		r.expand();
 		return r;
 	}-*/;
 }
 
 public class ItemsControl {
-	private ItemTemplate itemTemplate;
+	private Class<ItemTemplate> itemTemplate;
 	private Node container;
 	private String _path;
 	
 	private Object _dataItem;
 	protected java.lang.Map<Object, Node> nodesMap = new java.lang.Map<Object, Node>();
 	
-	public ItemsControl(Node container, String path, ItemTemplate itemTemplate){
+	public ItemsControl(Node container, String path, Class<ItemTemplate> itemTemplate){
 		this.itemTemplate = itemTemplate;
 		this.container = container;
 		this._path = path;
@@ -528,9 +508,15 @@ public class ItemsControl {
 			if(this._dataItem === value){
 				return;
 			}
+			
+			nodesMap.forEach((Node node, Object item, Map<Object, Node> mapObj)->{
+				this.container.removeChild(node);
+			});
+			nodesMap.clear();
+			
 			if(this._dataItem != null){
 				if(this._dataItem instanceof INotifyCollectionChanged){
-					((INotifyCollectionChanged<?>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
+					((INotifyCollectionChanged<Object>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
 				}
 			}
 
@@ -538,7 +524,7 @@ public class ItemsControl {
 			
 			if(this._dataItem != null){
 				if(this._dataItem instanceof INotifyCollectionChanged){
-					((INotifyCollectionChanged)this._dataItem).addCollectionChangedListener(this.onCollectionChanged);
+					((INotifyCollectionChanged<Object>)this._dataItem).addCollectionChangedListener(this.onCollectionChanged);
 				}
 				
 				expand();
@@ -549,37 +535,39 @@ public class ItemsControl {
 	public void expand(){
 		if(this._dataItem instanceof Collection){
 			for(Object obj : (Collection<?>)this._dataItem){
-				Node node = itemTemplate.create(container, obj);
+				ItemTemplate template = (java.lang.ItemTemplate) itemTemplate.newInstance();
+				Node node = template.create(container, obj);
 				nodesMap.set(obj, node);
-				container.appendChild(node);
 			}
 		}
 	}
 	
 	public void invalidate(){
 		if(container.dataContext.dataItem == null){
-			this._dataItem = null;
+			this.dataItem = null;
 		} else {
-			this._dataItem = container.dataContext.dataItem[_path];
+			this.dataItem = container.dataContext.dataItem[_path];
 		}
 	}
 	
-	protected CollectionChanged onCollectionChanged = (CollectionChangedEvent event) ->{
+	protected CollectionChanged<Object> onCollectionChanged = (CollectionChangedEvent<Object> event) ->{
 		switch(event.Action){
 		case Add:
 			Array<?> items = event.NewItems;
 			for(Object item : items){
-				Node root = itemTemplate.createRoot(container);
-				container.appendChild(root);
-				itemTemplate.createChild(root);
+				ItemTemplate template = (java.lang.ItemTemplate) itemTemplate.newInstance();
+				Node root = template.create(container, item);
+				this.nodesMap.set(item, root);
 			}
+			break;
 		case Remove:
-			Array<?> items1 = event.NewItems;
-			for(Object item : items1){
+//			Array<?> items1 = event.NewItems;
+			for(Object item : event.OldItems){
 				Node child = nodesMap.get(item);
 				container.removeChild(child);
+				nodesMap.delete(item);
 			}
-
+			break;
 		case Replace:
 		case Move:
 		case Reset:
@@ -591,4 +579,11 @@ public class ItemsControl {
 	};
 }
 
-
+public class Page implements MarkupExtension{
+	private Class<ItemsControl> pageClass;
+	public Object provideValue(Node target, java.lang.String property, String targetProperty1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+}

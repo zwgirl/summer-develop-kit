@@ -1,11 +1,9 @@
 ﻿import org.w3c.html.*; 
 import org.w3c.dom.*;
-import org.w3c.*;
+import org.summer.ui.*;
 import org.w3c.event.Event;
 import org.w3c.event.EventHandler;
 import org.w3c.event.KeyboardEvent;
-import org.w3c.event.MouseEvent;
-import org.w3c.event.MouseEventHandler;
 
 import java.util.*;
 public class FF1 implements INotifyPropertyChanged{ 
@@ -28,8 +26,9 @@ public class FF1 implements INotifyPropertyChanged{
 				
 				.child {
 					padding-left: 10px;
-					border:thin solod red;  
+					border:thin solod red;
 					font-size: 12px; 
+					background-color: 
 				}
 			</style>      
 		</head>  
@@ -118,10 +117,9 @@ public class FF1 implements INotifyPropertyChanged{
 		</form> 
 		
 		
-		<div className = "child" dataContext = {DataPath mode="Relative" property = "root"}>
-			<span x:name = "item" className="hvr-fade"> <img src="img/expanded.gif" className="trrItemNode" onclick = "nodeClick" /> 
-				<span onclick = "select" className="treeItemTitle"> <Text data={Binding property="name" mode = "OneWay"} /> </span> </span>
-			<div x:name = "children" className = "children" itemsConfig ={ItemsConfig path = "children" itemTemplate = "ChildTemplate"}>
+		<div className = "child" onclick = "select" dataContext = {DataPath mode="Relative" property = "root"}>
+			<span x:name = "item" className="hvr-fade"> <img src="img/expanded.gif"/> <Text data={Binding property="name" mode = "OneWay"} /> </span>
+			<div className = "children" itemsConfig ={ItemsConfig path = "children" itemTemplate = "ChildTemplate"}> 
 	
 			</div>
 		</div>  
@@ -166,20 +164,12 @@ public class FF1 implements INotifyPropertyChanged{
  	}
 	
 	EventHandler select = (Event event)->{
-		if(((HTMLElement)event.target).className == "treeItemTitle" && ((HTMLElement)event.target).style.backgroundColor == "blue"){
+		if(((HTMLElement)event.target).className == "hvr-fade" && ((HTMLElement)event.target).style.backgroundColor == "blue"){
 			((HTMLElement)event.target).style.removeProperty("background-color");
 		} else {
 			((HTMLElement)event.target).style.backgroundColor = "blue";
 		}
 	};
-	
-	private MouseEventHandler nodeClick = (MouseEvent event)->{
-		if(children.style.display == "none"){
-			children.style.display = "block";
-		} else {
-			children.style.display = "none";
-		}
-	}; 
 	
 	private Person sample;
 	   
