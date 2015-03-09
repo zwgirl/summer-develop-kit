@@ -43,10 +43,12 @@ public enum BindingMode
     OneTime;
 }
 
+public function void UpdateTargetCallback(Object target, String tagProperty1, String tagProperty2, Object value);
 public final class Binding implements MarkupExtension{
 	private BindingMode _mode;
 	private UpdateSourceTrigger _updateSourceTrigger;
 	private String	_property; 
+	private UpdateTargetCallback _callback;
 
 	public Binding(Object options) {
 		if(options["property"] != undefined){
@@ -60,6 +62,15 @@ public final class Binding implements MarkupExtension{
 		if(options["updateSourceTrigger"] != undefined){
 			this._updateSourceTrigger = (UpdateSourceTrigger) options["updateSourceTrigger"];
 		}
+	} 
+	
+	public UpdateTargetCallback callback {
+		& { 
+			return _callback; 
+		} 
+		+ {
+			_callback = value;
+		} 
 	} 
 
 	public String property {
@@ -142,19 +153,43 @@ public final class BindingExpression {
 
 	public void updateTarget() { 
 		if(_binding.isDirectBinding){
-			_target[_targetProperty] = _target.dataContext.dataItem;
+			if(_binding.callback != null){
+				_binding.callback(_target, _targetProperty, _targetProperty1, _target.dataContext.dataItem);  
+			} else {
+				if(_target.dataContext.dataItem != null){
+					if(_targetProperty1 == null){
+						_target[_targetProperty] = _target.dataContext.dataItem;
+					} else {
+						_target[_targetProperty][_targetProperty1] = _target.dataContext.dataItem;
+					}
+				} else {
+					if(_targetProperty1 == null){
+						_target[_targetProperty] = null;
+					} else {
+						_target[_targetProperty][_targetProperty1] = null;
+					}
+				}
+			}
 		} else {
 			if(_target.dataContext.dataItem != null){
-				if(_targetProperty1 == null){
-					_target[_targetProperty] = _target.dataContext.dataItem[_binding.property];
+				if(_binding.callback != null){
+					_binding.callback(_target, _targetProperty, _targetProperty1, _target.dataContext.dataItem[_binding.property]);
 				} else {
-					_target[_targetProperty][_targetProperty1] = _target.dataContext.dataItem[_binding.property];
+					if(_targetProperty1 == null){
+						_target[_targetProperty] = _target.dataContext.dataItem[_binding.property];
+					} else {
+						_target[_targetProperty][_targetProperty1] = _target.dataContext.dataItem[_binding.property];
+					}
 				}
 			} else {
-				if(_targetProperty1 == null){
-					_target[_targetProperty] = null;
+				if(_binding.callback != null){
+					_binding.callback(_target, _targetProperty, _targetProperty1, null);
 				} else {
-					_target[_targetProperty][_targetProperty1] = null;
+					if(_targetProperty1 == null){
+						_target[_targetProperty] = null;
+					} else {
+						_target[_targetProperty][_targetProperty1] = null;
+					}
 				}
 			}
 		}

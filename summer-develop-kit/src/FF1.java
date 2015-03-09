@@ -1,4 +1,5 @@
 ﻿import org.w3c.html.*; 
+import org.w3c.html.canvas;
 import org.w3c.dom.*;
 import org.w3c.*;
 import org.w3c.event.Event;
@@ -34,6 +35,9 @@ public class FF1 implements INotifyPropertyChanged{
 			</style>      
 		</head>  
 		<body onclick = "test">  
+		
+	    <canvas id="myCanvas" width="578" height="200"></canvas>
+
 		 
 		<aside id="gallery">
 		  <p className="photonav">
@@ -125,6 +129,40 @@ public class FF1 implements INotifyPropertyChanged{
 	
 			</div>
 		</div>  
+		
+		<input value = "@12121">
+			<div style="position:absolute;width:100px;height:100px;left:10px;top:10px;background:#000">
+				AAAAAAAAAAAAAAAAAAAAAAAA
+			</div>
+		</input>
+		
+		<form method="post"
+	      enctype="application/x-www-form-urlencoded"
+	      action="https://pizza.example.com/order.cgi">
+			 <p><label>Customer name: <input name="custname"/></label></p>
+			 <p><label>Telephone: <input type="tel" name="custtel"/></label></p>
+			 <p><label>E-mail address: <input type="email" name="custemail"/></label></p>
+			 <fieldset>
+			  <legend> Pizza Size </legend>
+			  <p><label> <input type="radio" name="size" value="small" /> Small </label></p>
+			  <p><label> <input type="radio" name="size" value="medium"/> Medium </label></p>
+			  <p><label> <input type="radio" name="size" value="large"/> Large </label></p>
+			 </fieldset>
+			 <fieldset>
+			  <legend> Pizza Toppings </legend>
+			  <p><label> <input type="checkbox" name="topping" value="bacon"/> Bacon </label></p>
+			  <p><label> <input type="checkbox" name="topping" value="cheese"/> Extra Cheese </label></p>
+			  <p><label> <input type="checkbox" name="topping" value="onion"/> Onion </label></p>
+			  <p><label> <input type="checkbox" name="topping" value="mushroom"/> Mushroom </label></p>
+			 </fieldset>
+			 <p><label>Preferred delivery time: <input type="time" min="11:00" max="21:00" step="900" name="delivery"/></label></p>
+			 <p><label>Delivery instructions: <textarea name="comments"></textarea></label></p>
+			 <p><button>Submit order</button></p>
+	</form>
+		
+    <script>
+    	__this.draw();
+  </script>
 		</body> 
 	</html>  
 	
@@ -325,5 +363,36 @@ public class FF1 implements INotifyPropertyChanged{
 			});
 		}
 	}
+	
+	public void draw(){
+		  canvas mycanvas  = (canvas) document.getElementById("myCanvas");
+		  CanvasRenderingContext2D mycontext = mycanvas.getContext("2d");
+		  float x;
+		  float y;
+		  float x2;
+		  float y2;
+		  float r;
+		  float g;
+		  float b;
+		 Line line = ()-> {
+		   x= (float) (Math.floor(Math.random()*190) + Math.floor(Math.random()*190));
+		   y=(float) (Math.floor(Math.random()*190) + Math.floor(Math.random()*190));
+		   x2=(float) (Math.floor(Math.random()*190) + Math.floor(Math.random()*190));
+		   y2=(float) (Math.floor(Math.random()*190) + Math.floor(Math.random()*190));
+		   r=(float) Math.floor(Math.random()*255);
+		   g=(float) Math.floor(Math.random()*255);
+		   b=(float) Math.floor(Math.random()*255);
+		   mycontext.moveTo(x, y);
+		   mycontext.lineTo(x2, y2);
+		   mycontext.strokeStyle="rgb(" + r + "," + g +  "," + b + ")";  
+		   mycontext.lineWidth=(float) Math.floor(Math.random()*6);      
+		   mycontext.stroke();
+		   mycontext.restore();
+		 };
+		 setInterval(line, 100);
+
+	}
 }
+
+function void Line();
  

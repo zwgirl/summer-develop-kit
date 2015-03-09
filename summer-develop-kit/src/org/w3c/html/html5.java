@@ -97,7 +97,8 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 
   public native interface DOMTokenList {
 //    stringifier;
-//    readonly attribute unsigned long length;
+//    readonly attribute unsigned 
+	  native long length{}
 //    getter String item(in unsigned long index);
 	  native String this[long index];
 	  boolean has(final String token);
@@ -107,11 +108,13 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
   }
 
 //  [NameCreator, NameDeleter, NameGetter, NameSetter]
-  public native interface DOMStringMap {}
+  public native interface DOMStringMap {
+	  
+  }
 
 //  Document implements HTMLDocument
 //  [NameGetter=OverrideBuiltins]
-  public native interface HTMLDocument {
+  public native interface HTMLDocument extends Document{
     // resource metadata management
 //    [PutForwards=href] readonly attribute 
 	  native Location location{}
@@ -135,14 +138,15 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native String defaultCharset{}
 //    readonly attribute 
 	  native String readyState{}
-
-    // DOM tree accessors
+	  
 //             attribute 
 	  native String title{}
 //             attribute 
 	  native String dir{}
 //             attribute 
 	  native HTMLElement body{}
+//	  readonly attribute 
+	  native head head{}
 //    readonly attribute 
 	  native HTMLCollection images{}
 //    readonly attribute 
@@ -159,26 +163,29 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native HTMLCollection scripts{}
 	  NodeList getElementsByName(final String elementName);
 	  NodeList getElementsByClassName(final String classNames);
-
+	  
 	  // dynamic markup insertion
 //             attribute 
 	  native String innerHTML{}
-	  HTMLDocument open();
-	  HTMLDocument open(final String type);
-	  HTMLDocument open(final String type, final String replace);
+	  native HTMLDocument open();
+	  native HTMLDocument open(final String type);
+	  native HTMLDocument open(final String type, final String replace);
 	  /*WindowProxy*/Window  open(final String url, final String name, final String features);
 	  /*WindowProxy*/Window  open(final String url, final String name, final String features, final boolean replace);
-	  void close();
-	  void write(final String... text);
-	  void writeln(final String... text);
+	  native void close();
+	  native void write(final String... text);
+	  native void writeln(final String... text);
 
+//	  readonly attribute 
+	  native Window defaultView{}
 	  // user interaction
 	  native Selection getSelection();
 //	  readonly attribute 
 	  native Element activeElement{}
 	  boolean hasFocus();
 //      attribute 
-	  String designMode{}
+	  native String designMode{}
+	  
       boolean execCommand(final String commandId);
       boolean execCommand(final String commandId, final boolean showUI);
       boolean execCommand(final String commandId, final boolean showUI, final String value);
@@ -189,6 +196,65 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
       String queryCommandValue(final String commandId);
 //      readonly attribute 
       native HTMLCollection commands{}
+      
+   // event handler IDL attributes
+      native EventHandler  onabort{}
+      native EventHandler  onblur{}
+      native EventHandler  oncanplay{}
+      native EventHandler  oncanplaythrough{}
+      native EventHandler  onchange{}
+      native MouseEventHandler  onclick{}
+      native EventHandler  oncontextmenu{}
+      native EventHandler  oncuechange{}
+      native EventHandler  ondblclick{}
+      native EventHandler  ondrag{}
+      native EventHandler  ondragend{}
+      native EventHandler  ondragenter{}
+      native EventHandler  ondragleave{}
+      native EventHandler  ondragover{}
+      native EventHandler  ondragstart{}
+      native EventHandler  ondrop{}
+      native EventHandler  ondurationchange{}
+      native EventHandler  onemptied{}
+      native EventHandler  onended{}
+      native EventHandler  onerror{}
+      native EventHandler  onfocus{}
+      native EventHandler  oninput{}
+      native EventHandler  oninvalid{}
+      native KeyboardEventHandler  onkeydown{}
+      native KeyboardEventHandler  onkeypress{}
+      native KeyboardEventHandler  onkeyup{}
+      native EventHandler  onload{}
+      native EventHandler  onloadeddata{}
+      native EventHandler  onloadedmetadata{}
+      native EventHandler  onloadstart{}
+      native MouseEventHandler  onmousedown{}
+      native MouseEventHandler  onmousemove{}
+      native MouseEventHandler  onmouseout{}
+      native MouseEventHandler  onmouseover{}
+      native MouseEventHandler  onmouseup{}
+      native EventHandler  onmousewheel{}
+      native EventHandler  onpause{}
+      native EventHandler  onplay{}
+      native EventHandler  onplaying{}
+      native EventHandler  onprogress{}
+      native EventHandler  onratechange{}
+      native EventHandler  onreadystatechange{}
+      native EventHandler  onreset{}
+      native EventHandler  onscroll{}
+      native EventHandler  onseeked{}
+      native EventHandler  onseeking{}
+      native EventHandler  onselect{}
+      native EventHandler  onshow{}
+      native EventHandler  onstalled{}
+      native EventHandler  onsubmit{}
+      native EventHandler  onsuspend{}
+      native EventHandler  ontimeupdate{}
+      native EventHandler  onvolumechange{}
+      native EventHandler  onwaiting{}
+      
+	    // DOM tree accessors
+//	    getter any (in DOMString name);
   }
 
   public native interface HTMLElement extends Element, EventTarget {
@@ -426,6 +492,16 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native EventHandler onstorage{}
 //      attribute 
 	  native EventHandler onunload{}
+	  
+	  native EventHandler onafterprint{}
+	  native EventHandler onbeforeprint{}
+	  native EventHandler onblur{}
+	  native EventHandler onfocus{}
+	  native EventHandler onpagehide{}
+	  native EventHandler onpageshow{}
+	  native EventHandler onredo{}
+	  native EventHandler onscroll{}
+	  native EventHandler onundo{}
   }
   
   public native interface head /*HTMLHeadElement*/ extends HTMLElement {}
