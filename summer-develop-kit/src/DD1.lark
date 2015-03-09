@@ -1,0 +1,18 @@
+
+public class DD1 {
+
+	public DD1() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public DD1(Object value) {
+		super(value);
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
