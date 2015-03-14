@@ -7,7 +7,7 @@ import org.w3c.dom.Node;
 import org.w3c.event.Event;
 import org.w3c.event.EventHandler;
 import org.w3c.html.HTMLElement; 
- 
+  
 public interface MarkupExtension {
 	public Object provideValue (Node target, String property, String targetProperty1);
 }
@@ -25,7 +25,7 @@ public enum UpdateSourceTrigger {
      * Update only by explicit call to BindingExpression.UpdateSource() 
      */
     Explicit
-} 
+}  
 
 public enum BindingMode
 {
@@ -231,7 +231,7 @@ public final class BindingExpression {
 	}
 }
 
-public final class DataContext { 
+public final class DataContext {  
 	private PathMode _mode;
 	private String _property;
 	private BindingExpression[] _bindings;

@@ -6,7 +6,7 @@ package org.w3c.dom;
 //#ifndef _DOM_IDL_
 //#define _DOM_IDL_
 //
-//#pragma prefix "w3c.org"
+//#pragma prefix "w3c.org" 
 //module dom
 //{
 

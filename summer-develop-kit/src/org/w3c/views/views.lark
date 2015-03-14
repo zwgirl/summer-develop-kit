@@ -3,7 +3,7 @@ package org.w3c.views;
 
 //Introduced in DOM Level 2:
 public native interface AbstractView {
-//	readonly attribute 
+//	readonly attribute  
 	public DocumentView document{}
 } 
 

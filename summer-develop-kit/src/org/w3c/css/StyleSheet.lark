@@ -16,7 +16,7 @@ public native interface StyleSheet {
 	StyleSheet  parentStyleSheet{}
 //	readonly attribute
 	String href{}
-//	readonly attribute 
+//	readonly attribute  
 	String title{}
 //	readonly attribute 
 	MediaList media{}

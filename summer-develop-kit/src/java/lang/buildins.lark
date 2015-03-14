@@ -8,28 +8,24 @@ import java.util.Objects;
 import org.w3c.dom.Node;
 import org.w3c.html.HTMLElement;
  
-public final class Class<T> /*implements java.io.Serializable*/ {
+public final class Class<T> implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
   
 	public static final int CLASS = 0x1;
 	public static final int INTERFACE = 0x2;
 	public static final int ENUM = 0x4;
 	 
-	public static final int ARRAY = 0x10;
+	public static final int ARRAY = 0x10; 
 	public static final int PRIMITIVE = 0x20; 
-	 
+	   
 	private static int __index; 
-	private final String _name; 
-	private final int _id;   
-	private final Class<?>[] _interfaces; 
-	private final Class<? super T> _baseType; 
-	private final int _type;
-	private final Object _factory;   
+	private final String _name;
+	private transient final int _id;   
+	private transient final Class<?>[] _interfaces; 
+	private transient final Class<? super T> _baseType; 
+	private transient final int _type;
+	private transient final Object _factory;   
 	
-	/*
-	 * Constructor. Only the Java Virtual Machine creates Class
-	 * objects.
-	 */
 	public Class(String name, Object factory, Class<? super T> baseType, Class<?>[] interfaces, int type) {
 		this._name = name; 
 		this._factory = factory; 
@@ -134,13 +130,19 @@ public final class Class<T> /*implements java.io.Serializable*/ {
 
 	public boolean isInterface{
 		&{
-			return (this._type & INTERFACE) != 0;
+			return (this._type & INTERFACE) != 0; 
 		}
 	}
 	
 	public boolean isArray{
 		&{
 			return (this._type & ARRAY) != 0;
+		}
+	}
+	
+	public boolean isEnum{
+		&{
+			return (this._type & ENUM) != 0;
 		}
 	}
 
@@ -439,33 +441,67 @@ public function void ReduceCallback<T>(T previousValue, T currentValue, int curr
 public function int Comparator<T>(T o1, T o2);
   
 public native class Boolean { 
-	public native Boolean valueOf();
+	private boolean value;
+	public native Boolean(boolean value)/*-
+	{
+		this.value = value;
+	} -*/;
+	
+	public native String toString() /*-{
+		return this.value;
+	}-*/;
+	
+	public Boolean valueOf(){
+		return this.value;
+	}
 }
 
 public class Byte extends Number{ 
-	public native Byte(Object value)/*- 
-	{ 
-		return new Number(value);
-	} -*/; 
-	public native Byte valueOf();
+	private byte value;
+	public native Byte(byte value)/*-
+	{
+		this.value = value;
+	} -*/;
+	
+	public native String toString() /*-{
+		return this.value;
+	}-*/;
+	
+	public Byte valueOf(){
+		return this.value;
+	}
 }
 
 public class Double extends Number{
-	public native Double(Object value)/*- 
+	private double value;
+	public native Double(double value)/*-
 	{
-		return new Number(value);
-	} -*/; 
+		this.value = value;
+	} -*/;
 	
-	public native Double valueOf();
+	public native String toString() /*-{
+		return this.value;
+	}-*/;
+	
+	public Double valueOf(){
+		return this.value;
+	}
 }
 
 public class Float extends Number{
-	public native Float(Object value)/*- 
+	private float value;
+	public native Float(float value)/*-
 	{
-		return new Number(value);
+		this.value = value;
 	} -*/;
 	
-	public native Float valueOf();
+	public native String toString() /*-{
+		return this.value;
+	}-*/;
+	
+	public Float valueOf(){
+		return this.value;
+	}
 }
 
 public native final class Function {
@@ -827,44 +863,79 @@ public native final class RegExp {
 }
 
 public class Short extends Number{
-	public native Short(Object value)/*- 
+	private short value;
+	public native Short(short value)/*-
 	{
-		return new Number(value);
+		this.value = value;
 	} -*/;
 	
-	public native Short valueOf();
+	public native String toString() /*-{
+		return this.value;
+	}-*/;
+	
+	public Short valueOf(){
+		return this.value;
+	}
 }
 
-public class Character extends Number{ 
-	public native Character(Object value)/*- 
+public class Character { 
+	private char value;
+	public Character(char value)
 	{
-		return new Number(value);
-	} -*/;
+		this.value = value;
+	} 
 	
-	public native Short valueOf();
+	public native String toString() /*-{
+		return this.value;
+	}-*/;
+	
+	public Object valueOf(){
+		return this.value;
+	}
 }
 
 public class Long extends Number{
-	public native Long(Object value)/*- 
+	private long value;
+	public native Long(long value)/*-
 	{
-		return new Number(value);
+		this.value = value;
 	} -*/;
-		
-	public native Long valueOf(); 
+	
+	public native String toString() /*-{
+		return this.value;
+	}-*/;
+	
+	public Long valueOf(){
+		return this.value;
+	}
 }
 
 public class Integer extends Number{
-	public native Integer valueOf();
-	
-	public static final int MIN_VALUE = -2147483648;
-	 
-	// Field descriptor #96 I
-    public static final int MAX_VALUE = 2147483647;
-  
-    public native Integer(Object value)/*- 
+    /**
+     * A constant holding the minimum value an {@code int} can
+     * have, -2<sup>31</sup>.
+     */
+    public static final int MIN_VALUE = 0x80000000;
+
+    /**
+     * A constant holding the maximum value an {@code int} can
+     * have, 2<sup>31</sup>-1.
+     */
+    public static final int MAX_VALUE = 0x7fffffff;
+    
+	private int value;
+	public native Integer(int value)/*-
 	{
-		return new Number(value);
+		this.value = value;
 	} -*/;
+	
+	public native String toString() /*-{
+		return this.value;
+	}-*/;
+	
+	public Integer valueOf(){
+		return this.value;
+	}
 }
 
 

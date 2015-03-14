@@ -18,7 +18,7 @@ import org.w3c.event.MouseWheelEventHandler;
 import org.w3c.file.File;
 import org.w3c.range.Range;
 import org.w3c.views.AbstractView;
-
+ 
 /*
  * Copyright 2004-2009 Apple Computer, Inc., Mozilla Foundation, and Opera Software ASA.
  * You are granted a license to use, reproduce and create derivative works of this document.

@@ -150,7 +150,7 @@ public class Date {
 	/**
 	 * 	Sets the date and time value in the Date object.
 	 */
-	public native void setTime();
+	public native void setTime(long milliseconds);
 
 	/**
 	 * 	Sets the numeric day of the month using UTC.

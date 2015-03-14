@@ -16,10 +16,10 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     @Overload("1")
     public ObservableCollection()  { super(); } 
 
-    @Overload("2")
+    @Overload("2") 
     public ObservableCollection(List<T> list) {
         copyFrom(list);
-    }
+    } 
 
     @Overload("3")
     public ObservableCollection(Iterable<T> collection) {
@@ -176,7 +176,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
 			}
 		});
 	}
-
+ 
 	public void addCollectionChangedListener(CollectionChanged<T> listener) {
 		collectionChangedListeners.push(listener);
 		

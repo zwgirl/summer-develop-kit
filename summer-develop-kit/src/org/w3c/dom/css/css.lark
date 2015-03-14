@@ -20,7 +20,7 @@ public native interface CSSRuleList {
 // Introduced in DOM Level 2:
 public native interface CSSRule {
 
- // RuleType
+ // RuleType 
 // const unsigned 
 	short UNKNOWN_RULE = 0;
 // const unsigned 

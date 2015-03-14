@@ -19,7 +19,7 @@ public native interface EventTarget {
 	public native void removeEventListenerNS(final String namespaceURI, 
 	                                        final String type, 
 	                                        final EventHandler listener, 
-	                                        final boolean useCapture);
+	                                        final boolean useCapture); 
 }
 
 //[Callback=FunctionOnly, NoInterfaceObject]

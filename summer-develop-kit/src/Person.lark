@@ -8,7 +8,7 @@ public class Person implements INotifyPropertyChanged{
 	private List<Person> _children = new ObservableCollection<Person>();
 	
 	public Person(String name, int age){
-		this._name =name;
+		this._name =name;   
 		this._age = age;
 	}
 	public String name{
@@ -74,11 +74,11 @@ public class Person implements INotifyPropertyChanged{
 		}
 	}  
 
-	private Object listeners= new Object();
+	private transient Object listeners= new Object();
 
 	public void addPropertyChangeListener(String propName, PropertyChange handler) {
 		PropertyChange[] handlers = (PropertyChange[])listeners[propName];
-		if(handlers == undefined){
+		if(handlers == undefined){ 
 			handlers = new Array<PropertyChange>();
 			listeners[propName] = handlers;
 		}

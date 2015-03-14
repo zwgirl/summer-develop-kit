@@ -6,7 +6,7 @@ package java.lang;
  * @author cym
  *
  */
-public function void PropertyChange(Object source, PropertyChangeEvent evt);
+public function void PropertyChange(Object source, PropertyChangeEvent evt); 
  
 public interface PropertyChangeListener{ 
 	void propertyChange(PropertyChangeEvent evt);
