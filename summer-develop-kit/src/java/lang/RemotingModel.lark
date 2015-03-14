@@ -1,0 +1,41 @@
+package java.lang;
+
+@RemotingBean
+public class RemotingModel {
+	private String _className;
+	private String _methodName;
+	private Object[] _parameters;
+	public RemotingModel(String className, String methodName, Object[] parameters) {
+		this._className = className;
+		this._methodName = methodName;
+		this._parameters = parameters;
+	}
+	
+	public String className{
+		&{
+			return this._className;
+		}
+		+{
+			this._className = value;
+		}
+	}
+	
+	public String methodName{
+		&{
+			return this._methodName;
+		}
+		+{
+			this._methodName = value;
+		}
+	}
+	
+	public Object[] parameters{
+		&{
+			return this._parameters;
+		}
+		+{
+			this._parameters = value;
+		}
+	}
+
+}

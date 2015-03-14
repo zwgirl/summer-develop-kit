@@ -1,0 +1,17 @@
+package tets;
+
+@RemotingBean 
+public class Person1 {
+	private String _name;  
+	
+	private int age; 
+	public Person1() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Person1(Object value) {
+		super(value);
+		// TODO Auto-generated constructor stub
+	}
+
+}
