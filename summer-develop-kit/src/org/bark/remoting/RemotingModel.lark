@@ -1,4 +1,4 @@
-package java.lang;
+package org.bark.remoting;
 
 @RemotingBean
 public class RemotingModel {
@@ -7,10 +7,10 @@ public class RemotingModel {
 	private Object[] _parameters;
 	public RemotingModel(String className, String methodName, Object[] parameters) {
 		this._className = className;
-		this._methodName = methodName;
-		this._parameters = parameters;
+		this._methodName = methodName; 
+		this._parameters = parameters;  
 	}
-	
+	 
 	public String className{
 		&{
 			return this._className;

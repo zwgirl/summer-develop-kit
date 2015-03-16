@@ -54,7 +54,7 @@ public class FF1 implements INotifyPropertyChanged{
 			  
 			for dsddsd if do
 				
-		<p style.border = "5px solid red">
+		<p style.border = "5px solid red"> 
 			asasasa
 			<br />
 			<Text data = {Binding property="style" mode = "OneWay"} />
@@ -191,7 +191,6 @@ public class FF1 implements INotifyPropertyChanged{
 			int ll = s.length; 
 		}
 		
-		this._root = null;
 		for(int i=0; i<10; i++){
 			Person p = new Person("孩子" + i, i);
 			this.root.children.add(p);

@@ -21,7 +21,7 @@ public class Person1 {
 	private int[] iiil;
 	
 	private Array<int[]> iiiq;
-	private FirstService fs;
+	private FirstService fs; 
 	
 	public String name{} 
 	  
@@ -30,7 +30,7 @@ public class Person1 {
 	public Person1() {
 		// TODO Auto-generated constructor stub
 	}
-}
+}   
  
 @RemotingBean
 enum Flag { 

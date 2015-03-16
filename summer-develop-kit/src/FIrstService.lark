@@ -1,4 +1,0 @@
-@RemotingService
-public interface FIrstService {
-	void sayHello(String message); 
-}
