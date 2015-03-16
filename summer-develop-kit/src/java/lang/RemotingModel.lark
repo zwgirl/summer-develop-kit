@@ -20,7 +20,7 @@ public class RemotingModel {
 		}
 	}
 	
-	public String methodName{
+	public String methodName{ 
 		&{
 			return this._methodName;
 		}

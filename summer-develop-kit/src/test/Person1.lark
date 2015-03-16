@@ -1,0 +1,44 @@
+package test;
+
+@RemotingBean 
+public class Person1 { 
+	private String _name;  
+	
+	private byte b;   
+	private short s; 
+	private int i;   
+	private long l;    
+	private float f;   
+	private double d;   
+	private Byte B1;
+	private Short S1;    
+	private Integer I1;   
+	private Float F1; 
+	private Double D1;
+	private test.Flag flag;
+	private Class<Person1> clazz;  
+	  
+	private int[] iiil;
+	
+	private Array<int[]> iiiq;
+	private FirstService fs;
+	
+	public String name{} 
+	  
+	
+	private Object _parent;
+	public Person1() {
+		// TODO Auto-generated constructor stub
+	}
+}
+ 
+@RemotingBean
+enum Flag { 
+	F1,
+	F2;
+} 
+ 
+@RemotingBean
+interface TT{
+	
+}

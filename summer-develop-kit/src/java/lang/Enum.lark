@@ -157,7 +157,7 @@ public abstract class Enum<E extends Enum<E>>
      */ 
     public final Class<E> getDeclaringClass() { 
 	    Class clazz = getClass(); 
-	    Class zuper = clazz.baseType; 
+	    Class zuper = clazz.superClass; 
 	    return (zuper == Enum.class) ? clazz : zuper; 
     } 
  

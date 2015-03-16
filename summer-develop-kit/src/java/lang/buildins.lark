@@ -22,17 +22,17 @@ public final class Class<T> implements java.io.Serializable {
 	private final String _name;
 	private transient final int _id;   
 	private transient final Class<?>[] _interfaces; 
-	private transient final Class<? super T> _baseType; 
-	private transient final int _type;
+	private transient final Class<? super T> _superClass; 
+	private transient final int _flags;
 	private transient final Object _factory;   
 	
-	public Class(String name, Object factory, Class<? super T> baseType, Class<?>[] interfaces, int type) {
+	public Class(String name, Object factory, Class<? super T> superClass, Class<?>[] interfaces, int flags) {
 		this._name = name; 
 		this._factory = factory; 
 		this._id = __index++;
-		this._type = type; 
+		this._flags = flags; 
 		this._interfaces = interfaces;
-		this._baseType = baseType;
+		this._superClass = superClass;
 	}
 	public String toString() { 
 		return (isInterface ? "interface " : (isPrimitive ? "" : "class ")) + name;
@@ -61,9 +61,9 @@ public final class Class<T> implements java.io.Serializable {
 		return false;
  	}
   
-	public Class<?> baseType{
+	public Class<?> superClass{
 		&{
-			return this._baseType;
+			return this._superClass;
 		}
 	}
 	
@@ -75,7 +75,7 @@ public final class Class<T> implements java.io.Serializable {
 	    while (p != null) { 
 	      if (p == c)
 	        return true;
-	      p = p.baseType;
+	      p = p.superClass;
 	    } 
 	    return false;
 	}
@@ -83,13 +83,10 @@ public final class Class<T> implements java.io.Serializable {
 	public boolean implementInterface(Class<?> ifaceType) 
 	{ 
 	  	Class<?> t = this;
-	    while (t != null)
-	    { 
+	    while (t != null) { 
 	    	Class<?>[] interfaces = t.interfaces;
-	    	if (interfaces != null) 
-	    	{ 
-	    		for (int i = 0; i < interfaces.length; i++)
-	    		{ 
+	    	if (interfaces != null) { 
+	    		for (int i = 0; i < interfaces.length; i++){ 
 	    			// Interfaces don't derive from other interfaces, they implement them.
 	    			// So instead of IsSubclassOf, we should use ImplementInterface instead.
 	    			if (interfaces[i] == ifaceType || (interfaces[i] != null && interfaces[i].implementInterface(ifaceType))) 
@@ -97,7 +94,7 @@ public final class Class<T> implements java.io.Serializable {
 	    		} 
 	    	} 
 	
-	    	t = t.baseType; 
+	    	t = t.superClass; 
     	}
 
     	return false;
@@ -130,25 +127,25 @@ public final class Class<T> implements java.io.Serializable {
 
 	public boolean isInterface{
 		&{
-			return (this._type & INTERFACE) != 0; 
+			return (this._flags & INTERFACE) != 0; 
 		}
 	}
 	
 	public boolean isArray{
 		&{
-			return (this._type & ARRAY) != 0;
+			return (this._flags & ARRAY) != 0;
 		}
 	}
 	
 	public boolean isEnum{
 		&{
-			return (this._type & ENUM) != 0;
+			return (this._flags & ENUM) != 0;
 		}
 	}
 
 	public boolean isPrimitive{
 		&{
-			return (this._type & PRIMITIVE) != 0;
+			return (this._flags & PRIMITIVE) != 0;
 		}
 	}
   
