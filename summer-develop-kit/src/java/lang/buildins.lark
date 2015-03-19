@@ -603,7 +603,7 @@ public final native class Math {
 //	public static native float min(float... number); 
 //	public static native int min(int... number);
 //	public static native long min(long... number); 
-	public static native long Number(long... number); 
+	public static native Number min(Number... number); 
 
 	public static native double pow(double base, double exponent);
 
