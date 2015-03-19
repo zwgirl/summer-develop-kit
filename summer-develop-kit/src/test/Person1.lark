@@ -21,14 +21,14 @@ public class Person1 {
 	private int[] iiil;
 	
 	private Array<int[]> iiiq;
-	private FirstService fs; 
 	
 	public String name{} 
 	  
 	
 	private Object _parent;
 	public Person1() {
-		// TODO Auto-generated constructor stub
+		String dd;
+		Service.dd();   
 	}
 }   
  
@@ -41,4 +41,9 @@ enum Flag {
 @RemotingBean
 interface TT{
 	
+}
+
+@RemotingService
+interface Service{
+	void dd();
 }

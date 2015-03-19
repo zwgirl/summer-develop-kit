@@ -160,7 +160,22 @@ public final class Class<T> implements java.io.Serializable {
 
 
 public native class Object { 
+	static{
+		registerPrimitiveClass();
+	}
 	public native Object();
+	private native static void registerPrimitiveClass() /*-{
+		var c = __lc('java.lang.Class');
+		__cache["<B"] = new c("<B", null, Object.prototype.__class, [], 0x21);
+		__cache["<C"] = new c("<C", null, Object.prototype.__class, [], 0x21);
+		__cache["<S"] = new c("<B", null, Object.prototype.__class, [], 0x21);
+		__cache["<I"] = new c("<B", null, Object.prototype.__class, [], 0x21);
+		__cache["<L"] = new c("<B", null, Object.prototype.__class, [], 0x21);
+		__cache["<F"] = new c("<B", null, Object.prototype.__class, [], 0x21);
+		__cache["<D"] = new c("<B", null, Object.prototype.__class, [], 0x21);
+		__cache["<Z"] = new c("<B", null, Object.prototype.__class, [], 0x21);
+		
+	}-*/; 
 	public native Object(Object value);
 	
 	public native Object this[String name];

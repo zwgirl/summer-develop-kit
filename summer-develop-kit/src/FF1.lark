@@ -1,4 +1,5 @@
-﻿import org.w3c.html.*; 
+﻿import org.bark.test.FirstService;
+import org.w3c.html.*; 
 import org.w3c.html.canvas;
 import org.w3c.dom.*;
 import org.w3c.*;
@@ -294,6 +295,7 @@ public class FF1 implements INotifyPropertyChanged{
 	public EventHandler click = (Event event) ->{
 		this.name = "tom" + index ++ ;
 		alert(event.target.toString());
+		FirstService.sayHello("Tom", null, null);
 	};
 	
 	private String _name1 = "tom"; 
