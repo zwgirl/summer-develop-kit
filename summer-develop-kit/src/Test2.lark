@@ -1,0 +1,12 @@
+
+class Test2<K, V> extends Test1<K, V>{
+	
+	
+    /**
+     * Transfers all entries from current table to newTable.
+     */
+    void transfer(Array<Entry1<?,?>> newTable, boolean rehash) {
+        int newCapacity = newTable.length;  
+
+    }
+}

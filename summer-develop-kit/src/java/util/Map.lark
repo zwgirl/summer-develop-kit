@@ -362,7 +362,7 @@ public interface Map<K,V> {
      * @see Map#entrySet()
      * @since 1.2
      */
-    interface Entry<K,V> {
+    static interface Entry<K,V> {
         /**
          * Returns the key corresponding to this entry.
          *
@@ -476,5 +476,4 @@ public interface Map<K,V> {
      * @see #equals(Object)
      */
     int hashCode();
-
 }

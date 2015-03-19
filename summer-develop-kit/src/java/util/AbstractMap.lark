@@ -24,6 +24,7 @@
  */
 
 package java.util;
+import java.util.Map.Entry;
 
 /**
  * This class provides a skeletal implementation of the <tt>Map</tt>
@@ -81,9 +82,8 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      */
     public int size {
     	&{
-            return entrySet().size;
+    		return entrySet().size;
     	}
-
     }
 
     /**
@@ -448,7 +448,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
             return true;
 
         if (!(o instanceof Map))
-            return false; 
+            return false;
         Map<K,V> m = (Map<K,V>) o;
         if (m.size != size)
             return false;
@@ -467,8 +467,6 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
                         return false;
                 }
             }
-//        } catch (ClassCastException unused) {
-//            return false;
         } catch (NullPointerException unused) {
             return false;
         }
@@ -527,10 +525,12 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
             sb.push(key   == this ? "(this Map)" : (String) key);
             sb.push("=");
             sb.push(value == this ? "(this Map)" : (String) value);
-            if (! i.hasNext()) {
-                 sb.push("}"); return sb.toString();
+            if (! i.hasNext()){
+                sb.push("}"); 
+                return sb.toString();
             }
-            sb.push(","); sb.push(" ");
+            sb.push(",");
+            sb.push(" ");
         }
     }
 
@@ -808,7 +808,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          * @see    #equals
          */
         public int hashCode() {
-            return (key   == null ? 0 : key.hashCode()) ^
+            return (key   == null ? 0 :   key.hashCode()) ^
                    (value == null ? 0 : value.hashCode());
         }
 
