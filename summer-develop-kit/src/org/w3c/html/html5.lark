@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.event.DragEventHandler;
 import org.w3c.event.Event;
 import org.w3c.event.EventHandler;
 import org.w3c.event.EventTarget;
@@ -16,6 +17,7 @@ import org.w3c.event.MouseEvent;
 import org.w3c.event.MouseEventHandler;
 import org.w3c.event.MouseWheelEventHandler;
 import org.w3c.file.File;
+import org.w3c.file.FileList;
 import org.w3c.range.Range;
 import org.w3c.views.AbstractView;
  
@@ -170,8 +172,8 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native HTMLDocument open();
 	  native HTMLDocument open(final String type);
 	  native HTMLDocument open(final String type, final String replace);
-	  /*WindowProxy*/Window  open(final String url, final String name, final String features);
-	  /*WindowProxy*/Window  open(final String url, final String name, final String features, final boolean replace);
+	  /*WindowProxy*/Window open(final String url, final String name, final String features);
+	  /*WindowProxy*/Window open(final String url, final String name, final String features, final boolean replace);
 	  native void close();
 	  native void write(final String... text);
 	  native void writeln(final String... text);
@@ -207,13 +209,13 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
       native EventHandler  oncontextmenu{}
       native EventHandler  oncuechange{}
       native EventHandler  ondblclick{}
-      native EventHandler  ondrag{}
-      native EventHandler  ondragend{}
-      native EventHandler  ondragenter{}
-      native EventHandler  ondragleave{}
-      native EventHandler  ondragover{}
-      native EventHandler  ondragstart{}
-      native EventHandler  ondrop{}
+      native DragEventHandler  ondrag{}
+      native DragEventHandler  ondragend{}
+      native DragEventHandler  ondragenter{}
+      native DragEventHandler  ondragleave{}
+      native DragEventHandler  ondragover{}
+      native DragEventHandler  ondragstart{}
+      native DragEventHandler  ondrop{}
       native EventHandler  ondurationchange{}
       native EventHandler  onemptied{}
       native EventHandler  onended{}
@@ -253,9 +255,57 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
       native EventHandler  onvolumechange{}
       native EventHandler  onwaiting{}
       
+      public native HTMLElement getElementById(final String elementId);
+      
 	    // DOM tree accessors
 //	    getter any (in DOMString name);
+      
+      //Selector API
+      native HTMLElement querySelector(String selectors);
+      native NodeList querySelectorAll(String selectors);
+      
+//    Fullscreen API
+//	  readonly attribute 
+      native boolean fullscreenEnabled{}
+//	  readonly attribute 
+      native HTMLElement fullscreenElement{}
+
+	  native void exitFullscreen();
+
+//	  attribute 
+	  native EventHandler onfullscreenchange{}
+//	  attribute 
+	  native EventHandler onfullscreenerror{}
   }
+  
+//  partial interface Document {
+//	  Element?  querySelector(DOMString selectors);
+//	  NodeList  querySelectorAll(DOMString selectors);
+//	};
+//
+//	partial interface DocumentFragment {
+//	  Element?  querySelector(DOMString selectors);
+//	  NodeList  querySelectorAll(DOMString selectors);
+//	};
+//
+//	partial interface Element {
+//	  Element?  querySelector(DOMString selectors);
+//	  NodeList  querySelectorAll(DOMString selectors);
+//	};
+  
+//  partial interface Element {
+//	  void requestFullscreen();
+//	};
+//
+//	partial interface Document {
+//	  readonly attribute boolean fullscreenEnabled;
+//	  readonly attribute Element? fullscreenElement;
+//
+//	  void exitFullscreen();
+//
+//	  attribute EventHandler onfullscreenchange;
+//	  attribute EventHandler onfullscreenerror;
+//	};
 
   public native interface HTMLElement extends Element, EventTarget {
 	  // DOM tree accessors
@@ -405,7 +455,70 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 			  this["__dataContext"] = value;
 		  }
 	  }
+	  
+	  //Selector API
+	  public native  HTMLElement querySelector(String selectors);
+	  public native  NodeList querySelectorAll(String selectors);
+      
+      //Fullscreen API
+      public native void requestFullscreen();
+      
+      public native String role{}
+      
+      
+//    TextRectangleList getClientRects();
+//    TextRectangle getBoundingClientRect();
+  
+//    readonly attribute 
+      public native Element offsetParent{}
+//    readonly attribute 
+      public native float offsetTop{}
+//    readonly attribute 
+      public native float offsetLeft{}
+//    readonly attribute 
+      public native float offsetWidth{}
+//    readonly attribute 
+      public native float offsetHeight{}
+  
+//             attribute 
+      public native float scrollTop{}   // scroll on setting
+//             attribute 
+      public native float scrollLeft{}  // scroll on setting
+//    readonly attribute 
+      public native float scrollWidth{}
+//    readonly attribute 
+      public native float scrollHeight{}
+  
+//    readonly attribute 
+      public native float clientTop{}
+//    readonly attribute 
+      public native float clientLeft{}
+//    readonly attribute 
+      public native float clientWidth{}
+//    readonly attribute 
+      public native float clientHeight{}
   }
+  
+//	interface ElementView {
+//  TextRectangleList getClientRects();
+//  TextRectangle getBoundingClientRect();
+//
+//  readonly attribute Element offsetParent;
+//  readonly attribute float offsetTop;
+//  readonly attribute float offsetLeft;
+//  readonly attribute float offsetWidth;
+//  readonly attribute float offsetHeight;
+//
+//           attribute float scrollTop;   // scroll on setting
+//           attribute float scrollLeft;  // scroll on setting
+//  readonly attribute float scrollWidth;
+//  readonly attribute float scrollHeight;
+//
+//  readonly attribute float clientTop;
+//  readonly attribute float clientLeft;
+//  readonly attribute float clientWidth;
+//  readonly attribute float clientHeight;
+//}
 
   public native interface base /*HTMLBaseElement*/ extends HTMLElement {
 //             attribute 
@@ -413,7 +526,6 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //             attribute 
 	  native String target{}
   }
-
   
   public native interface link/*HTMLLinkElement*/ extends HTMLElement {
 //             attribute 
@@ -1279,6 +1391,9 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //             attribute unsigned 
       native long selectionEnd{}
       void setSelectionRange(final /*unsigned*/ long start, final /*unsigned*/ long end);
+      
+      //cym add for FileAPI
+      native FileList files{}
   }
 
   public native interface button /*HTMLButtonElement*/ extends HTMLElement {
@@ -1738,28 +1853,28 @@ public native interface NavigatorAbilities {
 	  void removeAllRanges();
   }
 
-  public native interface DragEvent extends MouseEvent {
-//    readonly attribute 
-	  native DataTransfer dataTransfer{}
+//  public native interface DragEvent extends MouseEvent {
+////    readonly attribute 
+//	  native DataTransfer dataTransfer{}
+//
+//	  void initDragEvent(final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final AbstractView viewArg, final long detailArg, final long screenXArg, final long screenYArg, final long clientXArg, final long clientYArg, final boolean ctrlKeyArg, final boolean altKeyArg, final boolean shiftKeyArg, final boolean metaKeyArg, final /*unsigned*/ short buttonArg, final EventTarget relatedTargetArg, final DataTransfer dataTransferArg);
+//	  void initDragEventNS(final String namespaceURIArg, final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final AbstractView viewArg, final long detailArg, final long screenXArg, final long screenYArg, final long clientXArg, final long clientYArg, final /*unsigned*/ short buttonArg, final EventTarget relatedTargetArg, final String modifiersListArg, final DataTransfer dataTransferArg);
+//  }
 
-    void initDragEvent(final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final AbstractView viewArg, final long detailArg, final long screenXArg, final long screenYArg, final long clientXArg, final long clientYArg, final boolean ctrlKeyArg, final boolean altKeyArg, final boolean shiftKeyArg, final boolean metaKeyArg, final /*unsigned*/ short buttonArg, final EventTarget relatedTargetArg, final DataTransfer dataTransferArg);
-    void initDragEventNS(final String namespaceURIArg, final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final AbstractView viewArg, final long detailArg, final long screenXArg, final long screenYArg, final long clientXArg, final long clientYArg, final /*unsigned*/ short buttonArg, final EventTarget relatedTargetArg, final String modifiersListArg, final DataTransfer dataTransferArg);
-  }
-
-  public native interface DataTransfer {
-//             attribute 
-	  native String dropEffect{}
-//             attribute 
-	  native String effectAllowed{}
-//    readonly attribute 
-	  native DOMStringList types{}
-	  void clearData();
-	  void clearData(final /*optional*/ String format);
-	  void setData(final String format, final String data);
-	  String getData(final String format);
-	  void setDragImage(final Element image, final long x, final long y);
-	  void addElement(final Element element);
-  }
+//  public native interface DataTransfer {
+////             attribute 
+//	  native String dropEffect{}
+////             attribute 
+//	  native String effectAllowed{}
+////    readonly attribute 
+//	  native DOMStringList types{}
+//	  void clearData();
+//	  void clearData(final /*optional*/ String format);
+//	  void setData(final String format, final String data);
+//	  String getData(final String format);
+//	  void setDragImage(final Element image, final long x, final long y);
+//	  void addElement(final Element element);
+//  }
 
   public native interface UndoManager {
 //    readonly attribute unsigned 

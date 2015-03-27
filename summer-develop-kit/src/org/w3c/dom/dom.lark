@@ -1,6 +1,9 @@
 @Module
 package org.w3c.dom; 
 
+import org.w3c.event.EventTarget;
+import org.w3c.html.HTMLElement;
+
 //File: dom.idl
 
 //#ifndef _DOM_IDL_
@@ -71,6 +74,9 @@ public native interface DOMImplementation {
 }
 
 public native interface DocumentFragment extends Node {
+    //Selector API
+    native HTMLElement querySelector(String selectors);
+    native NodeList querySelectorAll(String selectors);
 }
 
 public native interface Node {
@@ -95,7 +101,6 @@ public native interface Node {
  	public native String nodeValue{}
      // throws DOMException on setting
      // throws DOMException on retrieval
-
  	// readonly attribute /*unsigned */
  	public native short nodeType{}
  	// readonly attribute 
@@ -115,6 +120,13 @@ public native interface Node {
  	// Modified in DOM Level 2:
  	// readonly attribute 
  	public native Document ownerDocument{}
+ 	/**
+ 	 * 
+ 	 * @param newChild
+ 	 * @param refChild
+ 	 * @return new Child
+ 	 * @throws DOMException
+ 	 */
  	public native Node insertBefore(final Node newChild, final Node refChild) throws DOMException;
  	public native Node replaceChild(final Node newChild, final Node oldChild) throws DOMException;
  	public native Node removeChild(final Node oldChild) throws DOMException;
@@ -194,6 +206,10 @@ public native interface Node {
     		}
     	}
     }
+    
+    //DOM 4
+//  attribute 
+	public native String textContent{&{}+;}
 }
 
 public interface NodeList {
@@ -331,7 +347,7 @@ public native interface ProcessingInstruction extends Node {
 
 }
 
-public native interface Document extends Node {
+public native interface Document extends Node, EventTarget {
 	// readonly attribute 
 	public native DocumentType doctype{}
 	// readonly attribute 
@@ -357,5 +373,11 @@ public native interface Document extends Node {
 	public native NodeList getElementsByTagNameNS(final String namespaceURI, final String localName);
 	// Introduced final DOM Level 2:
 	public native Element getElementById(final String elementId);
+	
+    //Selector API
+	public native  Element querySelector(String selectors);
+	public native  NodeList querySelectorAll(String selectors);
+    
+	public native Element elementFromPoint(final /*unsigned*/ long x, final /*unsigned*/ long y);
 }
 

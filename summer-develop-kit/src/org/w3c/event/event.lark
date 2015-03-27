@@ -1,8 +1,11 @@
 @Module
 package org.w3c.event;
-
+ 
 import org.w3c.dom.DOMException;
+import org.w3c.dom.DOMStringList;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.file.FileList;
 import org.w3c.views.AbstractView;
 //http://www.w3.org/TR/2009/WD-DOM-Level-3-Events-20090908/#events-keyboardevents
 //Introduced in DOM Level 2:
@@ -22,6 +25,7 @@ public native interface EventTarget {
 	                                        final boolean useCapture); 
 }
 
+public function void Callback();
 //[Callback=FunctionOnly, NoInterfaceObject]
 public function void EventHandler(final Event event);
 
@@ -44,6 +48,11 @@ public function void MutationNameEventHandler(final MutationNameEvent event);
 public function Object OnErrorEventHandler(String event1, String source, long lineno, long column, Object error);
 
 public function String OnBeforeUnloadEventHandler(Event event);
+
+public function void ProgressbarEventHandler(final ProgressEvent event);
+
+public function void DragEventHandler(final DragEvent event);
+
 
 //Introduced final DOM Level 2:
 public native interface Event {
@@ -196,7 +205,24 @@ public native interface MouseEvent extends UIEvent {
 	                                final short buttonArg, 
 	                                final EventTarget relatedTargetArg, 
 	                                final String modifiersListArg);
+	
+//	  readonly attribute 
+	public native long pageX{}
+//	  readonly attribute 
+	public native long pageY{}
+
+//	  readonly attribute 
+	public native long offsetX{}
+//	  readonly attribute 
+	public native long offsetY{}
+
+//	  readonly attribute 
+	public native long x{}
+//	  readonly attribute 
+	public native long y{}
 }
+
+
 
 // Introduced in DOM Level 3:
 public native interface MouseWheelEvent extends MouseEvent {
@@ -464,6 +490,53 @@ public native interface MutationNameEvent extends MutationEvent {
 		  final Node relatedNodeArg, 
 		  final String prevNamespaceURIArg, 
 		  final String prevNodeNameArg);
+}
+
+//[Constructor(DOMString type, optional ProgressEventInit eventInitDict)]
+public native interface ProgressEvent extends Event {
+//  readonly attribute 
+	public native boolean lengthComputable{}
+//  readonly attribute unsigned long 
+	public native long loaded{}
+//  readonly attribute unsigned long 
+	public native long total{}
+}
+
+//dictionary ProgressEventInit : EventInit {
+//  boolean lengthComputable;
+//  unsigned long long loaded;
+//  unsigned long long total;
+//};
+
+public native interface DragEvent extends MouseEvent {
+//	  readonly attribute 
+	public native DataTransfer dataTransfer{}
+
+	public native void initDragEvent(final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, 
+			final Object dummyArg, final long detailArg, 
+			final long screenXArg, final long screenYArg, final long clientXArg, 
+			final long clientYArg, final boolean ctrlKeyArg, final boolean altKeyArg, 
+			final boolean shiftKeyArg, final boolean metaKeyArg, final /*unsigned*/ short buttonArg, 
+			final EventTarget relatedTargetArg, final DataTransfer dataTransferArg);
+}
+
+public native interface DataTransfer {
+//    attribute DOM
+	public native String dropEffect{}
+//    attribute DOM
+	public native String effectAllowed{}
+
+//readonly attribute DOM
+	public native DOMStringList types{}
+	public native void clearData();
+	public native void clearData(final String format);
+	public native void setData(final String format, final String data);
+	public native String getData(final String format);
+//	readonly attribute 
+	public native FileList files{}
+
+	public native void setDragImage(final Element image, final long x, final long y);
+	public native void addElement(final Element element);
 }
 
 

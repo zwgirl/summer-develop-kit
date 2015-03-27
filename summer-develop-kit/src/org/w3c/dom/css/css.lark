@@ -107,7 +107,7 @@ public native interface CSSUnknownRule extends CSSRule {
 }
 
 // Introduced in DOM Level 2:
-public native interface CSSStyleDeclaration extends CSS2Properties, Transition, Animation{
+public native interface CSSStyleDeclaration extends CSS2Properties, Transition, Animation, Transform{
 // attribute 
 	native String cssText{}
  // throws DOMException) on setting
@@ -721,31 +721,31 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute
-	String voiceFamily{}
+	public native String voiceFamily{}
  // throws DOMException) on setting
 
 // attribute 
-	String volume{}
+	public native String volume{}
  // throws DOMException) on setting
 
 // attribute 
-	String whiteSpace{}
+	public native String whiteSpace{}
  // throws DOMException) on setting
 
 // attribute 
-	String widows{}
+	public native String widows{}
  // throws DOMException) on setting
 
 // attribute 
-	String width{}
+	public native String width{&;+;}
  // throws DOMException) on setting
 
 // attribute 
-	String wordSpacing{}
+	public native String wordSpacing{}
  // throws DOMException) on setting
 
 // attribute 
-	String zIndex{}
+	public native String zIndex{}
  // throws DOMException) on setting
 
 }
@@ -769,6 +769,16 @@ public native interface Animation {
 	public native String animationDirection{}
 	public native String animationFillMode{}
 	public native String animationPlayState{}
+}
+
+//Introduced in CSS 3
+public native interface Transform {
+	public native String transform{}
+	public native String transformOrigin{}
+	public native String transformStyle{}
+	public native String perspective{}
+	public native String perspectiveOrigin{}
+	public native String backfaceVisibility{}
 }
 
 // Introduced in DOM Level 2:

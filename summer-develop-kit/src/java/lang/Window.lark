@@ -1,8 +1,11 @@
 @Module
 package java.lang;
 
+import org.w3c.css.StyleSheet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.event.Callback;
 import org.w3c.event.Event;
 import org.w3c.event.EventException;
 import org.w3c.event.EventHandler;
@@ -10,6 +13,8 @@ import org.w3c.event.EventTarget;
 import org.w3c.event.OnBeforeUnloadEventHandler;
 import org.w3c.event.OnErrorEventHandler;
 import org.w3c.file.Blob;
+import org.w3c.html.HTMLDocument;
+import org.w3c.html.HTMLElement;
 
 /**
  * from javascript
@@ -54,7 +59,7 @@ public native interface Global {
 //	  [Replaceable] readonly attribute 
 	  public native Window self{}
 //	  [Unforgeable] readonly attribute 
-	  public native Document document{}
+	  public native HTMLDocument document{}
 //	           attribute String 
 	  public native String name{}
 //	  [PutForwards=href, Unforgeable] readonly attribute 
@@ -195,18 +200,18 @@ public native interface Global {
 	  public native String btoa(String btoa);
 	  public native String atob(String atob);
 	  
-	  public native long setTimeout(Function handler);
-	  public native long setTimeout(Function handler, long timeout);
-	  public native long setTimeout(Function handler, long timeout, Object... arguments);
+	  public native long setTimeout(Callback handler);
+	  public native long setTimeout(Callback handler, long timeout);
+	  public native long setTimeout(Callback handler, long timeout, Object... arguments);
 	  public native long setTimeout(String handler);
 	  public native long setTimeout(String handler, long timeout);
 	  public native long setTimeout(String handler, long timeout, Object... arguments);
 
 	  public native void clearTimeout(long handle);
 
-	  public native long setInterval(Function handler);
-	  public native long setInterval(Function handler, long timeout);
-	  public native long setInterval(Function handler, long timeout, Object... arguments);
+	  public native long setInterval(Callback handler);
+	  public native long setInterval(Callback handler, long timeout);
+	  public native long setInterval(Callback handler, long timeout, Object... arguments);
 
 	  public native long setInterval(String handler);
 	  public native long setInterval(String handler, long timeout);
@@ -218,7 +223,44 @@ public native interface Global {
 //	  readonly attribute 
 	  public native Storage sessionStorage{}
 	  public native Storage localStorage{}
+	  
+	  public native CSSStyleDeclaration getComputedStyle(HTMLElement element, String clazz);
+	  
+	  
+//	  readonly attribute 
+	  public native float innerWidth{}
+//		readonly attribute 
+	  public native float innerHeight{}
+//		readonly attribute 
+	  public native float outerWidth{}
+//		readonly attribute 
+	  public native float outerHeight{}
+//		readonly attribute 
+	  public native float pageXOffset{}
+//		readonly attribute 
+	  public native float pageYOffset{}
+//		readonly attribute 
+	  public native float screenX{}
+//		readonly attribute 
+	  public native float screenY{}
+//		readonly attribute 
+//	  public native Media media{}
+//		readonly attribute 
+	  public native Screen screen{}
 }
+////[NoInterfaceObject]
+//interface WindowView {
+//	readonly attribute float innerWidth;
+//	readonly attribute float innerHeight;
+//	readonly attribute float outerWidth;
+//	readonly attribute float outerHeight;
+//	readonly attribute float pageXOffset;
+//	readonly attribute float pageYOffset;
+//	readonly attribute float screenX;
+//	readonly attribute float screenY;
+//	readonly attribute Media media;
+//	readonly attribute Screen screen;
+//}
 
 ////[NoInterfaceObject]
 //public interface WindowBase64 {
@@ -288,18 +330,18 @@ public native interface ApplicationCache extends EventTarget {
       public native String atob(String atob);
       
       //WindowTimers
-      public native long setTimeout(Function handler);
-      public native long setTimeout(Function handler, long timeout);
-      public native long setTimeout(Function handler, long timeout, Object... arguments);
+      public native long setTimeout(Callback handler);
+      public native long setTimeout(Callback handler, long timeout);
+      public native long setTimeout(Callback handler, long timeout, Object... arguments);
       public native long setTimeout(String handler);
       public native long setTimeout(String handler, long timeout);
       public native long setTimeout(String handler, long timeout, Object... arguments);
       
       public native void clearTimeout(long handle);
       
-      public native long setInterval(Function handler);
-      public native long setInterval(Function handler, long timeout);
-      public native long setInterval(Function handler, long timeout, Object... arguments);
+      public native long setInterval(Callback handler);
+      public native long setInterval(Callback handler, long timeout);
+      public native long setInterval(Callback handler, long timeout, Object... arguments);
       
       public native long setInterval(String handler);
       public native long setInterval(String handler, long timeout);
@@ -725,7 +767,7 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 		public native void append(String name, String value);
 	}
 	
-	interface Storage {
+	public native interface Storage {
 //		readonly attribute unsigned 
 		public native long length{}
 		public native String key(/*unsigned */long index);
@@ -768,3 +810,126 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 //		public Storage storageArea{}
 	//}
 	
+	
+	public native class URL {
+		public native URL(String url);
+		public native URL(String url, String base/* = "about:blank"*/);
+
+		public native static String createObjectURL(Blob blob);
+	   	public native static String createFor(Blob blob);
+	   	public native static void revokeObjectURL(String url);
+	   	public native static String domainToASCII(String domain);
+	   	public native static String domainToUnicode(String domain);
+
+//	   	public native stringifier attribute USV
+	   	public native String href{}
+//		  readonly attribute USV
+	   	public native String origin{}
+
+//		           attribute USV
+	   	public native String protocol{}
+//		           attribute USV
+	   	public native String username{}
+//		           attribute USV
+	   	public native String password{}
+//		           attribute USV
+	   	public native String host{}
+//		           attribute USV
+	   	public native String hostname{}
+//		           attribute USV
+	   	public native String port{}
+//		           attribute USV
+	   	public native String pathname{}
+//		           attribute USV
+	   	public native String search{}
+//		           attribute URL
+	   	public native URLSearchParams searchParams{}
+//		           attribute USV
+	   	public native String hash{}
+	}
+//		URL implements URLUtils;
+//
+//		[NoInterfaceObject,
+//		 Exposed=(Window,Worker)]
+//		interface URLUtils {
+//		  stringifier attribute USVString href;
+//		  readonly attribute USVString origin;
+//
+//		           attribute USVString protocol;
+//		           attribute USVString username;
+//		           attribute USVString password;
+//		           attribute USVString host;
+//		           attribute USVString hostname;
+//		           attribute USVString port;
+//		           attribute USVString pathname;
+//		           attribute USVString search;
+//		           attribute URLSearchParams searchParams;
+//		           attribute USVString hash;
+//		};
+//
+//		[NoInterfaceObject,
+//		 Exposed=(Window,Worker)]
+//		interface URLUtilsReadOnly {
+//		  stringifier readonly attribute USVString href;
+//		  readonly attribute USVString origin;
+//
+//		  readonly attribute USVString protocol;
+//		  readonly attribute USVString host;
+//		  readonly attribute USVString hostname;
+//		  readonly attribute USVString port;
+//		  readonly attribute USVString pathname;
+//		  readonly attribute USVString search;
+//		  readonly attribute USVString hash;
+//		};
+	
+//	[Constructor(optional (USVString or URLSearchParams) init = ""), Exposed=(Window,Worker)]
+	public native class URLSearchParams {
+		public native URLSearchParams(String init);
+		public native URLSearchParams(URLSearchParams init);
+		public native URLSearchParams();
+		public native void append(String name, String value);
+		public native void delete(String name);
+		public native String get(String name);
+		public native Array<String> getAll(String name);
+		public native boolean has(String name);
+		public native void set(String name, String value);
+//		public native iterable<USVString, USVString>;
+//		public native stringifier;   //equal toString
+	}
+	
+	public native interface Screen {
+//		readonly attribute 
+		public native float availWidth{}
+//		readonly attribute 
+		public native float availHeight{}
+//		readonly attribute 
+		public native float width{}
+//		readonly attribute 
+		public native float height{}
+//		readonly attribute 
+		public native float colorDepth{}
+//		readonly attribute 
+		public native float pixelDepth{}
+	}
+	
+//	interface ElementView {
+//		  TextRectangleList getClientRects();
+//		  TextRectangle getBoundingClientRect();
+//	
+//		  readonly attribute Element offsetParent;
+//		  readonly attribute float offsetTop;
+//		  readonly attribute float offsetLeft;
+//		  readonly attribute float offsetWidth;
+//		  readonly attribute float offsetHeight;
+//	
+//		           attribute float scrollTop;   // scroll on setting
+//		           attribute float scrollLeft;  // scroll on setting
+//		  readonly attribute float scrollWidth;
+//		  readonly attribute float scrollHeight;
+//	
+//		  readonly attribute float clientTop;
+//		  readonly attribute float clientLeft;
+//		  readonly attribute float clientWidth;
+//		  readonly attribute float clientHeight;
+//	}
+

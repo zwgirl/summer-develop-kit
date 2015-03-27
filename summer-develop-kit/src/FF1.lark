@@ -11,18 +11,18 @@ import org.w3c.event.MouseEventHandler;
 
 import java.util.*;
 public class FF1 implements INotifyPropertyChanged{ 
-	<html>    
-		<head>  
+	<html>
+		<head>
 		<meta httpEquiv="Content-Type" content="text/html;charset=utf-8" />
 			<script > 
 				   
 			</script> 
 			 
-			<style type="text/css">   
+			<style type="text/css"> 
 				.item:hover {
 				  animation: 1s rainbow infinite;
 				}
-			
+			 
 				@keyframes rainbow {
 				  0% { background-color: yellow; }
 				  100% { background: blue; }
@@ -112,7 +112,7 @@ public class FF1 implements INotifyPropertyChanged{
 		 	
 		 	<button value = "change" onclick = "click"> Test </button> 
 		 	</td>  
-		 	</tr> 
+		 	</tr>
 		 </tbody>
 		</table> 
 		
@@ -158,7 +158,7 @@ public class FF1 implements INotifyPropertyChanged{
 			 </fieldset>
 			 <p><label>Preferred delivery time: <input type="time" min="11:00" max="21:00" step="900" name="delivery"/></label></p>
 			 <p><label>Delivery instructions: <textarea name="comments"></textarea></label></p>
-			 <p><button>Submit order</button></p>
+			 <p><button>Submit order</button></p> 
 	</form>
 		
     <script>

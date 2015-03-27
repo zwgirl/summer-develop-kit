@@ -443,7 +443,8 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @param o object to be compared for equality with this map
      * @return <tt>true</tt> if the specified object is equal to this map
      */
-    public boolean equals(Object o) {
+    @SuppressWarnings("unchecked")
+	public boolean equals(Object o) {
         if (o == this)
             return true;
 
@@ -540,7 +541,8 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      *
      * @return a shallow copy of this map
      */
-    protected Object clone() throws CloneNotSupportedException {
+    @SuppressWarnings("unchecked")
+	protected Object clone() throws CloneNotSupportedException {
         AbstractMap<K,V> result = (AbstractMap<K,V>)super.clone();
         result.keySet = null;
         result.values = null;
@@ -656,7 +658,8 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *         entry
          * @see    #hashCode
          */
-        public boolean equals(Object o) {
+        @SuppressWarnings("rawtypes")
+		public boolean equals(Object o) {
             if (!(o instanceof Map.Entry))
                 return false;
             Map.Entry e = (Map.Entry)o;
@@ -787,10 +790,11 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          *         entry
          * @see    #hashCode
          */
-        public boolean equals(Object o) {
+        @SuppressWarnings("unchecked")
+		public boolean equals(Object o) {
             if (!(o instanceof Map.Entry))
                 return false;
-            Map.Entry e = (Map.Entry)o;
+            Map.Entry<K,V> e = (Map.Entry<K,V>)o;
             return eq(key, e.getKey()) && eq(value, e.getValue());
         }
 

@@ -45,7 +45,7 @@ public final class Class<T> implements java.io.Serializable {
 	}
 	public boolean isAssignableFrom(Class<?> cls){
 		if (cls == null)
-			return false;
+			return false; 
 
 		if (this == cls)
 			return true; 
@@ -648,7 +648,8 @@ public native class Number {
 	 * A value greater than the largest number that can be represented in JavaScript. 	JavaScript displays POSITIVE_INFINITY values as infinity.
 	 */
 	public native static Number POSITIVE_INFINITY{}
-
+	
+	public native static Number EPSILON{}
 	
 	public native String toString(int radix);
 	
@@ -1262,8 +1263,8 @@ public abstract class Template {
 
 public abstract class ItemTemplate {
 	public final Node create(Node parent, Object item){
-		Node root = createRoot(parent);
-		root.dataContext = new DataContext(item);
+		Node root = createRoot(parent, item);
+//		root.dataContext = new DataContext(item);
 		createChild(root);
 		return root;
 	}
@@ -1272,7 +1273,7 @@ public abstract class ItemTemplate {
 		throw new Error(0, "illegal call!");
 	}
 	
-	public Node createRoot(Node parent){
+	public Node createRoot(Node parent, Object item){
 		throw new Error(0, "illegal call!");
 	}
 }

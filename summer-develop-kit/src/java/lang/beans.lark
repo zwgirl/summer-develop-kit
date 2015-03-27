@@ -9,7 +9,7 @@ package java.lang;
 public function void PropertyChange(Object source, PropertyChangeEvent evt); 
  
 public interface PropertyChangeListener{ 
-	void propertyChange(PropertyChangeEvent evt);
+	void propertyChange(Object source, PropertyChangeEvent evt);
 }
 
 public interface INotifyPropertyChanged { 

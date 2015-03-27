@@ -5,6 +5,7 @@ import org.w3c.event.Event;
 import org.w3c.event.EventException;
 import org.w3c.event.EventHandler;
 import org.w3c.event.EventTarget;
+import org.w3c.event.ProgressbarEventHandler;
 
 public native class File extends Blob {
 
@@ -18,7 +19,7 @@ public native class File extends Blob {
 	
 public native interface FileList {
 //    getter File? item(unsigned long index);
-	public native File this[long index];
+	public native File this[int index];
 //    readonly attribute unsigned 
 	public native long length{}
  }
@@ -102,7 +103,7 @@ public native class FileReader implements EventTarget {
   	//  attribute 
   	public native EventHandler onloadstart{} 
   	//  attribute 
-  	public native EventHandler onprogress{}
+  	public native ProgressbarEventHandler onprogress{}
   	//  attribute 
   	public native EventHandler onload{}
   	//  attribute 

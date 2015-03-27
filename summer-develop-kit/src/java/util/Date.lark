@@ -2,7 +2,7 @@ package java.util;
 
 import java.lang.String;
 
-public class Date {
+public native class Date {
 	
 	public native Date();
 	public native Date(int milliseconds);
