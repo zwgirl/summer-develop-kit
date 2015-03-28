@@ -590,7 +590,7 @@ public class ItemsControl {
 		}
 	}
 	
-	protected CollectionChanged<Object> onCollectionChanged = (CollectionChangedEvent<Object> event) ->{
+	protected CollectionChanged<Object> onCollectionChanged = (Object sender, CollectionChangedEvent<Object> event) ->{
 		switch(event.Action){
 		case Add:
 			Array<?> items = event.NewItems;
@@ -600,8 +600,13 @@ public class ItemsControl {
 				this.nodesMap.set(item, root);
 			}
 			break;
+		case Reset:
+			nodesMap.forEach((Node node, Object key, Map<Object, Node> mapObj)->{
+				container.removeChild(node);
+				nodesMap.delete(key);
+			});
+			break;
 		case Remove:
-//			Array<?> items1 = event.NewItems;
 			for(Object item : event.OldItems){
 				Node child = nodesMap.get(item);
 				container.removeChild(child);
@@ -610,7 +615,7 @@ public class ItemsControl {
 			break;
 		case Replace:
 		case Move:
-		case Reset:
+			
 		}
 	};
 	

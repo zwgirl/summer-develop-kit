@@ -253,7 +253,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
-    public boolean addAll(int index, Collection<? extends E> c) {
+    public boolean addAllAt(int index, Collection<? extends E> c) {
         rangeCheckForAdd(index);
         boolean modified = false;
         for (E e : c) {
@@ -636,7 +636,7 @@ class SubList<E> extends AbstractList<E> {
     }
 
     public boolean addAll(Collection<? extends E> c) {
-        return addAll(_size, c);
+        return addAllAt(_size, c);
     }
 
     public boolean addAllAt(int index, Collection<? extends E> c) {
@@ -645,7 +645,7 @@ class SubList<E> extends AbstractList<E> {
         if (cSize==0)
             return false;
 
-        l.addAll(offset+index, c);
+        l.addAllAt(offset+index, c);
         _size += cSize;
         return true;
     }

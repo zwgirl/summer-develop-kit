@@ -17,12 +17,12 @@ public interface INotifyPropertyChanged {
 	void removePropertyChangeListener(String propName, PropertyChange handler);
 }
 
-public interface INotifyCollectionChanged<T> {
+public interface INotifyCollectionChanged<T> { 
 	public void addCollectionChangedListener(CollectionChanged<T> listener);
 	public void removeCollectionChangedListener(CollectionChanged<T> listener);
 } 
 
-public function void CollectionChanged<T>(CollectionChangedEvent<T> event);
+public function void CollectionChanged<T>(Object sender, CollectionChangedEvent<T> event);
 
 public enum CollectionChangedAction{
 	Add,

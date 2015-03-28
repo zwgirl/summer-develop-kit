@@ -90,6 +90,18 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
         onPropertyChanged(this, new PropertyChangeEvent(SIZE)); 
         onCollectionChanged3(CollectionChangedAction.Add, item, index); 
     } 
+    
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+    	return this.addAllAt(0, c);
+    }
+    
+    @Override
+    public boolean addAllAt(int index, Collection<? extends T> c) {
+    	boolean result = super.addAllAt(index, c);
+    	onCollectionChanged(new CollectionChangedEvent(CollectionChangedAction.Add, c.toArray(), index)); 
+    	return result;
+    }
 
     // Called by base class Collection&lt;T&gt; when an item is set in list;
     // raises a CollectionChanged event to any listeners.
@@ -130,7 +142,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     // or call <see cref="BlockReentrancy"/> to guard against reentrant collection changes.
     protected void onCollectionChanged(CollectionChangedEvent<T> e) {
     	this.collectionChangedListeners.forEach((CollectionChanged<T> callback, int index, Array<CollectionChanged<T>> array)->{
-    		callback(e);
+    		callback(this, e);
     	});
     } 
 

@@ -783,7 +783,7 @@ public class ArrayList<E> extends AbstractList<E>
         }
 
         public boolean addAll(Collection<? extends E> c) {
-            return addAll(this.size, c);
+            return addAllAt(this.size, c);
         }
 
         public boolean addAllAt(int index, Collection<? extends E> c) {
@@ -792,7 +792,7 @@ public class ArrayList<E> extends AbstractList<E>
             if (cSize==0)
                 return false;
 
-            parent.addAll(parentOffset + index, c);
+            parent.addAllAt(parentOffset + index, c);
             this._size += cSize;
             return true;
         }

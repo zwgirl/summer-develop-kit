@@ -19,15 +19,17 @@ public class DragDropDemo {
 		<body>
 			<!--Block target shapes from being dragged, handle dragover event by returning false-->
 			<div>
-			    <div id="emptyTri" ondragover="return false;">
+			    <div id="emptyTri" ondragover=function(){int i=0; String name="212121";} >  
 			        <img draggable="false" alt="empty triangle" src="images/emptyTriangle.png" />
 			    </div>
+			    <!--
 			    <div id="emptySqr" ondragover="return false;">
 			        <img draggable="false" alt="empty square" src="images/emptySquare.png" />
 			    </div>
 			    <div id="emptyCirc" ondragover="return false;">
 			        <img draggable="false" alt="empty circle" src="images/emptyCircle.png" />
 			    </div>
+			    -->
 			</div>
 		
 			<!--Set solid shapes to be draggable-->
