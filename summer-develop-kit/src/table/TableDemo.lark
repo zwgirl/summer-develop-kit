@@ -29,7 +29,7 @@ public class TableDemo implements INotifyPropertyChanged{
 		    </style>
 		</head>
 	
-		<body>
+		<body id=function(){}> 
 			<table >
 				<thead className="tabs" >
 					<td onclick="orderBy">
@@ -107,7 +107,7 @@ public class TableDemo implements INotifyPropertyChanged{
 		nextPage.add(new Person("11" + Math.random(), "张三1" + Math.random(), "山东高密", 65));
 		nextPage.add(new Person("21" + Math.random(), "张三11" + Math.random(), "山东高密1", 65));
 		nextPage.add(new Person("31" + Math.random(), "张三21" + Math.random(), "山东高密2", 65));
-		nextPage.add(new Person("41" + Math.random(), "张三31" + Math.random(), "山东高密2", 65));
+		nextPage.add(new Person("41" + Math.random(), "张三31" + Math.random(), "山东高密2", 65)); 
 		
 		if(persons != null){ 
 			persons.clear(); 

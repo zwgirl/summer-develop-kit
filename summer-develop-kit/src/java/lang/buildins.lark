@@ -1,15 +1,14 @@
 @Module 
 package java.lang; 
 
-import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
 import org.w3c.dom.Node;
 import org.w3c.html.HTMLElement;
  
-public final class Class<T> implements java.io.Serializable {
-	private static final long serialVersionUID = 1L;
+public final class Class<T> {
   
 	public static final int CLASS = 0x1;
 	public static final int INTERFACE = 0x2;
@@ -304,15 +303,13 @@ public native class Object {
   }
 }
 
-public abstract class Throwable implements Serializable {
-	private static final long serialVersionUID = 1L;
+public abstract class Throwable {
     public String message{}
     public String description{};
 
 }
 
 public native class Error extends Throwable{
-	private static final long serialVersionUID = 1L;
 
 	public native Error();
 	
@@ -970,7 +967,6 @@ public class Integer extends Number{
  * @since   JDK1.0
  */
 public class Exception extends Throwable {
-    static final long serialVersionUID = -3387516993124229948L;
     private String _message;
 
     /**
@@ -1020,7 +1016,6 @@ public class Exception extends Throwable {
  * @since   JDK1.0
  */
 public class RuntimeException extends Exception {
-    static final long serialVersionUID = -7034897190745766939L;
 
     /** Constructs a new runtime exception with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be
@@ -1343,3 +1338,403 @@ public function R Operator<T, R> (T t);
 public function T UnaryOperator<T> (T t);
 
 public function void Consumer<T>(T t);
+
+/**
+ * This is the common base class of all Java language enumeration types.
+ *
+ * @author  Josh Bloch
+ * @author  Neal Gafter
+ * @version %I%, %G%
+ * @since   1.5
+ */ 
+public abstract class Enum<E extends Enum<E>>
+        implements Comparable<E> { 
+	/**
+     * The name of this enum constant, as declared in the enum declaration.
+     * Most programmers should use the {@link #toString} method rather than
+     * accessing this field.
+     */ 
+    private final String _name; 
+ 
+    /**
+     * Returns the name of this enum constant, exactly as declared in its
+     * enum declaration.
+     * 
+     * <b>Most programmers should use the {@link #toString} method in
+     * preference to this one, as the toString method may return
+     * a more user-friendly name.</b>  This method is designed primarily for
+     * use in specialized situations where correctness depends on getting the
+     * exact name, which will not vary from release to release.
+     *
+     * @return the name of this enum constant
+     */ 
+    public final String name { 
+    	&{return _name;}
+    } 
+ 
+    /**
+     * The ordinal of this enumeration constant (its position
+     * in the enum declaration, where the initial constant is assigned
+     * an ordinal of zero).
+     * 
+     * Most programmers will have no use for this field.  It is designed
+     * for use by sophisticated enum-based data structures, such as
+     * {@link java.util.EnumSet} and {@link java.util.EnumMap}.
+     */ 
+    private final int _ordinal; 
+ 
+    /**
+     * Returns the ordinal of this enumeration constant (its position
+     * in its enum declaration, where the initial constant is assigned
+     * an ordinal of zero).
+     * 
+     * Most programmers will have no use for this method.  It is
+     * designed for use by sophisticated enum-based data structures, such
+     * as {@link java.util.EnumSet} and {@link java.util.EnumMap}.
+     *
+     * @return the ordinal of this enumeration constant
+     */ 
+    public final int ordinal { 
+    	&{return _ordinal; }
+    } 
+ 
+    /**
+     * Sole constructor.  Programmers cannot invoke this constructor.
+     * It is for use by code emitted by the compiler in response to
+     * enum type declarations.
+     *
+     * @param name - The name of this enum constant, which is the identifier
+     *               used to declare it.
+     * @param ordinal - The ordinal of this enumeration constant (its position
+     *         in the enum declaration, where the initial constant is assigned
+     *         an ordinal of zero).
+     */ 
+    protected Enum(String name, int ordinal) { 
+	    this._name = name; 
+	    this._ordinal = ordinal; 
+    } 
+ 
+    /**
+     * Returns the name of this enum constant, as contained in the
+     * declaration.  This method may be overridden, though it typically
+     * isn't necessary or desirable.  An enum type should override this
+     * method when a more "programmer-friendly" string form exists.
+     *
+     * @return the name of this enum constant
+     */ 
+    public String toString() { 
+    	return name; 
+    } 
+ 
+    /**
+     * Returns true if the specified object is equal to this
+     * enum constant.
+     *
+     * @param other the object to be compared for equality with this object.
+     * @return  true if the specified object is equal to this
+     *          enum constant.
+     */ 
+    public final boolean equals(Object other) {  
+        return this===other; 
+    } 
+ 
+    /**
+     * Returns a hash code for this enum constant.
+     *
+     * @return a hash code for this enum constant.
+     */ 
+    public final int hashCode() { 
+        return super.hashCode(); 
+    } 
+ 
+    /**
+     * Throws CloneNotSupportedException.  This guarantees that enums
+     * are never cloned, which is necessary to preserve their "singleton"
+     * status.
+     *
+     * @return (never returns)
+     */ 
+    protected final Object clone() throws CloneNotSupportedException { 
+    throw new CloneNotSupportedException(); 
+    } 
+ 
+    /**
+     * Compares this enum with the specified object for order.  Returns a
+     * negative integer, zero, or a positive integer as this object is less
+     * than, equal to, or greater than the specified object.
+     * 
+     * Enum constants are only comparable to other enum constants of the
+     * same enum type.  The natural order implemented by this
+     * method is the order in which the constants are declared.
+     */ 
+    public final int compareTo(E o) { 
+	    Enum other = (Enum)o; 
+	    Enum self = this; 
+	    if (self.getClass() != other.getClass() && // optimization 
+	            self.getDeclaringClass() != other.getDeclaringClass()) 
+	        throw new Error(); 
+	    return self.ordinal - other.ordinal; 
+    } 
+ 
+    /**
+     * Returns the Class object corresponding to this enum constant's
+     * enum type.  Two enum constants e1 and  e2 are of the
+     * same enum type if and only if
+     *   e1.getDeclaringClass() == e2.getDeclaringClass().
+     * (The value returned by this method may differ from the one returned
+     * by the {@link Object#getClass} method for enum constants with
+     * constant-specific class bodies.)
+     *
+     * @return the Class object corresponding to this enum constant's
+     *     enum type
+     */ 
+    public final Class<E> getDeclaringClass() { 
+	    Class clazz = getClass(); 
+	    Class zuper = clazz.superClass; 
+	    return (zuper == Enum.class) ? clazz : zuper; 
+    } 
+} 
+
+/**
+ * Thrown to indicate that a method has been passed an illegal or
+ * inappropriate argument.
+ *
+ * @author  unascribed
+ * @since   JDK1.0
+ */
+public
+class IllegalArgumentException extends RuntimeException {
+    /**
+     * Constructs an <code>IllegalArgumentException</code> with no
+     * detail message.
+     */
+    public IllegalArgumentException() {
+        super();
+    }
+
+    /**
+     * Constructs an <code>IllegalArgumentException</code> with the
+     * specified detail message.
+     *
+     * @param   s   the detail message.
+     */
+    public IllegalArgumentException(String s) {
+        super(s);
+    }
+}
+
+/**
+ * Signals that a method has been invoked at an illegal or
+ * inappropriate time.  In other words, the Java environment or
+ * Java application is not in an appropriate state for the requested
+ * operation.
+ *
+ * @author  Jonni Kanerva
+ * @since   JDK1.1
+ */
+public class IllegalStateException extends RuntimeException {
+    /**
+     * Constructs an IllegalStateException with no detail message.
+     * A detail message is a String that describes this particular exception.
+     */
+    public IllegalStateException() {
+        super();
+    }
+
+    /**
+     * Constructs an IllegalStateException with the specified detail
+     * message.  A detail message is a String that describes this particular
+     * exception.
+     *
+     * @param s the String that contains a detailed message
+     */
+    public IllegalStateException(String s) {
+        super(s);
+    }
+}
+
+/**
+ * Thrown to indicate that the requested operation is not supported.<p>
+ *
+ * This class is a member of the
+ * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * Java Collections Framework</a>.
+ *
+ * @author  Josh Bloch
+ * @since   1.2
+ */
+public class UnsupportedOperationException extends RuntimeException {
+    /**
+     * Constructs an UnsupportedOperationException with no detail message.
+     */
+    public UnsupportedOperationException() {
+    }
+
+    /**
+     * Constructs an UnsupportedOperationException with the specified
+     * detail message.
+     *
+     * @param message the detail message
+     */
+    public UnsupportedOperationException(String message) {
+        super(message);
+    }
+}
+
+/**
+ * This interface imposes a total ordering on the objects of each class that
+ * implements it.  This ordering is referred to as the class's <i>natural
+ * ordering</i>, and the class's <tt>compareTo</tt> method is referred to as
+ * its <i>natural comparison method</i>.<p>
+ *
+ * Lists (and arrays) of objects that implement this interface can be sorted
+ * automatically by {@link Collections#sort(List) Collections.sort} (and
+ * {@link Arrays#sort(Object[]) Arrays.sort}).  Objects that implement this
+ * interface can be used as keys in a {@linkplain SortedMap sorted map} or as
+ * elements in a {@linkplain SortedSet sorted set}, without the need to
+ * specify a {@linkplain Comparator comparator}.<p>
+ *
+ * The natural ordering for a class <tt>C</tt> is said to be <i>consistent
+ * with equals</i> if and only if <tt>e1.compareTo(e2) == 0</tt> has
+ * the same boolean value as <tt>e1.equals(e2)</tt> for every
+ * <tt>e1</tt> and <tt>e2</tt> of class <tt>C</tt>.  Note that <tt>null</tt>
+ * is not an instance of any class, and <tt>e.compareTo(null)</tt> should
+ * throw a <tt>NullPointerException</tt> even though <tt>e.equals(null)</tt>
+ * returns <tt>false</tt>.<p>
+ *
+ * It is strongly recommended (though not required) that natural orderings be
+ * consistent with equals.  This is so because sorted sets (and sorted maps)
+ * without explicit comparators behave "strangely" when they are used with
+ * elements (or keys) whose natural ordering is inconsistent with equals.  In
+ * particular, such a sorted set (or sorted map) violates the general contract
+ * for set (or map), which is defined in terms of the <tt>equals</tt>
+ * method.<p>
+ *
+ * For example, if one adds two keys <tt>a</tt> and <tt>b</tt> such that
+ * <tt>(!a.equals(b) && a.compareTo(b) == 0)</tt> to a sorted
+ * set that does not use an explicit comparator, the second <tt>add</tt>
+ * operation returns false (and the size of the sorted set does not increase)
+ * because <tt>a</tt> and <tt>b</tt> are equivalent from the sorted set's
+ * perspective.<p>
+ *
+ * Virtually all Java core classes that implement <tt>Comparable</tt> have natural
+ * orderings that are consistent with equals.  One exception is
+ * <tt>java.math.BigDecimal</tt>, whose natural ordering equates
+ * <tt>BigDecimal</tt> objects with equal values and different precisions
+ * (such as 4.0 and 4.00).<p>
+ *
+ * For the mathematically inclined, the <i>relation</i> that defines
+ * the natural ordering on a given class C is:<pre>
+ *       {(x, y) such that x.compareTo(y) &lt;= 0}.
+ * </pre> The <i>quotient</i> for this total order is: <pre>
+ *       {(x, y) such that x.compareTo(y) == 0}.
+ * </pre>
+ *
+ * It follows immediately from the contract for <tt>compareTo</tt> that the
+ * quotient is an <i>equivalence relation</i> on <tt>C</tt>, and that the
+ * natural ordering is a <i>total order</i> on <tt>C</tt>.  When we say that a
+ * class's natural ordering is <i>consistent with equals</i>, we mean that the
+ * quotient for the natural ordering is the equivalence relation defined by
+ * the class's {@link Object#equals(Object) equals(Object)} method:<pre>
+ *     {(x, y) such that x.equals(y)}. </pre><p>
+ *
+ * This interface is a member of the
+ * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * Java Collections Framework</a>.
+ *
+ * @param <T> the type of objects that this object may be compared to
+ *
+ * @author  Josh Bloch
+ * @see java.util.Comparator
+ * @since 1.2
+ */
+@FunctionalInterface
+public interface Comparable<T> {
+    /**
+     * Compares this object with the specified object for order.  Returns a
+     * negative integer, zero, or a positive integer as this object is less
+     * than, equal to, or greater than the specified object.
+     *
+     * <p>The implementor must ensure <tt>sgn(x.compareTo(y)) ==
+     * -sgn(y.compareTo(x))</tt> for all <tt>x</tt> and <tt>y</tt>.  (This
+     * implies that <tt>x.compareTo(y)</tt> must throw an exception iff
+     * <tt>y.compareTo(x)</tt> throws an exception.)
+     *
+     * <p>The implementor must also ensure that the relation is transitive:
+     * <tt>(x.compareTo(y)&gt;0 &amp;&amp; y.compareTo(z)&gt;0)</tt> implies
+     * <tt>x.compareTo(z)&gt;0</tt>.
+     *
+     * <p>Finally, the implementor must ensure that <tt>x.compareTo(y)==0</tt>
+     * implies that <tt>sgn(x.compareTo(z)) == sgn(y.compareTo(z))</tt>, for
+     * all <tt>z</tt>.
+     *
+     * <p>It is strongly recommended, but <i>not</i> strictly required that
+     * <tt>(x.compareTo(y)==0) == (x.equals(y))</tt>.  Generally speaking, any
+     * class that implements the <tt>Comparable</tt> interface and violates
+     * this condition should clearly indicate this fact.  The recommended
+     * language is "Note: this class has a natural ordering that is
+     * inconsistent with equals."
+     *
+     * <p>In the foregoing description, the notation
+     * <tt>sgn(</tt><i>expression</i><tt>)</tt> designates the mathematical
+     * <i>signum</i> function, which is defined to return one of <tt>-1</tt>,
+     * <tt>0</tt>, or <tt>1</tt> according to whether the value of
+     * <i>expression</i> is negative, zero or positive.
+     *
+     * @param   o the object to be compared.
+     * @return  a negative integer, zero, or a positive integer as this object
+     *          is less than, equal to, or greater than the specified object.
+     *
+     * @throws NullPointerException if the specified object is null
+     * @throws ClassCastException if the specified object's type prevents it
+     *         from being compared to this object.
+     */
+    public int compareTo(T o);
+}
+
+/**
+ * A class implements the <code>Cloneable</code> interface to
+ * indicate to the {@link java.lang.Object#clone()} method that it
+ * is legal for that method to make a
+ * field-for-field copy of instances of that class.
+ * <p>
+ * Invoking Object's clone method on an instance that does not implement the
+ * <code>Cloneable</code> interface results in the exception
+ * <code>CloneNotSupportedException</code> being thrown.
+ * <p>
+ * By convention, classes that implement this interface should override
+ * <tt>Object.clone</tt> (which is protected) with a public method.
+ * See {@link java.lang.Object#clone()} for details on overriding this
+ * method.
+ * <p>
+ * Note that this interface does <i>not</i> contain the <tt>clone</tt> method.
+ * Therefore, it is not possible to clone an object merely by virtue of the
+ * fact that it implements this interface.  Even if the clone method is invoked
+ * reflectively, there is no guarantee that it will succeed.
+ *
+ * @author  unascribed
+ * @see     java.lang.CloneNotSupportedException
+ * @see     java.lang.Object#clone()
+ * @since   JDK1.0
+ */
+public interface Cloneable {
+}
+
+public class JSON {
+	public native static Object parse(String text);
+
+	public native static Object parse(String text, Function reviver);
+
+	public native static String stringify(Object value);
+
+	public native static String stringify(Object value, Function replacer);
+
+	public native static String stringify(Object value, Function replacer,
+			String space);
+
+	public native static String stringify(Object value, Array<String> replacer);
+
+	public native static String stringify(Object value, Array<String> replacer,
+			String space);
+
+}

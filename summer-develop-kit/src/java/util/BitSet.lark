@@ -62,7 +62,7 @@ import java.util.stream.StreamSupport;
  * @author  Martin Buchholz
  * @since   JDK1.0
  */
-public class BitSet implements Cloneable, java.io.Serializable {
+public class BitSet implements Cloneable {
     /*
      * BitSets are packed into arrays of "words."  Currently a word is
      * a long, which consists of 64 bits, requiring 6 address bits.
