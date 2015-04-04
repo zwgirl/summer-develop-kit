@@ -167,12 +167,12 @@ public final class BindingExpression {
 						_target[_targetProperty][_targetProperty1] = _target.dataContext.dataItem;
 					}
 				} else {
-					if(_targetProperty1 == null){
+		 			if(_targetProperty1 == null){
 						_target[_targetProperty] = null;
 					} else {
 						_target[_targetProperty][_targetProperty1] = null;
 					}
-				}
+				}  
 			}
 		} else {
 			if(_target.dataContext.dataItem != null){
@@ -180,7 +180,9 @@ public final class BindingExpression {
 					_binding.callback(_target, _targetProperty, _targetProperty1, _target.dataContext.dataItem[_binding.property]);
 				} else {
 					if(_targetProperty1 == null){
-						_target[_targetProperty] = _target.dataContext.dataItem[_binding.property];
+						if(_target[_targetProperty] !== _target.dataContext.dataItem[_binding.property]){
+							_target[_targetProperty] = _target.dataContext.dataItem[_binding.property];
+						}
 					} else {
 						_target[_targetProperty][_targetProperty1] = _target.dataContext.dataItem[_binding.property];
 					}

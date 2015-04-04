@@ -159,7 +159,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native HTMLCollection links{}
 //    readonly attribute 
 	  native HTMLCollection forms{}
-//    readonly attribute 
+//    readonly attribute  
 	  native HTMLCollection anchors{}
 //    readonly attribute 
 	  native HTMLCollection scripts{}

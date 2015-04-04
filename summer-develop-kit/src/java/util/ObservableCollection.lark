@@ -102,6 +102,13 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     	onCollectionChanged(new CollectionChangedEvent(CollectionChangedAction.Add, c.toArray(), index)); 
     	return result;
     }
+    
+    @Override
+    public boolean removeAll(Collection<?> c) {
+    	boolean result = super.removeAll(c);
+    	onCollectionChanged(new CollectionChangedEvent(CollectionChangedAction.Remove, c.toArray(), 0)); 
+    	return result;
+    }
 
     // Called by base class Collection&lt;T&gt; when an item is set in list;
     // raises a CollectionChanged event to any listeners.

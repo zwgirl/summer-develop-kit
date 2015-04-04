@@ -9,7 +9,7 @@ import org.w3c.html.HTMLElement;
 //#ifndef _DOM_IDL_
 //#define _DOM_IDL_
 //
-//#pragma prefix "w3c.org" 
+//#pragma prefix "w3c.org"  
 //module dom
 //{
 
@@ -319,14 +319,14 @@ public interface DocumentType extends Node {
 	public native String internalSubset{}
 }
 
-public native interface Notation extends Node {
+public interface Notation extends Node {
 	// readonly attribute 
 	public native String publicId{}
 	// readonly attribute 
 	public native String systemId{}
 }
 
-public native interface Entity extends Node {
+public interface Entity extends Node {
 	// readonly attribute 
 	public native String publicId{}
 	// readonly attribute 
@@ -335,7 +335,7 @@ public native interface Entity extends Node {
 	public native String notationName{}
 }
 
-public native interface EntityReference extends Node {
+public interface EntityReference extends Node {
 }
 
 public native interface ProcessingInstruction extends Node {
