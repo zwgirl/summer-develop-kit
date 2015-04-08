@@ -29,6 +29,8 @@ public function void Callback();
 //[Callback=FunctionOnly, NoInterfaceObject]
 public function void EventHandler(final Event event);
 
+public function void PopupStateHandler(final PopStateEvent event);
+
 public function void UIEventHandler(final UIEvent event);
 
 public function void MouseEventHandler(final MouseEvent event);
@@ -98,6 +100,10 @@ public native interface Event {
                           final boolean cancelableArg);
 }
 
+public native interface PopStateEvent extends Event{
+	public native Object state{}
+}
+
 //Introduced final DOM Level 2:
 public class EventException extends Exception{
 	/*unsigned*/ short code{}
@@ -106,6 +112,27 @@ public class EventException extends Exception{
 //	const /*unsigned*/ 
 	public static final short UNSPECIFIED_EVENT_TYPE_ERR = 0;
 }
+
+public native interface ErrorEvent extends Event {
+//	  readonly attribute 
+	public native String message{}
+//	  readonly attribute 
+	public native String filename{}
+//	   readonly attribute unsigned 
+	public native long lineno{}
+//	  readonly attribute unsigned 
+	public native long colno{}
+//	  readonly attribute 
+	public native Object error{}
+	}
+
+//	dictionary ErrorEventInit : EventInit {
+//	  DOMString message;
+//	  DOMString filename;
+//	  unsigned long lineno;
+//	  unsigned long colno;
+//	  any error;
+//	};
 
 //Introduced in DOM Level 3:
 interface CustomEvent extends Event {

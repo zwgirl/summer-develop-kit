@@ -12,6 +12,7 @@ import org.w3c.event.EventHandler;
 import org.w3c.event.EventTarget;
 import org.w3c.event.OnBeforeUnloadEventHandler;
 import org.w3c.event.OnErrorEventHandler;
+import org.w3c.event.PopupStateHandler;
 import org.w3c.file.Blob;
 import org.w3c.html.HTMLDocument;
 import org.w3c.html.HTMLElement;
@@ -191,7 +192,7 @@ public native interface Global {
 	  public native EventHandler ononline{}
 	  public native EventHandler onpagehide{}
 	  public native EventHandler onpageshow{}
-	  public native EventHandler onpopstate{}
+	  public native PopupStateHandler onpopstate{}
 	  public native EventHandler onstorage{}
 	  public native EventHandler onunload{}
 
