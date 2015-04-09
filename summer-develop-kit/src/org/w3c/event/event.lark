@@ -27,33 +27,33 @@ public native interface EventTarget {
 
 public function void Callback();
 //[Callback=FunctionOnly, NoInterfaceObject]
-public function void EventHandler(final Event event);
+public function Object EventHandler(final Event event);
 
-public function void PopupStateHandler(final PopStateEvent event);
+public function Object PopupStateHandler(final PopStateEvent event);
 
-public function void UIEventHandler(final UIEvent event);
+public function Object UIEventHandler(final UIEvent event);
 
-public function void MouseEventHandler(final MouseEvent event);
+public function Object MouseEventHandler(final MouseEvent event);
 
-public function void KeyboardEventHandler(final KeyboardEvent event);
+public function Object KeyboardEventHandler(final KeyboardEvent event);
 
-public function void MouseWheelEventHandler(final MouseWheelEvent event);
+public function Object MouseWheelEventHandler(final MouseWheelEvent event);
 
-public function void WheelEventHandler(final WheelEvent event);
+public function Object WheelEventHandler(final WheelEvent event);
 
-public function void TextEventHandler(final TextEvent event);
+public function Object TextEventHandler(final TextEvent event);
 
-public function void MutationEventHandler(final MutationEvent event);
+public function Object MutationEventHandler(final MutationEvent event);
 
-public function void MutationNameEventHandler(final MutationNameEvent event);
+public function Object MutationNameEventHandler(final MutationNameEvent event);
 
 public function Object OnErrorEventHandler(String event1, String source, long lineno, long column, Object error);
 
 public function String OnBeforeUnloadEventHandler(Event event);
 
-public function void ProgressbarEventHandler(final ProgressEvent event);
+public function Object ProgressbarEventHandler(final ProgressEvent event);
 
-public function void DragEventHandler(final DragEvent event);
+public function Object DragEventHandler(final DragEvent event);
 
 
 //Introduced final DOM Level 2:
