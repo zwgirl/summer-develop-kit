@@ -24,7 +24,6 @@ import org.w3c.html.HTMLElement;
 //public interface Element;
 
 public native class DOMException extends RuntimeException{
-	private static final long serialVersionUID = 1L;
 	// ExceptionCode
 	public native static final /*unsigned */short   INDEX_SIZE_ERR  = 1;
 	public native static final /*unsigned */short   DOMSTRING_SIZE_ERR  = 2;
@@ -151,21 +150,26 @@ public native interface Node {
  	// Introduced in DOM Level 2:
  	public native boolean hasAttributes();
  	
-    public Template template{ 
-    	&{ 
-    		return this["__template"] == undefined ? null : (Template)this["__template"];
-    	} 
-    	+{
-    		this["__template"] = value;
+    default public Binding getBinding(String prop1, String prop2){ 
+    	if(this["__bindings"] == null){
+    		return null;
     	}
+    	return (Binding) this["__bindings"][prop1 + "." + prop2];
     }
     
-    public ItemsConfig itemsConfig{
+    default public void setBinding(Binding binding, String prop1, String prop2){
+    	if(this["__bindings"] != null){
+    		this["__bindings"] = new Array<Binding>();
+    	}
+    	this["__bindings"][prop1 + "." + prop2] = binding;
+    }
+    
+    public TemplateSetting template{
     	&{
-    		return this["__itemsConfig"] == undefined ? null : (ItemsConfig)this["__itemsConfig"];
+    		return this["__template"] == undefined ? null : (TemplateSetting)this["__template"];
     	}
     	+{
-    		this["__itemsConfig"] = value; 
+    		this["__template"] = value; 
     	}
     }
     

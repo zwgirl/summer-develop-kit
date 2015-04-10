@@ -399,7 +399,14 @@ public native class Array<T> {
 	
 	public native Array<T> splice(int start, int deleteCount, T ... items);
 	
-	public native void unshift(T ... item);
+	/**
+	 * unshift() 方法将把它的参数插入 arrayObject 的头部，并将已经存在的元素顺次地移到较高的下标处，以便留出空间。该方法的第一个参数将成为数组的新元素 0，
+	 * 如果还有第二个参数，它将成为新的元素 1，以此类推。
+	 * 请注意，unshift() 方法不创建新的创建，而是直接修改原有的数组。
+	 * 返回值  数组的新长度。
+	 * @param item
+	 */
+	public native int unshift(T ... item);
 	
 	public native Array<T> valueOf();
 }
@@ -1241,52 +1248,6 @@ public function void MapCallback<K, V>(V value, K key, Map<K, V> mapObj);
 
 public function void SetCallback<T>(T value, int index, Array<T> array1); 
 
-/**
- * 
- * @author cym
- * 
- */
-public abstract class Template {
-	public final Node create(Node parent){
-		return doCreate(parent);
-	}
-	
-	protected Node doCreate(Node parent){
-		throw new Error(0, "illegal call!");
-	}
-}
-
-public abstract class ItemTemplate {
-	public final Node create(Node parent, Object item){
-		Node root = createRoot(parent, item);
-//		root.dataContext = new DataContext(item);
-		createChild(root);
-		return root;
-	}
-	
-	public Node createChild(Node parent){
-		throw new Error(0, "illegal call!");
-	}
-	
-	public Node createRoot(Node parent, Object item){
-		throw new Error(0, "illegal call!");
-	}
-}
-
-/**
- * 
- * @author cym
- *
- */
-public abstract class Component {
-	public void create(HTMLElement parent){
-		doCreate(parent);
-	}
-	
-	protected void doCreate(HTMLElement parent){
-		throw new Error(0, "illegal call!");
-	}
-}
 
 /**
  * Implementing this interface allows an object to be the target of

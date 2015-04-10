@@ -300,31 +300,31 @@ public class CollectionChangedEvent<T> // extends EventArgs
   } 
 
   /// The action that caused the event. 
-  public CollectionChangedAction Action
+  public CollectionChangedAction action
   {
       & { return _action; } 
   }
 
   /// The items affected by the change.
-  public Array<T> NewItems
+  public Array<T> newItems
   {
       & { return _newItems; }
   } 
 
   /// The old items affected by the change (for Replace events). 
-  public Array<T> OldItems 
+  public Array<T> oldItems 
   {
       & { return _oldItems; }
   }
 
   /// The index where the change occurred. 
-  public int NewStartingIndex
+  public int newStartingIndex
   { 
       & { return _newStartingIndex; }
   }
 
   /// The old index where the change occurred (for Move events).
-  public int OldStartingIndex 
+  public int oldStartingIndex 
   {
       & { return _oldStartingIndex; } 
   }
