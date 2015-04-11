@@ -428,10 +428,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      * {@code AbstractList}.  The subclass stores, in private fields, the
      * offset of the subList within the backing list, the size of the subList
      * (which can change over its lifetime), and the expected
-     * {@code modCount} value of the backing list.  There are two variants
-     * of the subclass, one of which implements {@code RandomAccess}.
-     * If this list implements {@code RandomAccess} the returned list will
-     * be an instance of the subclass that implements {@code RandomAccess}.
+     * {@code modCount} value of the backing list.  
      *
      * <p>The subclass's {@code set(int, E)}, {@code get(int)},
      * {@code add(int, E)}, {@code remove(int)}, {@code addAll(int,

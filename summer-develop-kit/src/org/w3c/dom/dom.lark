@@ -157,11 +157,19 @@ public native interface Node {
     	return (Binding) this["__bindings"][prop1 + "." + prop2];
     }
     
-    default public void setBinding(Binding binding, String prop1, String prop2){
+    default public void setBinding(String[] properNames, Binding binding){
     	if(this["__bindings"] != null){
     		this["__bindings"] = new Array<Binding>();
     	}
-    	this["__bindings"][prop1 + "." + prop2] = binding;
+    	Binding old = (Binding) (this["__bindings"][properNames.join(".")]);
+    	if(old === binding){
+    		return;
+    	}
+    	
+    	old.unBind();
+    	
+    	this["__bindings"][properNames.join(".")] = binding;
+    	binding.bind(this);
     }
     
     public TemplateSetting template{
@@ -169,7 +177,14 @@ public native interface Node {
     		return this["__template"] == undefined ? null : (TemplateSetting)this["__template"];
     	}
     	+{
+    		TemplateSetting old = (TemplateSetting)this["__template"];
+    		if(old == value){
+    			return;
+    		}
+    		
+    		old.undoTemplate();
     		this["__template"] = value; 
+    		value.applyTemplate();
     	}
     }
     

@@ -12,9 +12,118 @@ public interface PropertyChangeListener{
 	void propertyChange(Object source, PropertyChangeEvent evt);
 }
 
+public function boolean Predicate(Object source, String property);
 public interface INotifyPropertyChanged { 
-	void addPropertyChangeListener(String propName, PropertyChange handler);
-	void removePropertyChangeListener(String propName, PropertyChange handler);
+	
+	public default void notifyChanged(String property){
+		PropertyChangeEvent event = new PropertyChangeEvent(property);
+		PropertyChange[] _listeners = (PropertyChange[])this["__listeners"];
+		if(_listeners != null){
+			_listeners.forEach((PropertyChange h, int index, Array<PropertyChange> array)->{
+				h(this, event);
+			});
+		}
+		
+		Map<String, PropertyChange[]> _propListeners = (Map<String, PropertyChange[]>)this["__propListeners"];
+		if(_propListeners != null){
+			_listeners = _propListeners.get(property);
+			if(_listeners != null){
+				_listeners.forEach((PropertyChange h, int index, Array<PropertyChange> array)->{
+					h(this, event);
+				});
+			}
+		}
+
+		Object[][] _pListeners = (Object[][])this["__pListeners"];
+		if(_pListeners != null){
+			_pListeners.forEach((Object[] pp, int index, Object[][] array)->{
+				Predicate pd = (Predicate)pp[0];
+				if(pd(this, property)){
+					PropertyChange pc = (PropertyChange)pp[1];
+					pc(this, event);
+				}
+			}); 
+		}
+	}
+	
+	default void addPropertyChangeListener(PropertyChange handler){
+		PropertyChange[] _listeners = (PropertyChange[])this["__listeners"];
+		if(_listeners == null){
+			this["__listeners"] = new Array<PropertyChange>();
+		}
+		_listeners.push(handler);
+	}
+	
+	default void removePropertyChangeListener(PropertyChange handler){
+		PropertyChange[] _listeners = (PropertyChange[])this["__listeners"];
+		if(_listeners == null){
+			return;
+		}
+		_listeners.forEach((PropertyChange h, int index, PropertyChange[] array)->{
+			if(handler === h){
+				_listeners.splice(index, 1);
+				return;
+			}
+		}); 
+	}
+	
+	@SuppressWarnings("unchecked")
+	default void addPropertyChangeListener(String propName, PropertyChange handler){
+		Map<String, PropertyChange[]> _propertyListeners = (Map<String, PropertyChange[]>)this["__propListeners"];
+		if(_propertyListeners == null){
+			this["__propListeners"] = new Map<String, PropertyChange[]>();
+		}
+		PropertyChange[] listeners = _propertyListeners.get(propName);
+		if(listeners == null){
+			listeners = new Array<PropertyChange>();
+			_propertyListeners.set(propName, listeners);
+		}
+		listeners.push(handler);
+	}
+	
+	@SuppressWarnings("unchecked")
+	default void removePropertyChangeListener(String propName, PropertyChange handler){
+		Map<String, PropertyChange[]> _propertyListeners = (Map<String, PropertyChange[]>)this["__propListeners"];
+		if(_propertyListeners == null){
+			return;
+		}
+		
+		PropertyChange[] listeners = _propertyListeners.get(propName);
+		if(listeners == null){
+			return;
+		}
+		listeners.forEach((PropertyChange h, int index, PropertyChange[] array)->{
+			if(handler === h){
+				listeners.splice(index, 1);
+				if(listeners.length == 0){
+					_propertyListeners.delete(propName);
+				}
+				return;
+			}
+		}); 
+	}
+	
+	default void addPropertyChangeListener(Predicate predicate, PropertyChange handler){
+		Array<Array<Object>> _listeners = (Object[][])this["__pListeners"];
+		if(_listeners == null){
+			this["__pListeners"] = new Array<Array<Object>>();
+		}
+		_listeners.push(new Object[]{predicate, handler});
+	}
+	
+	@SuppressWarnings("unchecked")
+	default void removePropertyChangeListener(Predicate predicate, PropertyChange handler){
+		Object[][] _listeners = (Object[][])this["__pListeners"];
+		if(_listeners == null){
+			return;
+		}
+		_listeners.forEach((Object[] pp, int index, Object[][] array)->{
+			if(pp[0] === predicate && pp[1] == handler){
+				_listeners.splice(index, 1);
+				return;
+			}
+		}); 
+	}
 }
 
 public interface INotifyCollectionChanged<T> { 
