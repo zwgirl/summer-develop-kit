@@ -1025,7 +1025,4 @@ public class LinkedList<E>
             result[i++] = x.item;
         return result;
     }
-
-    private static final long serialVersionUID = 876323262645176354L;
-
 }

@@ -4,8 +4,6 @@ package java.util;
 import java.util.List;
 
 public class ObservableCollection<T> extends ArrayList<T> implements INotifyCollectionChanged<T>, List<T>, INotifyPropertyChanged { 
-	private static final long serialVersionUID = 1L;
-
 	public static final String SIZE = "size";
     
     private transient Object propertyChangeListeners = new Object(); // Map<String, Array<PropertyChange>>
@@ -47,7 +45,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     // raises a CollectionChanged event to any listeners. 
     public void clear() { 
         super.clear(); 
-        onPropertyChanged(this, new PropertyChangeEvent(SIZE));
+        notifyChanged(SIZE);
         onCollectionReset();
     } 
 
@@ -58,14 +56,14 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
 
         super.removeAt(index); 
 
-        onPropertyChanged(this, new PropertyChangeEvent(SIZE));
+        notifyChanged(SIZE);
         onCollectionChanged3(CollectionChangedAction.Remove, removedItem, index);
 		return removedItem;
     }
     
     public boolean remove(Object o){
     	if(super.remove(o)){
-            onPropertyChanged(this, new PropertyChangeEvent(SIZE));
+    		notifyChanged(SIZE);
             onCollectionChanged3(CollectionChangedAction.Remove, (T) o, -1);
             return true;
     	};
@@ -75,7 +73,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     public boolean add(T t){
     	if(super.add(t)){
     		int i = this.size;  
-            onPropertyChanged(this, new PropertyChangeEvent(SIZE));
+    		notifyChanged(SIZE);
             onCollectionChanged3(CollectionChangedAction.Add, t, -1);
     		return true;
     	}
@@ -87,7 +85,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     public void addAt(int index, T item){ 
         super.addAt(index, item);
 
-        onPropertyChanged(this, new PropertyChangeEvent(SIZE)); 
+        notifyChanged(SIZE);
         onCollectionChanged3(CollectionChangedAction.Add, item, index); 
     } 
     
@@ -103,7 +101,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     	return result;
     }
     
-    @Override
+	@Override
     public boolean removeAll(Collection<?> c) {
     	boolean result = super.removeAll(c);
     	onCollectionChanged(new CollectionChangedEvent(CollectionChangedAction.Remove, c.toArray(), 0)); 
@@ -116,7 +114,7 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
         T originalItem = this.get(index); 
         super.set(index, item);
 
-        onPropertyChanged(this, new PropertyChangeEvent(SIZE));
+        notifyChanged(SIZE);
         onCollectionChanged41(CollectionChangedAction.Replace, originalItem, item, index);
 		return originalItem;
     }
@@ -128,18 +126,6 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
         super.addAt(newIndex, removedItem);  
 
         onCollectionChanged4(CollectionChangedAction.Move, removedItem, newIndex, oldIndex);
-    }
-
-    // Raises a PropertyChanged event (per <see cref="INotifyPropertyChanged" />). 
-    protected void onPropertyChanged(Object source, PropertyChangeEvent e) { 
-        if (this.propertyChangeListeners != null) {
-        	PropertyChange[] propertyChanges = (PropertyChange[])this.propertyChangeListeners[e.propertyName];
-        	if(propertyChanges != null){
-            	propertyChanges.forEach((PropertyChange callback, int index, Array<PropertyChange> array)->{
-            		callback(source, e);
-            	});
-        	}
-        } 
     }
 
     // Raise CollectionChanged event to any listeners.

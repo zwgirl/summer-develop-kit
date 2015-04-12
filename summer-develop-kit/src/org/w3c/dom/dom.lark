@@ -166,10 +166,10 @@ public native interface Node {
     		return;
     	}
     	
-    	old.unBind();
+    	old.unInject();
     	
     	this["__bindings"][properNames.join(".")] = binding;
-    	binding.bind(this);
+    	binding.inject(this, properNames);
     }
     
     public TemplateSetting template{
@@ -206,10 +206,22 @@ public native interface Node {
     			return;
     		}
     		
-    		DataContext parentDc = parentNode.dataContext;
-    		
     		this["__dataContext"] = value;
-    		if(old != null && old.isRelative){
+    		
+    		switch(value.mode){
+    		case Ancestor:
+    			break;
+    		case Root:
+    			document.dataContext.addDependent(value);
+    			return;
+    		case Standalone:
+    			return;
+    		case Template:
+    			return;
+    		}
+    		
+    		DataContext parentDc = parentNode.dataContext;
+    		if(old != null){
     			parentDc.removeDependent(old);
     		}
     		
@@ -217,11 +229,9 @@ public native interface Node {
     			return;
     		}
     		
-    		if(value.isRelative){
-    			parentDc.addDependent(value);
-        		if(parentDc.dataItem != null){
-        			value.dataItem = parentDc.dataItem[value.property];
-        		}
+			parentDc.addDependent(value);
+    		if(parentDc.dataItem != null){
+    			value.dataItem = parentDc.dataItem[value.property];
     		}
     	}
     }

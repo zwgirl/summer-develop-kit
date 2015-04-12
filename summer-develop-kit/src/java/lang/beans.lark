@@ -441,15 +441,15 @@ public class CollectionChangedEvent<T> // extends EventArgs
 } 
 
 public class PropertyChangeEvent {
-    private final String _propertyName;
+    private final String _property;
     
-    public PropertyChangeEvent(String propertyName) {
-        this._propertyName = propertyName;
+    public PropertyChangeEvent(String property) {
+        this._property = property;
     }
 
-    public String propertyName{
+    public String property{
     	&{ 
-    		return this._propertyName; 
+    		return this._property; 
     	}
     }
 }

@@ -38,5 +38,4 @@ package java.lang.annotation;
  * @since 1.5
  */
 public class AnnotationTypeMismatchException extends RuntimeException {
-    private static final long serialVersionUID = 8125925355765570191L;
 }

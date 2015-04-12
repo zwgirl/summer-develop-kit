@@ -24,7 +24,6 @@
  */
 
 package java.util;
-import java.io.*;
 
 /**
  * Hash table based implementation of the <tt>Map</tt> interface.  This
@@ -1114,9 +1113,6 @@ public class HashMap<K,V>
 //            }
 //        }
 //    }
-//
-//    private static final long serialVersionUID = 362498820763181265L;
-//
 //    /**
 //     * Reconstitute the {@code HashMap} instance from a stream (i.e.,
 //     * deserialize it).

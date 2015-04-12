@@ -39,8 +39,6 @@ package java.lang.annotation;
  * @since 1.5
  */
 public class IncompleteAnnotationException extends RuntimeException {
-    private static final long serialVersionUID = 8445097402741811912L;
-
     private Class<? extends Annotation> annotationType;
     private String elementName;
 

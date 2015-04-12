@@ -1071,8 +1071,6 @@ public class RuntimeException extends Exception {
  * @since   JDK1.0
  */
 public class NullPointerException extends RuntimeException {
-    private static final long serialVersionUID = 5162710183389028792L;
-
     /**
      * Constructs a {@code NullPointerException} with no detail message.
      */
@@ -1118,11 +1116,6 @@ public class NullPointerException extends RuntimeException {
  */
 public class ClassNotFoundException extends RuntimeException {
     /**
-     * use serialVersionUID from JDK 1.1.X for interoperability
-     */
-     private static final long serialVersionUID = 9176873029745254542L;
-
-    /**
      * Constructs a <code>ClassNotFoundException</code> with no detail message.
      */
     public ClassNotFoundException() {
@@ -1157,8 +1150,6 @@ public class ClassNotFoundException extends RuntimeException {
  */
 
 public class CloneNotSupportedException extends Exception {
-    private static final long serialVersionUID = 5195511250079656443L;
-
     /**
      * Constructs a <code>CloneNotSupportedException</code> with no
      * detail message.
