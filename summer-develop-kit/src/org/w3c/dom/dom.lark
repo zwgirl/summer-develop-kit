@@ -170,7 +170,7 @@ public native interface Node {
     	
     	this["__bindings"][properNames.join(".")] = binding;
     	binding.inject(this, properNames);
-    }
+    } 
     
     public TemplateSetting template{
     	&{
@@ -233,6 +233,18 @@ public native interface Node {
     		if(parentDc.dataItem != null){
     			value.dataItem = parentDc.dataItem[value.property];
     		}
+    	}
+    }
+    
+    default public void reset(){
+    	NodeList children = this.childNodes;
+    	for(int i = 0, length = (int) children.length; i<length; i++){
+    		children[(long)i].reset();
+    	}
+    	
+    	DataContext dataContext = (DataContext)this["__dataContext"];
+    	if(dataContext != null){
+    		dataContext.reset();
     	}
     }
     

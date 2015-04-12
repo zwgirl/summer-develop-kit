@@ -8,7 +8,7 @@ import org.w3c.event.Event;
 import org.w3c.html.HTMLElement; 
   
 public interface MarkupExtension {
-	public void inject (Node target, String[] properties);
+	public void inject (Object target, String[] properties);
 }
 
 public enum UpdateSourceTrigger {
@@ -52,7 +52,7 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 	private String[] _targetProperties;
 	private UpdateTargetCallback _updateTargetCallback;
 	private UpdateSourceCallback _updateSourceCallback;
-	private Converter _converter;
+	private ConverterSetting _converterSettring;
 
 	public Binding(Object options) {
 		if(options["property"] != undefined){
@@ -76,7 +76,7 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		}
 		
 		if(options["converter"] != undefined){
-			this._converter = (Converter) options["converter"];
+			this._converterSettring = ((ConverterSetting) options["converter"]);
 		}
 	} 
 
@@ -124,17 +124,23 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		}
 	}
 	
-	public Converter converter{
+	public ConverterSetting converterSetting{
 		&{
-			return this._converter;
+			return this._converterSettring;
 		}
 		+{
-			this._converter = value;
+			this._converterSettring = value;
 		}
 	}
 	
-	public void inject(Node target, String[] targetProperties){
-		this._target = target;
+	public Converter converter{
+		&{
+			return this._converterSettring.converter;
+		}
+	}
+	
+	public void inject(Object target, String[] targetProperties){
+		this._target = (Node)target;
 		this._targetProperties = targetProperties;
 		
   		switch(this._mode){
@@ -145,7 +151,7 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
   		case OneWay:
   			_target.dataContext.addBinding(this);
   		case OneTime:
-  			updateTarget(target, targetProperties, target.dataContext.dataItem);
+  			updateTarget(_target, targetProperties, _target.dataContext.dataItem);
 		}
 	}
 	
@@ -184,8 +190,8 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 			tag = tag[property];
 		}
 		
-		if(this._converter != null){
-			data = this._converter.to(data);
+		if(this.converter != null){
+			data = this.converter.to(data);
 		}
 		
 		Object oldValue = tag[properties[length-1]];
@@ -240,7 +246,7 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 	
 	protected boolean updateSource(Event event){
 		Object value = getProperty((Node)event.target, this._targetProperties);
-		if(this._converter != null){
+		if(this.converter != null){
 			value = this.converter.from(value);
 		}
 		return this._target.dataContext.updateSource(this._property, value, this._updateSourceCallback);
@@ -265,6 +271,39 @@ public class Converter{
 		}
 		+{
 			this._from = value;
+		}
+	}
+}
+
+public class ConverterSetting implements MarkupExtension{
+	private Class<Converter> _converter;
+	private Converter _converterInstance;
+	
+	public ConverterSetting(Object options){
+		if(options["converter"] != undefined){
+			this._converter = (Class<Converter>) options["converter"];
+		}
+	}
+	public Class<Converter> covnerter{
+		&{
+			return this._converter;
+		}
+		+{
+			this._converter = value;
+		}
+	}
+	
+	public void inject(Object target, String[] properties){
+		
+	}
+	
+	public Converter converter{
+		&{
+			if(this._converterInstance == null){
+				_converterInstance = (Converter) _converter.newInstance();
+			}
+			
+			return this._converterInstance;
 		}
 	}
 }
@@ -498,6 +537,41 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		}
 		
 		return true;
+	}
+
+	public void reset() {
+		_templates.forEach((TemplateSetting ts, int index, Array<TemplateSetting> array)->{
+			if(String.isNullOrEmpty(ts.property)){
+				this.removePropertyChangeListener("dataItem", ts::propertyChange);
+			} else {
+				if(this._dataItem instanceof INotifyPropertyChanged){
+					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(ts.property, ts::propertyChange);
+				}
+			}
+		});
+		_templates.length = 0;
+		
+		_bindings.forEach((Binding binding, int index, Array<Binding> array)->{
+			if(String.isNullOrEmpty(binding.property)){
+				this.removePropertyChangeListener("dataItem", binding::propertyChange);
+			} else {
+				if(this._dataItem instanceof INotifyPropertyChanged){
+					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(binding.property, binding::propertyChange);
+				}
+			}
+		});
+		_bindings.length = 0;
+		
+		_dependents.forEach((DataContext dataContext, int index, Array<DataContext> array)->{
+			if(String.isNullOrEmpty(dataContext.property)){
+				this.removePropertyChangeListener("dataItem", dataContext::propertyChange);
+			} else {
+				if(this._dataItem instanceof INotifyPropertyChanged){
+					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(dataContext.property, dataContext::propertyChange);
+				}
+			}
+		});
+		_dependents.length = 0;
 	}
 }
 
@@ -835,7 +909,7 @@ public function void ApplyTemplateCallback();
 //	}
 //}
 
-abstract class BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
+public abstract class BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
 	private Class<Template> _template;
 	protected Class<TemplateSelector> _selector;
 	protected TemplateSelector _selectorInstance;
@@ -925,7 +999,7 @@ abstract class BaseTemplateSetting implements MarkupExtension, PropertyChangeLis
 	/**
 	 * 撤销模板展开的节点
 	 */
-	protected abstract void undoTemplate();
+	public abstract void undoTemplate();
 	
 	/**
 	 * source是上级dataContext，event的property是dataItem；
@@ -946,7 +1020,7 @@ abstract class BaseTemplateSetting implements MarkupExtension, PropertyChangeLis
 	}
 
 	@Override
-	public void inject(Node node, String[] properties) {
+	public void inject(Object node, String[] properties) {
 		node[properties[0]] = this;   //node.template = this
 	}
 }
@@ -974,16 +1048,15 @@ public class TemplateSetting extends BaseTemplateSetting implements MarkupExtens
 			this._dataItem = value;
 			
 			if(this._templateInstance == null){
-				createTemplate(value);
+				this._templateInstance = createTemplate(value);
 			} else {
 				if(this._selectorInstance != null){
-					Template newTemp = this._selectorInstance.select(value);
-					if(newTemp.getClass().id != this._templateInstance.getClass().id){
-						undoTemplate();
-						this._templateInstance = newTemp;
-					} else {
+					Template newTemp = createTemplate(value);
+					if(newTemp.getClass().id == this._templateInstance.getClass().id){
 						return;
 					}
+					undoTemplate();
+					this._templateInstance = newTemp;
 				}
 			}
 			applyTemplate();
@@ -1001,16 +1074,18 @@ public class TemplateSetting extends BaseTemplateSetting implements MarkupExtens
 	/**
 	 * 撤销模板展开的节点
 	 */
-	protected void undoTemplate(){
+	public void undoTemplate(){
 		this._templateInstance.undoTemplate(this.container);
 	}
 	
-	private void createTemplate(Object data){
+	private Template createTemplate(Object data){
+		Template result = null;
 		if(this._selectorInstance != null){
-			this._templateInstance = this._selectorInstance.select(data);
+			result = this._selectorInstance.select(data);
 		} else {
-			this._templateInstance =  (Template) this.template.newInstance();
+			result =  (Template) this.template.newInstance();
 		}
+		return result;
 	}
 }
 
@@ -1104,7 +1179,7 @@ public class CollectionTemplateSetting extends TemplateSetting implements Markup
 				Template template = createTemplate(item);
 				template.applyTemplate(this._container, item, start++);
 				itemsMap.set(item, template);
-			}
+			} 
 			break;
 		case Reset:
 			undoTemplate();
@@ -1118,7 +1193,13 @@ public class CollectionTemplateSetting extends TemplateSetting implements Markup
 			}
 			break;
 		case Replace:
-			
+			Object newItem = event.newItems[0], old = event.oldItems[0];
+			Template oldTemp = itemsMap.get(old);
+			Template newTemp = createTemplate(newItem);
+			if(newTemp ==null || newTemp.getClass().id != oldTemp.getClass().id){
+				oldTemp.undoTemplate(this._container);
+				newTemp.applyTemplate(this._container, newItem,  event.newStartingIndex);
+			}
 		case Move:
 			
 		}
