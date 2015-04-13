@@ -238,8 +238,8 @@ public native interface Node {
     
     default public void reset(){
     	NodeList children = this.childNodes;
-    	for(int i = 0, length = (int) children.length; i<length; i++){
-    		children[(long)i].reset();
+    	for(long i = 0, length = children.length; i<length; i++){
+    		children[i].reset(); 
     	}
     	
     	DataContext dataContext = (DataContext)this["__dataContext"];
