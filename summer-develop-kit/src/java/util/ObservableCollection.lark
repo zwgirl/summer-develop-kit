@@ -6,11 +6,6 @@ import java.util.List;
 public class ObservableCollection<T> extends ArrayList<T> implements INotifyCollectionChanged<T>, List<T>, INotifyPropertyChanged { 
 	public static final String SIZE = "size";
     
-    private transient Object propertyChangeListeners = new Object(); // Map<String, Array<PropertyChange>>
-
-    // Occurs when the collection changes, either by adding or removing an item.
-    private transient CollectionChanged<T>[] collectionChangedListeners = new Array<CollectionChanged<T>>(); // Map<String, Array<CollectionChanged>>; 
-    
     @Overload("1")
     public ObservableCollection()  { super(); } 
 
@@ -128,17 +123,6 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
         onCollectionChanged4(CollectionChangedAction.Move, removedItem, newIndex, oldIndex);
     }
 
-    // Raise CollectionChanged event to any listeners.
-    // Properties/methods modifying this ObservableCollection will raise 
-    // a collection changed event through this method. 
-    // When overriding this method, either call its base implementation
-    // or call <see cref="BlockReentrancy"/> to guard against reentrant collection changes.
-    protected void onCollectionChanged(CollectionChangedEvent<T> e) {
-    	this.collectionChangedListeners.forEach((CollectionChanged<T> callback, int index, Array<CollectionChanged<T>> array)->{
-    		callback(this, e);
-    	});
-    } 
-
     // Helper to raise CollectionChanged event to any listeners 
     private void onCollectionChanged3(CollectionChangedAction action, T item, int index) { 
         onCollectionChanged(new CollectionChangedEvent<T>(action, item, index));
@@ -158,40 +142,5 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     private void onCollectionReset() { 
         onCollectionChanged(new CollectionChangedEvent<T>(CollectionChangedAction.Reset)); 
     }
-    
-	public void addPropertyChangeListener(String propName, PropertyChange handler) {
-		PropertyChange[] listeners = (PropertyChange[])this.propertyChangeListeners[propName];
-		if(listeners == null){
-			listeners = new Array<PropertyChange>();
-			this.propertyChangeListeners[propName] = listeners;
-		}
-		
-		listeners.push(handler);
-	}
 
-	public void removePropertyChangeListener(String propName, PropertyChange handler) {
-		PropertyChange[] listeners = (PropertyChange[])this.propertyChangeListeners[propName];
-		if(listeners == null){
-			return;
-		}
-		
-		listeners.forEach((PropertyChange handler1, int index, Array<PropertyChange> array)->{
-			if(handler1 === handler){
-				array.splice(index, 1);
-			}
-		});
-	}
- 
-	public void addCollectionChangedListener(CollectionChanged<T> listener) {
-		collectionChangedListeners.push(listener);
-		
-	}
-
-	public void removeCollectionChangedListener(CollectionChanged<T> listener) {
-		collectionChangedListeners.forEach((CollectionChanged<T> listener1, int index, Array<CollectionChanged<T>> array)->{
-			if(listener1 === listener){
-				array.splice(index, 1);
-			}
-		});
-	}
 }

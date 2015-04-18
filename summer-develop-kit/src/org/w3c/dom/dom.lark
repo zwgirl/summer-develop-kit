@@ -81,18 +81,18 @@ public native interface DocumentFragment extends Node {
 public native interface Node {
 
 	// NodeType
-	public native static final short   ELEMENT_NODE   = 1; 
-	public native static final short   ATTRIBUTE_NODE  = 2;
-	public native static final short   TEXT_NODE    = 3;
-	public native static final short   CDATA_SECTION_NODE  = 4;
-	public native static final short   ENTITY_REFERENCE_NODE     = 5;
-	public native static final short   ENTITY_NODE   = 6;
-	public native static final short   PROCESSING_INSTRUCTION_NODE  = 7;
-	public native static final short   COMMENT_NODE   = 8;
-	public native static final short   DOCUMENT_NODE  = 9;
-	public native static final short   DOCUMENT_TYPE_NODE  = 10;
-	public native static final short   DOCUMENT_FRAGMENT_NODE     = 11;
-	public native static final short   NOTATION_NODE  = 12;
+	public native short ELEMENT_NODE   = 1; 
+	public native short ATTRIBUTE_NODE  = 2;
+	public native short TEXT_NODE    = 3;
+	public native short CDATA_SECTION_NODE  = 4;
+	public native short ENTITY_REFERENCE_NODE     = 5;
+	public native short ENTITY_NODE   = 6;
+	public native short PROCESSING_INSTRUCTION_NODE  = 7;
+	public native short COMMENT_NODE   = 8;
+	public native short DOCUMENT_NODE  = 9;
+	public native short DOCUMENT_TYPE_NODE  = 10;
+	public native short DOCUMENT_FRAGMENT_NODE     = 11;
+	public native short NOTATION_NODE  = 12;
 
  	// readonly attribute 
  	public native String nodeName{}
@@ -157,19 +157,23 @@ public native interface Node {
     	return (Binding) this["__bindings"][prop1 + "." + prop2];
     }
     
-    default public void setBinding(String[] properNames, Binding binding){
+    default public void setBinding(String[] roperties, Binding binding){
     	if(this["__bindings"] != null){
     		this["__bindings"] = new Array<Binding>();
     	}
-    	Binding old = (Binding) (this["__bindings"][properNames.join(".")]);
+    	Binding old = (Binding) (this["__bindings"][roperties.join(".")]);
     	if(old === binding){
     		return;
     	}
     	
-    	old.unInject();
+    	if(old != null){
+        	old.unInject();
+    	}
     	
-    	this["__bindings"][properNames.join(".")] = binding;
-    	binding.inject(this, properNames);
+    	this["__bindings"][roperties.join(".")] = binding;
+    	if(binding != null){
+        	binding.inject(this, roperties);
+    	}
     } 
     
     public TemplateSetting template{
@@ -182,9 +186,14 @@ public native interface Node {
     			return;
     		}
     		
-    		old.undoTemplate();
+    		if(old != null ) {
+    			old.undoTemplate();
+            	old.unInject();
+            	dataContext.removeTemplateSetting(value);
+    		}
     		this["__template"] = value; 
-    		value.applyTemplate();
+    		dataContext.addTemplateSetting(value);
+//    		value.applyTemplate();
     	}
     }
     
@@ -206,6 +215,11 @@ public native interface Node {
     			return;
     		}
     		
+     		DataContext pDc = parentNode.dataContext;
+    		if(old != null){
+    			pDc.removeDependent(old);
+    		}
+    		
     		this["__dataContext"] = value;
     		
     		switch(value.mode){
@@ -220,31 +234,26 @@ public native interface Node {
     			return;
     		}
     		
-    		DataContext parentDc = parentNode.dataContext;
-    		if(old != null){
-    			parentDc.removeDependent(old);
-    		}
-    		
     		if(value == null){
     			return;
     		}
     		
-			parentDc.addDependent(value);
-    		if(parentDc.dataItem != null){
-    			value.dataItem = parentDc.dataItem[value.property];
+    		pDc.addDependent(value);
+    		if(pDc.dataItem != null){
+    			value.dataItem = pDc.dataItem[value.property];
     		}
     	}
     }
     
     default public void reset(){
     	NodeList children = this.childNodes;
-    	for(long i = 0, length = children.length; i<length; i++){
+    	for(long i = 0, len = children.length; i<len; i++){
     		children[i].reset(); 
     	}
     	
-    	DataContext dataContext = (DataContext)this["__dataContext"];
-    	if(dataContext != null){
-    		dataContext.reset();
+    	DataContext dc = (DataContext)this["__dataContext"];
+    	if(dc != null){
+    		dc.reset();
     	}
     }
     
@@ -402,7 +411,7 @@ public native interface Document extends Node, EventTarget {
 	public native CDATASection createCDATASection(final String data) throws DOMException;
 	public native ProcessingInstruction createProcessingInstruction(final String target, final String data) throws DOMException;
 	public native Attr createAttribute(final String name) throws DOMException;
-	public native EntityReference  createEntityReference(final String name) throws DOMException;
+	public native EntityReference createEntityReference(final String name) throws DOMException;
 	public native NodeList getElementsByTagName(final String tagname);
 	// Introduced final DOM Level 2:
 	public native Node importNode(final Node importedNode, final boolean deep) throws DOMException;

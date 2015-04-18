@@ -1,24 +1,28 @@
-﻿import org.w3c.html.*; 
+﻿import org.bark.test.FirstService;
+import org.w3c.html.*; 
+import org.w3c.html.canvas;
 import org.w3c.dom.*;
-import org.summer.ui.*;
+import org.w3c.*;
 import org.w3c.event.Event;
 import org.w3c.event.EventHandler;
 import org.w3c.event.KeyboardEvent;
+import org.w3c.event.MouseEvent;
+import org.w3c.event.MouseEventHandler;
 
 import java.util.*;
 public class FF1 implements INotifyPropertyChanged{ 
-	<html>    
-		<head>  
+	<html>
+		<head>
 		<meta httpEquiv="Content-Type" content="text/html;charset=utf-8" />
 			<script > 
 				   
 			</script> 
 			 
-			<style type="text/css">   
+			<style type="text/css"> 
 				.item:hover {
 				  animation: 1s rainbow infinite;
 				}
-			
+			 
 				@keyframes rainbow {
 				  0% { background-color: yellow; }
 				  100% { background: blue; }
@@ -26,13 +30,15 @@ public class FF1 implements INotifyPropertyChanged{
 				
 				.child {
 					padding-left: 10px;
-					border:thin solod red;
+					border:thin solod red;  
 					font-size: 12px; 
-					background-color: 
 				}
 			</style>      
 		</head>  
 		<body onclick = "test">  
+		
+	    <canvas id="myCanvas" width="578" height="200"></canvas>
+
 		 
 		<aside id="gallery">
 		  <p className="photonav">
@@ -49,7 +55,7 @@ public class FF1 implements INotifyPropertyChanged{
 			  
 			for dsddsd if do
 				
-		<p style.border = "5px solid red">
+		<p style.border = "5px solid red"> 
 			asasasa
 			<br />
 			<Text data = {Binding property="style" mode = "OneWay"} />
@@ -106,7 +112,7 @@ public class FF1 implements INotifyPropertyChanged{
 		 	
 		 	<button value = "change" onclick = "click"> Test </button> 
 		 	</td>  
-		 	</tr> 
+		 	</tr>
 		 </tbody>
 		</table> 
 		
@@ -117,12 +123,47 @@ public class FF1 implements INotifyPropertyChanged{
 		</form> 
 		
 		
-		<div className = "child" onclick = "select" dataContext = {DataPath mode="Relative" property = "root"}>
-			<span x:name = "item" className="hvr-fade"> <img src="img/expanded.gif"/> <Text data={Binding property="name" mode = "OneWay"} /> </span>
-			<div className = "children" itemsConfig ={ItemsConfig path = "children" itemTemplate = "ChildTemplate"}> 
+		<div className = "child" dataContext = {DataPath mode="Relative" property = "root"}>
+			<span x:name = "item" className="hvr-fade"> <img src="img/expanded.gif" className="trrItemNode" onclick = "nodeClick" /> 
+				<span onclick = "select" className="treeItemTitle"> <Text data={Binding property="name" mode = "OneWay"} /> </span> </span>
+			<div x:name = "children" className = "children" itemsConfig ={ItemsConfig path = "children" itemTemplate = "ChildTemplate"}>
 	
 			</div>
 		</div>  
+		
+		<input value = "@12121">
+			<div style="position:absolute;width:100px;height:100px;left:10px;top:10px;background:#000">
+				AAAAAAAAAAAAAAAAAAAAAAAA
+			</div>
+		</input>
+		
+		<form method="post"
+	      enctype="application/x-www-form-urlencoded"
+	      action="https://pizza.example.com/order.cgi">
+			 <p><label>Customer name: <input name="custname"/></label></p>
+			 <p><label>Telephone: <input type="tel" name="custtel"/></label></p>
+			 <p><label>E-mail address: <input type="email" name="custemail"/></label></p>
+			 <fieldset>
+			  <legend> Pizza Size </legend>
+			  <p><label> <input type="radio" name="size" value="small" /> Small </label></p>
+			  <p><label> <input type="radio" name="size" value="medium"/> Medium </label></p>
+			  <p><label> <input type="radio" name="size" value="large"/> Large </label></p>
+			 </fieldset>
+			 <fieldset>
+			  <legend> Pizza Toppings </legend>
+			  <p><label> <input type="checkbox" name="topping" value="bacon"/> Bacon </label></p>
+			  <p><label> <input type="checkbox" name="topping" value="cheese"/> Extra Cheese </label></p>
+			  <p><label> <input type="checkbox" name="topping" value="onion"/> Onion </label></p>
+			  <p><label> <input type="checkbox" name="topping" value="mushroom"/> Mushroom </label></p>
+			 </fieldset>
+			 <p><label>Preferred delivery time: <input type="time" min="11:00" max="21:00" step="900" name="delivery"/></label></p>
+			 <p><label>Delivery instructions: <textarea name="comments"></textarea></label></p>
+			 <p><button>Submit order</button></p> 
+	</form>
+		
+    <script>
+    	__this.draw();
+  </script>
 		</body> 
 	</html>  
 	
@@ -164,12 +205,20 @@ public class FF1 implements INotifyPropertyChanged{
  	}
 	
 	EventHandler select = (Event event)->{
-		if(((HTMLElement)event.target).className == "hvr-fade" && ((HTMLElement)event.target).style.backgroundColor == "blue"){
+		if(((HTMLElement)event.target).className == "treeItemTitle" && ((HTMLElement)event.target).style.backgroundColor == "blue"){
 			((HTMLElement)event.target).style.removeProperty("background-color");
 		} else {
 			((HTMLElement)event.target).style.backgroundColor = "blue";
 		}
 	};
+	
+	private MouseEventHandler nodeClick = (MouseEvent event)->{
+		if(children.style.display == "none"){
+			children.style.display = "block";
+		} else {
+			children.style.display = "none";
+		}
+	}; 
 	
 	private Person sample;
 	   
@@ -246,6 +295,7 @@ public class FF1 implements INotifyPropertyChanged{
 	public EventHandler click = (Event event) ->{
 		this.name = "tom" + index ++ ;
 		alert(event.target.toString());
+		FirstService.sayHello("Tom", null, null);
 	};
 	
 	private String _name1 = "tom"; 
@@ -315,5 +365,36 @@ public class FF1 implements INotifyPropertyChanged{
 			});
 		}
 	}
+	
+	public void draw(){
+		  canvas mycanvas  = (canvas) document.getElementById("myCanvas");
+		  CanvasRenderingContext2D mycontext = mycanvas.getContext("2d");
+		  float x;
+		  float y;
+		  float x2;
+		  float y2;
+		  float r;
+		  float g;
+		  float b;
+		 Line line = ()-> {
+		   x= (float) (Math.floor(Math.random()*190) + Math.floor(Math.random()*190));
+		   y=(float) (Math.floor(Math.random()*190) + Math.floor(Math.random()*190));
+		   x2=(float) (Math.floor(Math.random()*190) + Math.floor(Math.random()*190));
+		   y2=(float) (Math.floor(Math.random()*190) + Math.floor(Math.random()*190));
+		   r=(float) Math.floor(Math.random()*255);
+		   g=(float) Math.floor(Math.random()*255);
+		   b=(float) Math.floor(Math.random()*255);
+		   mycontext.moveTo(x, y);
+		   mycontext.lineTo(x2, y2);
+		   mycontext.strokeStyle="rgb(" + r + "," + g +  "," + b + ")";  
+		   mycontext.lineWidth=(float) Math.floor(Math.random()*6);      
+		   mycontext.stroke();
+		   mycontext.restore();
+		 };
+		 setInterval(line, 100);
+
+	}
 }
+
+function void Line();
  

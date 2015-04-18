@@ -1699,3 +1699,18 @@ public class JSON {
 public interface Page {
 
 }
+
+public class xlink {
+	public static final String xmlns = "http://www.w3.org/1999/xlink";
+	public static String href{};
+
+}
+
+public class xmlns {
+
+}
+
+public class x {
+	public static final String xmlns = "http://www.lark.org/2015/x";
+	public static String name{};
+}

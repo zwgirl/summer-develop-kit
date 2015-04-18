@@ -2,14 +2,15 @@
 package org.w3c.canvas;
 
 import org.w3c.dom.Element;
-import org.w3c.html.img;
-import org.w3c.html.video;
+import org.w3c.html.HTMLCanvasElement;
+import org.w3c.html.HTMLImageElement;
+import org.w3c.html.HTMLVideoElement;
 
 public native interface CanvasRenderingContext2D {
 
   // back-reference to the canvas
 //  readonly attribute 
-	public org.w3c.html.canvas canvas{}
+	public org.w3c.html.HTMLCanvasElement canvas{}
 
 	// state
 	void save(); // push state on state stack
@@ -35,9 +36,9 @@ public native interface CanvasRenderingContext2D {
     public Object fillStyle{} // (default black)
     CanvasGradient createLinearGradient(final float x0, final float y0, final float x1, final float y1);
     CanvasGradient createRadialGradient(final float x0, final float y0, final float r0, final float x1, final float y1, final float r1);
-    CanvasPattern createPattern(final img image, final String repetition);
-    CanvasPattern createPattern(final org.w3c.html.canvas image, final String repetition);
-    CanvasPattern createPattern(final video image, final String repetition);
+    CanvasPattern createPattern(final HTMLImageElement image, final String repetition);
+    CanvasPattern createPattern(final HTMLCanvasElement image, final String repetition);
+    CanvasPattern createPattern(final HTMLVideoElement image, final String repetition);
 
   // line caps/joins
 //    attribute 
@@ -98,15 +99,15 @@ public native interface CanvasRenderingContext2D {
   	TextMetrics measureText(final String text);
 
   	// drawing images
-  	void drawImage(final img image, final float dx, final float dy, final float dh);
-  	void drawImage(final img image, final float dx, final float dy, final /*optional*/ float dw, final float dh);
-  	void drawImage(final img image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
-  	void drawImage(final org.w3c.html.canvas image, final float dx, final float dy, final float dh);
-  	void drawImage(final org.w3c.html.canvas image, final float dx, final float dy, final /*optional*/ float dw, final float dh);
-  	void drawImage(final org.w3c.html.canvas image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
-  	void drawImage(final video image, final float dx, final float dy, final float dh);
-  	void drawImage(final video image, final float dx, final float dy, final /*optional*/ float dw, final float dh);
-  	void drawImage(final video image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
+  	void drawImage(final HTMLImageElement image, final float dx, final float dy, final float dh);
+  	void drawImage(final HTMLImageElement image, final float dx, final float dy, final /*optional*/ float dw, final float dh);
+  	void drawImage(final HTMLImageElement image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
+  	void drawImage(final HTMLCanvasElement image, final float dx, final float dy, final float dh);
+  	void drawImage(final HTMLCanvasElement image, final float dx, final float dy, final /*optional*/ float dw, final float dh);
+  	void drawImage(final HTMLCanvasElement image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
+  	void drawImage(final HTMLVideoElement image, final float dx, final float dy, final float dh);
+  	void drawImage(final HTMLVideoElement image, final float dx, final float dy, final /*optional*/ float dw, final float dh);
+  	void drawImage(final HTMLVideoElement image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
 
   	// pixel manipulation
   	ImageData createImageData(final float sw, final float sh);

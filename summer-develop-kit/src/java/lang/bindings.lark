@@ -5,15 +5,28 @@ import java.util.Collection;
 
 import org.w3c.dom.Node;
 import org.w3c.event.Event;
+import org.w3c.event.EventHandler;
 import org.w3c.html.HTMLElement; 
- 
+
+/**
+ * 属性变化回调函数类型
+ */
 public function void PropertyChange(Object source, PropertyChangeEvent evt); 
 
 public interface PropertyChangeListener{ 
-	void propertyChange(Object source, PropertyChangeEvent evt);
+	public  PropertyChange propertyChange{
+		
+	}
 }
 
+/**
+ * 用于侦听属性变化的条件函数
+ */
 public function boolean Predicate(Object source, String property);
+
+/**
+ * 属性变化通知接口
+ */
 public interface INotifyPropertyChanged { 
 	
 	@SuppressWarnings("unchecked")
@@ -128,9 +141,33 @@ public interface INotifyPropertyChanged {
 	}
 }
 
-public interface INotifyCollectionChanged<T> { 
-	public void addCollectionChangedListener(CollectionChanged<T> listener);
-	public void removeCollectionChangedListener(CollectionChanged<T> listener);
+@SuppressWarnings("unchecked")
+public interface INotifyCollectionChanged<T> {
+    default void onCollectionChanged(CollectionChangedEvent<T> e) {
+    	CollectionChanged<T>[] listeners = (CollectionChanged<T>[])this["__colListeners"];
+		if(listeners == null) return;
+		listeners.forEach((CollectionChanged<T> callback, int index, Array<CollectionChanged<T>> array)->{
+    		callback(this, e);
+    	});
+    } 
+    
+	default void addCollectionChangedListener(CollectionChanged<T> listener) {
+		CollectionChanged<T>[] listeners = (CollectionChanged<T>[])this["__colListeners"];
+		if(listeners == null){
+			this["__colListeners"] = listeners = new Array<CollectionChanged<T>>();
+		}
+		listeners.push(listener);
+	}
+
+	default void removeCollectionChangedListener(CollectionChanged<T> listener) {
+		CollectionChanged<T>[] listeners = (CollectionChanged<T>[])this["__colListeners"];
+		if(listeners == null) return;
+		listeners.forEach((CollectionChanged<T> listener1, int index, Array<CollectionChanged<T>> array)->{
+			if(listener1 === listener){
+				array.splice(index, 1);
+			}
+		});
+	}
 } 
 
 public function void CollectionChanged<T>(Object sender, CollectionChangedEvent<T> event);
@@ -292,7 +329,7 @@ public class CollectionChangedEvent<T> // extends EventArgs
   /// Construct a NotifyCollectionChangedEventArgs that describes a one-item Replace event. 
   /// <param name="action">Can only be a Replace action.</param>
   /// <param name="newItem">The new item replacing the original item.</param>
-  /// <param name="oldItem">The original item that is replaced.</param> 
+  /// <param name="oldItem">The original item that is replaced.</param>
   /// <param name="index">The index of the item being replaced.</param>
   @Overload("7")
   public CollectionChangedEvent(CollectionChangedAction action, T newItem, T oldItem, int index) 
@@ -455,7 +492,6 @@ public class PropertyChangeEvent {
     	}
     }
 }
-
   
 public interface MarkupExtension {
 	public void inject (Object target, String[] properties);
@@ -499,14 +535,20 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 	private UpdateSourceTrigger _trigger;
 	private String	_property; 
 	private Node _target;
+	private boolean _trace;
 	private String[] _targetProperties;
 	private UpdateTargetCallback _updateTargetCallback;
 	private UpdateSourceCallback _updateSourceCallback;
-	private ConverterSetting _converterSettring;
+	private ConverterFunction _converterTo;
+	private ConverterFunction _converterFrom;
 
 	public Binding(Object options) {
 		if(options["property"] != undefined){
 			this._property = (String) options["property"];
+		}
+		
+		if(options["trace"] != undefined){
+			this._trace = (boolean) options["trace"];
 		}
 		
 		if(options["mode"] != undefined){
@@ -529,8 +571,12 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 			this._updateSourceCallback = (UpdateSourceCallback) options["updateSourceCallback"];
 		}
 		
-		if(options["converter"] != undefined){
-			this._converterSettring = ((ConverterSetting) options["converter"]);
+		if(options["converterTo"] != undefined){
+			this._converterTo = ((ConverterFunction) options["converterTo"]);
+		}
+		
+		if(options["converterFrom"] != undefined){
+			this._converterFrom = ((ConverterFunction) options["converterFrom"]);
 		}
 	} 
 
@@ -541,6 +587,15 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		+ {
 			_property = value;
 		} 
+	} 
+	 
+	public boolean trace {
+		& {
+			return _trace; 
+		} 
+		+ { 
+			this._trace = value; 
+		}
 	} 
 
 	public BindingMode mode {
@@ -578,21 +633,21 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		}
 	}
 	
-	public ConverterSetting converterSetting{
+	public ConverterFunction converterTo{
 		&{
-			return this._converterSettring;
+			return this._converterTo;
 		}
 		+{
-			this._converterSettring = value;
+			this._converterTo = value;
 		}
 	}
 	
-	public Converter converter{
+	public ConverterFunction converterFrom{
 		&{
-			if(this._converterSettring == null){
-				return null;
-			}
-			return this._converterSettring.converter;
+			return this._converterFrom;
+		}
+		+{
+			this._converterFrom = value;
 		}
 	}
 	
@@ -625,33 +680,37 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		}
 	}
 	
-	private void updateTarget(Node target, String[] properties, Object data){
-		if(!String.isNullOrEmpty(this._property) && data != null){
-			data = data[this._property];
+	protected void updateTarget(Node target, String[] properties, Object data){
+		if(!String.isNullOrEmpty(this.property)){
+			data = data == null ? null : data[this.property];
 		}
 		setTargetProperty(_targetProperties, data);
 	}
 
-	@Override
-	public void propertyChange(Object source, PropertyChangeEvent evt) {
-		Object data = source[evt.property];
-		if(!String.isNullOrEmpty(this.property)){
-			data = data == null ? null : data[this.property];
+	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent evt)-> {
+		Object data = source;
+		if(!String.isNullOrEmpty(this._property)){
+			data = source[evt.property];
 		}
-		
-		updateTarget(this._target, this._targetProperties, data);		
+		setTargetProperty(_targetProperties, data);
+	};
+	
+	public PropertyChange propertyChange{
+		&{
+			return this._propertyChange;
+		}
 	}
 	
 	protected void setTargetProperty(String[] properties, Object data){
 		Object tag = this._target;
 		int length = properties.length; 
-		for(int index = 0 ; index < length - 1; index++){
+		for(int i = 0 ; i < length - 1; i++){
 			if(tag == null) return;
-			tag = tag[property];
+			tag = tag[properties[i]];
 		}
 		
-		if(this.converter != null){
-			data = this.converter.to(data);
+		if(this._converterTo != null){
+			data = this._converterTo(data);
 		}
 		
 		Object oldValue = tag[properties[length-1]];
@@ -680,11 +739,11 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		// listen for lost focus and input 
 		switch(this._trigger) { 
 			case LostFocus:
-				target.addEventListener("blur", this::updateSource, false);
+				target.addEventListener("blur", this.updateSource, false);
 				break; 
 			case PropertyChanged: 
-				target.addEventListener("input", this::updateSource, false);
-				target.addEventListener("change", this::updateSource, false);
+				target.addEventListener("input", this.updateSource, false);
+				target.addEventListener("change", this.updateSource, false);
 				break;
 			default:
 		}  
@@ -694,79 +753,25 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		// listen for lost focus and input 
 		switch(this._trigger) { 
 			case LostFocus:
-				target.removeEventListener("blur", this::updateSource, false);
+				target.removeEventListener("blur", this.updateSource, false);
 				break; 
 			case PropertyChanged: 
-				target.removeEventListener("input", this::updateSource, false);
-				target.removeEventListener("change", this::updateSource, false);
+				target.removeEventListener("input", this.updateSource, false);
+				target.removeEventListener("change", this.updateSource, false);
 				break;
 			default:
 		}  
-	}
+	} 
 	
-	protected boolean updateSource(Event event){
+	protected EventHandler updateSource = (Event event) ->{
 		Object value = getProperty((Node)event.target, this._targetProperties);
-		if(this.converter != null){
-			value = this.converter.from(value);
+		if(this._converterFrom != null){
+			value = this._converterFrom(value);
 		}
 		return this._target.dataContext.updateSource(this._property, value, this._updateSourceCallback);
-	}
+	};
 }
-
 public function Object ConverterFunction(Object data);
-public class Converter{
-	private ConverterFunction _to;
-	public ConverterFunction to{
-		&{
-			return this._to;
-		}
-		+{
-			this._to = value;
-		}
-	}
-	private ConverterFunction _from;
-	public ConverterFunction from{
-		&{
-			return this._from;
-		}
-		+{
-			this._from = value;
-		}
-	}
-}
-
-public class ConverterSetting implements MarkupExtension{
-	private Class<Converter> _converter;
-	private Converter _converterInstance;
-	
-	public ConverterSetting(Object options){
-		if(options["converter"] != undefined){
-			this._converter = (Class<Converter>) options["converter"];
-		}
-	}
-	public Class<Converter> covnerter{
-		&{
-			return this._converter;
-		}
-		+{
-			this._converter = value;
-		}
-	}
-	
-	public void inject(Object target, String[] properties){
-		
-	}
-	
-	public Converter converter{
-		&{
-			if(this._converterInstance == null){
-				_converterInstance = (Converter) _converter.newInstance();
-			}
-			
-			return this._converterInstance;
-		}
-	}
-}
 
 public enum DataContextMode {
 	Root,
@@ -780,7 +785,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	private String _property;
 	private Binding[] _bindings = {};
 	private DataContext[] _dependents = {};
-	private TemplateSetting[] _templates = {};
+	private BaseTemplateSetting[] _templates = {};
 	private Object _dataItem;
 //	private Node _currentNode;
 	
@@ -810,7 +815,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	 */
 	@Overload("2")
 	public DataContext(String property, Object dataItem, DataContextMode mode) {
-		this._mode = DataContextMode.Standalone;
+		this._mode = mode; //DataContextMode.Standalone;
 		this._property = property;
 		this._dataItem = dataItem; 
 	};
@@ -857,10 +862,15 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	public void addBinding(Binding binding){
 		_bindings.push(binding);
 		if(String.isNullOrEmpty(binding.property)){
-			this.addPropertyChangeListener("dataItem", binding::propertyChange);
+			this.addPropertyChangeListener("dataItem", binding.propertyChange);
+			if(binding.trace){
+				if(this._dataItem instanceof INotifyPropertyChanged){
+					((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener1(binding.propertyChange);
+				}
+			}
 		} else {
 			if(this._dataItem instanceof INotifyPropertyChanged){
-				((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener(binding.property, binding::propertyChange);
+				((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener(binding.property, binding.propertyChange);
 			}
 		}
 	}
@@ -874,27 +884,32 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		});
 		
 		if(String.isNullOrEmpty(binding.property)){
-			this.removePropertyChangeListener("dataItem", binding::propertyChange);
+			this.removePropertyChangeListener("dataItem", binding.propertyChange);
+			if(binding.trace){
+				this.removePropertyChangeListener1(binding.propertyChange);
+			}
 		} else {
 			if(this._dataItem instanceof INotifyPropertyChanged){
-				((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(binding.property, binding::propertyChange);
+				((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(binding.property, binding.propertyChange);
 			}
 		}
 	}
 	
-	public void addTemplateSetting(TemplateSetting ts){ 
+	public void addTemplateSetting(BaseTemplateSetting ts){ 
 		_templates.push(ts);
 		if(String.isNullOrEmpty(ts.property)){
-			this.addPropertyChangeListener("dataItem", ts::propertyChange);
+			this.addPropertyChangeListener("dataItem", ts.propertyChange);
+			ts.dataItem = this._dataItem;
 		} else {
 			if(this._dataItem instanceof INotifyPropertyChanged){
-				((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener(ts.property, ts::propertyChange);
+				((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener(ts.property, ts.propertyChange);
 			}
+			ts.dataItem = this._dataItem != null ? this._dataItem[ts.property] : null;
 		}
 	}
 	
 	public void removeTemplateSetting(TemplateSetting ts){
-		_templates.forEach((TemplateSetting ts1, int index, Array<TemplateSetting> array)->{
+		_templates.forEach((BaseTemplateSetting ts1, int index, Array<BaseTemplateSetting> array)->{
 			if(ts == ts1){
 				_templates.splice(index, 1);
 				return;
@@ -902,10 +917,10 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		});
 		
 		if(String.isNullOrEmpty(ts.property)){
-			this.removePropertyChangeListener("dataItem", ts::propertyChange);
+			this.removePropertyChangeListener("dataItem", ts.propertyChange);
 		} else {
 			if(this._dataItem instanceof INotifyPropertyChanged){
-				((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(ts.property, ts::propertyChange);
+				((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(ts.property, ts.propertyChange);
 			}
 		}
 	}
@@ -929,7 +944,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		});
 	}
 	
-	private void dirty(Object data){
+	protected void dirty(Object data){
 		_bindings.forEach((Binding binding, int index, Array<Binding> array)->{
 			binding.propertyChange(this.dataItem, new PropertyChangeEvent(binding.property));
 		});
@@ -938,49 +953,55 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 			dc.propertyChange(this.dataItem, new PropertyChangeEvent(dc.property));
 		});
 		
-		_templates.forEach((TemplateSetting ts, int index, Array<TemplateSetting> array)->{
+		_templates.forEach((BaseTemplateSetting ts, int index, Array<BaseTemplateSetting> array)->{
 			ts.propertyChange(this.dataItem, new PropertyChangeEvent(ts.property));
 		});
 	}
 	 
-	private void replaceDataItem(Object newDataItem){
+	protected void replaceDataItem(Object newDataItem){
 		if(this._dataItem != null && this._dataItem instanceof INotifyPropertyChanged){  
 			INotifyPropertyChanged oldPc = (INotifyPropertyChanged) this._dataItem;
 			for(int i=0, length = _dependents.length; i<length; i++){
-				oldPc.removePropertyChangeListener(_dependents[i].property, _dependents[i]::propertyChange);
+				oldPc.removePropertyChangeListener(_dependents[i].property, _dependents[i].propertyChange);
 			}
 			
 			for(int i=0, length = _bindings.length; i<length; i++){
-				oldPc.removePropertyChangeListener(_bindings[i].property, _bindings[i]::propertyChange);
+				oldPc.removePropertyChangeListener(_bindings[i].property, _bindings[i].propertyChange);
 			}
 			
 			for(int i=0, length = _templates.length; i<length; i++){
-				oldPc.removePropertyChangeListener(_templates[i].property, _templates[i]::propertyChange);
+				oldPc.removePropertyChangeListener(_templates[i].property, _templates[i].propertyChange);
 			}
 		}
 		
 		if(newDataItem != null && newDataItem instanceof INotifyPropertyChanged){
 			INotifyPropertyChanged newPc = (INotifyPropertyChanged) newDataItem;
 			for(int i=0, length = _dependents.length; i<length; i++){
-				newPc.addPropertyChangeListener(_dependents[i].property, _dependents[i]::propertyChange);
+				newPc.addPropertyChangeListener(_dependents[i].property, _dependents[i].propertyChange);
 			}
 			
 			for(int i=0, length = _bindings.length; i<length; i++){
-				newPc.addPropertyChangeListener(_bindings[i].property, _bindings[i]::propertyChange);
+				newPc.addPropertyChangeListener(_bindings[i].property, _bindings[i].propertyChange);
 			}
 			
 			for(int i=0, length = _templates.length; i<length; i++){
-				newPc.addPropertyChangeListener(_templates[i].property, _templates[i]::propertyChange);
+				newPc.addPropertyChangeListener(_templates[i].property, _templates[i].propertyChange);
 			}
 		}
 	}
 
-	public void propertyChange(Object source, PropertyChangeEvent e) {
+	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent e) -> {
 		Object superior = source[e.property];
 		if(superior == null){
 			this.dataItem = null;
 		} else {
 			this.dataItem = superior[this.property];
+		}
+	};
+	
+	public PropertyChange propertyChange{
+		&{
+			return this._propertyChange;
 		}
 	}
 	
@@ -1003,12 +1024,12 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	}
 
 	public void reset() {
-		_templates.forEach((TemplateSetting ts, int index, Array<TemplateSetting> array)->{
+		_templates.forEach((BaseTemplateSetting ts, int index, Array<BaseTemplateSetting> array)->{
 			if(String.isNullOrEmpty(ts.property)){
-				this.removePropertyChangeListener("dataItem", ts::propertyChange);
+				this.removePropertyChangeListener("dataItem", ts.propertyChange);
 			} else {
 				if(this._dataItem instanceof INotifyPropertyChanged){
-					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(ts.property, ts::propertyChange);
+					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(ts.property, ts.propertyChange);
 				}
 			}
 		});
@@ -1016,10 +1037,10 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		
 		_bindings.forEach((Binding binding, int index, Array<Binding> array)->{
 			if(String.isNullOrEmpty(binding.property)){
-				this.removePropertyChangeListener("dataItem", binding::propertyChange);
+				this.removePropertyChangeListener("dataItem", binding.propertyChange);
 			} else {
 				if(this._dataItem instanceof INotifyPropertyChanged){
-					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(binding.property, binding::propertyChange);
+					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(binding.property, binding.propertyChange);
 				}
 			}
 		});
@@ -1027,10 +1048,10 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		
 		_dependents.forEach((DataContext dataContext, int index, Array<DataContext> array)->{
 			if(String.isNullOrEmpty(dataContext.property)){
-				this.removePropertyChangeListener("dataItem", dataContext::propertyChange);
+				this.removePropertyChangeListener("dataItem", dataContext.propertyChange);
 			} else {
 				if(this._dataItem instanceof INotifyPropertyChanged){
-					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(dataContext.property, dataContext::propertyChange);
+					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(dataContext.property, dataContext.propertyChange);
 				}
 			}
 		});
@@ -1047,38 +1068,18 @@ public function boolean BeforeCallback(Object data, int index);
 public function void AfterCallback(Node node, int index);
 public abstract class Template {
 	protected Node[] _rootNodes = {};
-	protected BeforeCallback _before;
-	protected AfterCallback _after;
-	protected boolean _expandCollection;
 	protected Object _data;
+	protected DataContextCallback _dataContextCallback;
 	
-	public boolean expandCollection{
+	public DataContextCallback dataContextCallback{
 		&{
-			return this._expandCollection;
+			return this._dataContextCallback;
 		}
 		+{
-			this._expandCollection = value;
+			this._dataContextCallback = value;
 		}
 	};
 
-	public BeforeCallback before{
-		&{
-			return this._before;
-		}
-		+{
-			this._before = value;
-		}
-	}
-	
-	public AfterCallback after{
-		&{
-			return this._after;
-		}
-		+{
-			this._after = value;
-		}
-	};
-	
 	public Node[] rootNodes{
 		&{
 			return this._rootNodes;
@@ -1095,10 +1096,10 @@ public abstract class Template {
 	}
 	
 	public final void applyTemplate(Node parent, Object data, int index){
-		_rootNodes = doApplyTemplate(parent, data, index);
+		doApplyTemplate(parent, data, index);
 	}
 	
-	protected Node[] doApplyTemplate(Node parent, Object data, int index){
+	protected void doApplyTemplate(Node parent, Object data, int index){
 		throw new Error(0, "illegal call!");
 	}
 
@@ -1108,52 +1109,21 @@ public abstract class Template {
 		});
 	}
 	
+	protected Node setupDataContext(Node node, Object data, int index){
+		if(this._dataContextCallback != null){
+			return this._dataContextCallback(node, data, index);
+		}
+		return node;
+	}
+	
+	protected void before(Object data, int index){
+		
+	}
+	
+	protected Node after(Node node, Object data, int index){
+		return node;
+	}
 }
-
-//class SomeTemplate extends Template{
-//	protected Node[] doApplyTemplate(Node parent, Object data){
-//		Node[] result = {};
-//		Node root;
-//		//第一个根节点
-//		result.push(root = ()->{
-//			if(this._before != null){
-//				this._before(data);
-//			}
-//			__n = __c("div");
-//			if(this._expandCollection){
-//				__n.dataContext = new DataContext(data);
-//			}
-//			
-//			if(this._after != null){
-//				this._after(data, result);
-//			}
-//			
-//			//建立孩子节点
-//			
-//		}(parent));
-//		//第二个根节点
-//		result.push(root = ()->{
-//			if(this._before != null){
-//				this._before(data);
-//			}
-//			__n = __c("div");
-//			if(this._expandCollection){
-//				__n.dataContext = new DataContext(data);
-//			}
-//			
-//			if(this._after != null){
-//				this._after(data, result);
-//			}
-//			
-//			//建立孩子节点
-//			
-//		}(parent));
-////		...其他孩子节点
-//		
-//		return result;
-//	}
-//
-//}
 
 public abstract class TemplateSelector{
 	public Template select(Object data){
@@ -1164,222 +1134,17 @@ public abstract class TemplateSelector{
 }
 
 public function void ApplyTemplateCallback();
-//public class TemplateSetting implements MarkupExtension, PropertyChangeListener{
-//	private Class<Template> _template;
-//	private Class<TemplateSelector> _selector;
-//	private String _property;  
-//	private Node _container;
-//	private boolean _invariant;
-//	private boolean _expandCollection;
-//	private Object _dataItem;
-//	private ApplyTemplateCallback _applyTemplateCallback;
-//	protected Map<Object, Template> itemsMap = new Map<Object, Template>();
-//	
-//	@SuppressWarnings("unchecked")
-//	public TemplateSetting(Object option){
-//		if(option["template"] != null){
-//			this._template = (Class<Template>) option["template"];
-//		}
-//		if(option["selector"] != null){
-//			this._selector = (Class<TemplateSelector>) option["selector"];
-//		} 
-//		if(option["property"] != null){
-//			this._property = (String) option["property"];
-//		} 
-//		if(option["invariant"] != null){
-//			this._invariant = (boolean) option["invariant"];
-//		}
-//		if(option["property"] != null){
-//			this._property = (String) option["property"];
-//		} 
-//		if(option["expandCollection"] != null){
-//			this._expandCollection = (boolean) option["expandCollection"];
-//		}
-//		if(option["applyTemplateCallback"] != null){
-//			this._applyTemplateCallback = (ApplyTemplateCallback) option["applyTemplateCallback"];
-//		} 
-//	} 
-//	
-//	public Class<Template> template{
-//		&{
-//			return this._template;
-//		}
-//		+{
-//			this._template = value;
-//		}
-//	}
-//	
-//	public Class<TemplateSelector> selector{
-//		&{
-//			return this._selector;
-//		}
-//		+{
-//			this._selector = value;
-//		}
-//	}
-//	
-//	public String property{
-//		&{
-//			return this._property;
-//		}
-//		+{
-//			this._property = value;
-//		}
-//	}
-//	
-//	public boolean invariant{
-//		&{
-//			return this._invariant;
-//		}
-//		+{
-//			this._invariant = value;
-//		}
-//	}
-//	
-//	public Node container{
-//		&{
-//			return this._container;
-//		}
-//		+{
-//			this._container = value;
-//		}
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	public Object dataItem{
-//		&{
-//			return this._dataItem;
-//		}
-//		+{
-//			if(this._dataItem === value){
-//				return;
-//			}
-//			
-//			
-//			undoTemplate();
-//			
-//			if(this._dataItem != null){
-//				if(this._dataItem instanceof INotifyCollectionChanged){
-//					((INotifyCollectionChanged<Object>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
-//				}
-//			}
-//
-//			if((this._dataItem = value) != null){
-//				if(this._dataItem instanceof INotifyCollectionChanged){
-//					((INotifyCollectionChanged<Object>)this._dataItem).addCollectionChangedListener(this.onCollectionChanged);
-//				}
-//				
-//				applyTemplate();
-//			}
-//		}
-//	}
-//	
-//	public void applyTemplate(){
-//		if(this._applyTemplateCallback != null){
-//			this._applyTemplateCallback(this._dataItem);
-//		} else {
-//			if(this._expandCollection && this._dataItem instanceof Collection){
-//				int index = 0;
-//				for(Object item : (Collection<?>)this._dataItem){
-//					internalApplyTemplate(item, index++);
-//				}
-//			} else {
-//				internalApplyTemplate(this._dataItem, -1);
-//			}
-//		}
-//	}
-//	
-//	protected void internalApplyTemplate(Object data, int index){
-//		Template template = createTemplate(data);
-//		template.applyTemplate(container, data, index);
-//		itemsMap.set(data, template);
-//	}
-//	
-//	/**
-//	 * 撤销模板展开的节点
-//	 */
-//	public void undoTemplate(){
-//		this.itemsMap.forEach((Template temp, Object data, Map<Object, Template> map)->{
-//			temp.undoTemplate(this.container);
-//		});
-//		itemsMap.clear();
-//	}
-//	
-//	protected CollectionChanged<Object> onCollectionChanged = (Object sender, CollectionChangedEvent<Object> event) ->{
-//		switch(event.action){
-//		case Add:
-//			Array<?> items = event.newItems;
-//			if(items == null || items.length <= 0){
-//				break;
-//			}
-//			int start = event.newStartingIndex;
-//			for(Object item : items){
-//				Template template = createTemplate(item);
-//				template.applyTemplate(this._container, item, start++);
-//				itemsMap.set(item, template);
-//			}
-//			break;
-//		case Reset:
-//			undoTemplate();
-//			break;
-//		case Remove:
-//			Template[] toBeRemoved = {};
-//			for(Object item : event.oldItems){
-//				Template temp = itemsMap.get(item);
-//				temp.undoTemplate(this._container);
-//				itemsMap.delete(item);
-//			}
-//			break;
-//		case Replace:
-//		case Move:
-//			
-//		}
-//	};
-//	
-//	private Template createTemplate(Object data){
-//		if(this._selector != null){
-//			TemplateSelector selector = (TemplateSelector) this._selector.newInstance(); 
-//			Template temp = selector.select(data);
-//			if(temp != null) return temp;
-//		}
-//		
-//		if(this.template != null) return (Template) this.template.newInstance();
-//		
-//		return null;
-//	}
-//	
-//	/**
-//	 * source是上级dataContext，event的property是dataItem；
-//	 * 
-//	 */
-//	@Override
-//	public void propertyChange(Object source, PropertyChangeEvent event) {
-//		Object superior = source[event.property];
-//		if(superior != null){
-//			if(String.isNullOrEmpty(this.property)){
-//				this._dataItem = superior;
-//			} else {
-//				this.dataItem = superior[this.property];  
-//			}
-//		} else {
-//			this._dataItem = null;
-//		}
-//	}
-//
-//	@Override
-//	public void inject(Node node, String[] properties) {
-//		node[properties[0]] = this;   //node.template = this
-//	}
-//}
+public function Node DataContextCallback(Node node, Object data, int index);
 
 public abstract class BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
 	private Class<Template> _template;
 	protected Class<TemplateSelector> _selector;
 	protected TemplateSelector _selectorInstance;
-	private String _property;  
+	protected String _property;  
 	protected Node _container;
 	protected boolean _invariant;
 	protected Object _dataItem;
+	protected DataContextCallback _dataContextCalback;
 	
 	@SuppressWarnings("unchecked")
 	public BaseTemplateSetting(Object option){
@@ -1388,6 +1153,7 @@ public abstract class BaseTemplateSetting implements MarkupExtension, PropertyCh
 		}
 		if(option["selector"] != null){
 			this.selector = (Class<TemplateSelector>) option["selector"];
+			this._selectorInstance = (TemplateSelector) _selector.newInstance();
 		} 
 		if(option["property"] != null){
 			this._property = (String) option["property"];
@@ -1397,11 +1163,11 @@ public abstract class BaseTemplateSetting implements MarkupExtension, PropertyCh
 		}
 		if(option["property"] != null){
 			this._property = (String) option["property"];
-		} 
-		
-		if(_selector != null){
-			this._selectorInstance = (TemplateSelector) _selector.newInstance();
 		}
+		
+		if(option["dataContextCalback"] != null){
+			this._dataContextCalback = (DataContextCallback) option["dataContextCalback"];
+		} 
 	} 
 	
 	public Class<Template> template{
@@ -1444,18 +1210,37 @@ public abstract class BaseTemplateSetting implements MarkupExtension, PropertyCh
 		&{
 			return this._container;
 		}
-		+{
-			this._container = value;
-		}
 	}
 	
 	public Object dataItem{
-		+{}&{}
+		&{
+			return this._dataItem;
+		}
+		+{
+			if(this._dataItem === value){
+				return;
+			}
+			this._dataItem = value;
+			dirty();
+		}
+	}
+	
+	protected abstract void dirty();
+	
+	public DataContextCallback dataContextCalback{
+		&{
+			return this._dataContextCalback;
+		}
+		+{
+			this._dataContextCalback = value;
+		}
 	}
 	
 	public void applyTemplate(){
 		internalApplyTemplate(this._dataItem, -1);
 	}
+	
+	protected Node setupDataContext(Node current, Object data, int index){return current;}
 	
 	protected abstract void internalApplyTemplate(Object data, int index);
 	
@@ -1468,23 +1253,33 @@ public abstract class BaseTemplateSetting implements MarkupExtension, PropertyCh
 	 * source是上级dataContext，event的property是dataItem；
 	 * 
 	 */
-	@Override
-	public void propertyChange(Object source, PropertyChangeEvent event) {
-		Object superior = source[event.property];
-		if(superior != null){
+	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent event)-> {
+		Object data = source[event.property];
+		if(data != null){
 			if(String.isNullOrEmpty(this.property)){
-				this._dataItem = superior;
+				this._dataItem = data;
 			} else {
-				this.dataItem = superior[this.property];  
+				this.dataItem = data[this.property];  
 			}
 		} else {
 			this._dataItem = null;
+		}
+	};
+	
+	public PropertyChange propertyChange{
+		&{
+			return this._propertyChange;
 		}
 	}
 
 	@Override
 	public void inject(Object node, String[] properties) {
+		this._container = (Node) node;
 		node[properties[0]] = this;   //node.template = this
+	}
+	
+	public void unInject(){
+		
 	}
 }
 
@@ -1493,52 +1288,38 @@ public class TemplateSetting extends BaseTemplateSetting implements MarkupExtens
 	
 	public TemplateSetting(Object option){
 		super(option);
+		if(this._dataContextCalback == null){
+			this._dataContextCalback = this._setupDataContext;
+		}
 	} 
-	
-	public Object dataItem{
-		&{
-			return this._dataItem;
-		}
-		+{
-			if(this._dataItem === value){
-				return;
-			}
-			
-			if(this._invariant){
-				return;
-			}
-			
-			this._dataItem = value;
-			
-			if(this._templateInstance == null){
-				this._templateInstance = createTemplate(value);
-			} else {
-				if(this._selectorInstance != null){
-					Template newTemp = createTemplate(value);
-					if(newTemp.getClass().id == this._templateInstance.getClass().id){
-						return;
-					}
-					undoTemplate();
-					this._templateInstance = newTemp;
-				}
-			}
-			applyTemplate();
-		}
-	}
 	
 	public void applyTemplate(){
 		internalApplyTemplate(this._dataItem, -1);
 	}
 	
 	protected void internalApplyTemplate(Object data, int index){
-		this._templateInstance.applyTemplate(container, data, index);
+		if(this._templateInstance == null){
+			this._templateInstance = createTemplate(data);
+		} else {
+			if(this._selectorInstance != null){
+				Template newTemp = createTemplate(data);
+				if(newTemp.getClass().id == this._templateInstance.getClass().id){
+					return;
+				}
+				undoTemplate();
+				this._templateInstance = newTemp;
+			} else {
+				return;
+			}
+		}
+		if(this._templateInstance != null) this._templateInstance.applyTemplate(container, data, index);
 	}
 	
 	/**
 	 * 撤销模板展开的节点
 	 */
 	public void undoTemplate(){
-		this._templateInstance.undoTemplate(this.container);
+		if(this._templateInstance != null) this._templateInstance.undoTemplate(this.container);
 	}
 	
 	private Template createTemplate(Object data){
@@ -1548,7 +1329,25 @@ public class TemplateSetting extends BaseTemplateSetting implements MarkupExtens
 		} else {
 			result =  (Template) this.template.newInstance();
 		}
+		
+		if(result != null){
+			result._dataContextCallback = _setupDataContext;
+		}
+		
 		return result;
+	}
+	
+	private DataContextCallback _setupDataContext = (Node node, Object data, int index) ->{
+		if(String.isNullOrEmpty(this._property)){
+			node.dataContext = new DataContext(this._property, data, DataContextMode.Ancestor);
+		}
+		return node;
+	};
+
+	@Override
+	protected void dirty() {
+		
+		
 	}
 }
 
@@ -1558,6 +1357,10 @@ public class CollectionTemplateSetting extends TemplateSetting implements Markup
 	
 	public CollectionTemplateSetting(Object option){
 		super(option); 
+		
+		if(this._dataContextCalback == null){
+			this._dataContextCalback = this._setupDataContext;
+		}
 		
 		if(option["applyTemplateCallback"] != null){
 			this._applyTemplateCallback = (ApplyTemplateCallback) option["applyTemplateCallback"];
@@ -1573,34 +1376,23 @@ public class CollectionTemplateSetting extends TemplateSetting implements Markup
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Object dataItem{
-		&{
-			return this._dataItem;
+	protected void dirty(){
+		undoTemplate();
+		
+		if(this._dataItem != null){
+			if(this._dataItem instanceof INotifyCollectionChanged){
+				((INotifyCollectionChanged<Object>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
+			}
 		}
-		+{
-			if(this._dataItem === value){
-				return;
-			}
-			
-			undoTemplate();
-			
-			if(this._dataItem != null){
-				if(this._dataItem instanceof INotifyCollectionChanged){
-					((INotifyCollectionChanged<Object>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
-				}
-			}
 
-			if((this._dataItem = value) != null){
-				if(this._dataItem instanceof INotifyCollectionChanged){
-					((INotifyCollectionChanged<Object>)this._dataItem).addCollectionChangedListener(this.onCollectionChanged);
-				}
-				
-				applyTemplate();
+		if(this._dataItem  != null){
+			if(this._dataItem instanceof INotifyCollectionChanged){
+				((INotifyCollectionChanged<Object>)this._dataItem).addCollectionChangedListener(this.onCollectionChanged);
 			}
+			
+			applyTemplate();
 		}
 	}
-	
 	public void applyTemplate(){
 		if(this._applyTemplateCallback != null){
 			this._applyTemplateCallback(this._dataItem);
@@ -1616,6 +1408,9 @@ public class CollectionTemplateSetting extends TemplateSetting implements Markup
 	
 	protected void internalApplyTemplate(Object data, int index){
 		Template template = createTemplate(data);
+		if(template == null){
+			return;
+		}
 		template.applyTemplate(container, data, index);
 		itemsMap.set(data, template);
 	}
@@ -1669,13 +1464,22 @@ public class CollectionTemplateSetting extends TemplateSetting implements Markup
 	};
 	
 	protected Template createTemplate(Object data){
+		Template result = null;
 		if(this._selectorInstance != null){
-			Template temp = this._selectorInstance.select(data);
-			if(temp != null) return temp;
+			result = this._selectorInstance.select(data);
+		} else {
+			if(this.template != null) result = (Template) this.template.newInstance();
 		}
 		
-		if(this.template != null) return (Template) this.template.newInstance();
+		if(result != null){
+			result._dataContextCallback = _setupDataContext;
+		}
 		
-		return null;
+		return result;
 	}
+	
+	private  DataContextCallback _setupDataContext = (Node n, Object d, int index) ->{
+		n.dataContext = new DataContext(null, d, DataContextMode.Standalone);
+		return n;
+	};
 }

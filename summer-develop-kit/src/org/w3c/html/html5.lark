@@ -63,7 +63,7 @@ import org.w3c.views.AbstractView;
 //  // XXX
 //  typedef any Date;
 
-public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
+public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLCollection {
 //    readonly attribute unsigned 
@@ -88,8 +88,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native long length{}
 //    getter HTMLOptionElement item(in unsigned long index);
 //    caller getter object namedItem(in String name);
-	  /*HTMLOptionElement*/
-	  option this[long index];
+	  HTMLOptionElement this[long index];
 	  Object this[String name];
 	  void add(final HTMLElement element);
 	  void add(final HTMLElement element, final HTMLElement before);
@@ -148,7 +147,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //             attribute 
 	  native HTMLElement body{}
 //	  readonly attribute 
-	  native head head{}
+	  native HTMLHeadElement head{}
 //    readonly attribute 
 	  native HTMLCollection images{}
 //    readonly attribute 
@@ -421,40 +420,6 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  //[LenientThis] 
 	  public native MouseEventHandler onmouseleave{}
 	  public native EventHandler onresize{}
-     
-	  public Template template{ 
-		  &{ 
-			  return this["__template"] == undefined ? null : (Template)this["__template"];
-		  } 
-		  +{
-			  this["__template"] = value;
-		  }
-	  }
-    
-	  public Template itemTemplate{
-		  &{
-			  return this["__itemTemplate"] == undefined ? null : (Template)this["__itemTemplate"];
-		  }
-		  +{
-			  this["__itemTemplate"] = value; 
-		  }
-	  }
-	  
-	  public DataContext dataContext{
-		  &{
-			  if(this["__dataContext"] === undefined){
-				  return ((HTMLElement)parentNode).dataContext;
-			  } else {
-				  return (DataContext)this["__dataContext"];
-			  }
-		  }
-		  +{
-			  if(this["__dataContext"] == value){ 
-				  return;
-			  }
-			  this["__dataContext"] = value;
-		  }
-	  }
 	  
 	  //Selector API
 	  public native  HTMLElement querySelector(String selectors);
@@ -520,14 +485,14 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //  readonly attribute float clientHeight;
 //}
 
-  public native interface base /*HTMLBaseElement*/ extends HTMLElement {
+  public native interface HTMLBaseElement extends HTMLElement {
 //             attribute 
 	  native String href{}
 //             attribute 
 	  native String target{}
   }
   
-  public native interface link/*HTMLLinkElement*/ extends HTMLElement {
+  public native interface HTMLLinkElement extends HTMLElement {
 //             attribute 
 	  native boolean disabled{}
 //             attribute 
@@ -546,7 +511,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native String sizes{}
   }
 
-  public native interface meta/*HTMLMetaElement*/ extends HTMLElement {
+  public native interface HTMLMetaElement extends HTMLElement {
 //             attribute 
 	  native String content{}
 //             attribute 
@@ -555,7 +520,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native String httpEquiv{}
   }
 
-  public native interface style /*HTMLStyleElement*/ extends HTMLElement {
+  public native interface HTMLStyleElement extends HTMLElement {
 //             attribute 
 	  native boolean disabled{}
 //             attribute 
@@ -566,7 +531,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native boolean scoped{}
   }
 
-  public native interface script/*HTMLScriptElement*/ extends HTMLElement {
+  public native interface HTMLScriptElement extends HTMLElement {
 //             attribute
 	  native String src{}
 //             attribute 
@@ -581,7 +546,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native String text{}
   }
 
-  public native interface body/*HTMLBodyElement*/ extends HTMLElement {
+  public native interface HTMLBodyElement extends HTMLElement {
 //    attribute 
 	  native EventHandler onbeforeunload{}
 //      attribute 
@@ -616,38 +581,31 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native EventHandler onundo{}
   }
   
-  public native interface head /*HTMLHeadElement*/ extends HTMLElement {}
+  public native interface HTMLHeadElement extends HTMLElement {}
 
-  public native interface title /*HTMLTitleElement*/ extends HTMLElement {
+  public native interface HTMLTitleElement extends HTMLElement {
 //      attribute 
 	  native String text{}
   }
 
-  public native interface blockquote /*HTMLQuoteElement*/ extends HTMLElement {
+  public native interface HTMLQuoteElement extends HTMLElement {
 //       attribute 
 	  native String cite{}
   }
   
-  public native interface ul /*HTMLOListElement*/ extends HTMLElement {
+  public native interface HTMLOListElement extends HTMLElement {
 //    attribute 
 	  native boolean reversed{}
 //  attribute 
 	  native long start{}
 }
 
-  public native interface ol /*HTMLOListElement*/ extends HTMLElement {
-//      attribute 
-	  native boolean reversed{}
-//    attribute 
-	  native long start{}
-  }
-
-  public native interface li /*HTMLLIElement*/ extends HTMLElement {
+  public native interface HTMLLIElement extends HTMLElement {
 //  	attribute 
 	  native long value{}
   }
 
-  public native interface a /*HTMLAnchorElement*/ extends HTMLElement {
+  public native interface HTMLAnchorElement extends HTMLElement {
 //	  stringifier attribute 
 	  native String href{}
 //  attribute 
@@ -675,7 +633,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  }
   }
 
-  public native interface time /*HTMLTimeElement*/ extends HTMLElement {
+  public native interface HTMLTimeElement extends HTMLElement {
 //    attribute 
 	  native String dateTime{}
 //    readonly attribute 
@@ -689,7 +647,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native long timezone{}
   }
 
-  public native interface progress /*HTMLProgressElement*/ extends HTMLElement {
+  public native interface HTMLProgressElement extends HTMLElement {
 //   	attribute
 	  native float value{}
 //    	attribute 
@@ -701,7 +659,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native NodeList labels{}
   }
 
-  public native interface meter/*HTMLMeterElement*/ extends HTMLElement {
+  public native interface HTMLMeterElement extends HTMLElement {
 //  	attribute
 	  native float value{}
 //	attribute
@@ -728,7 +686,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //  [NamedConstructor=Image(),
 //   NamedConstructor=Image(final unsigned long width),
 //   NamedConstructor=Image(final unsigned long width, final unsigned long height)]
-  public native interface img /*HTMLImageElement*/ extends HTMLElement {
+  public native interface HTMLImageElement extends HTMLElement {
 //             attribute 
 	  native String alt{}
 //             attribute 
@@ -752,7 +710,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native long naturalHeight{}
   }
 
-  public native interface iframe /*HTMLIFrameElement*/ extends HTMLElement {
+  public native interface HTMLIFrameElement extends HTMLElement {
 //             attribute 
 	  native String src{}
 //             attribute 
@@ -776,7 +734,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native Window contentWindow{}
   }
 
-  public native interface embed /*HTMLEmbedElement*/ extends HTMLElement {
+  public native interface HTMLEmbedElement extends HTMLElement {
 //             attribute 
 	  native String src{}
 //             attribute 
@@ -787,7 +745,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native String height{}
   }
 
-  public native interface object /*HTMLObjectElement*/ extends HTMLElement {
+  public native interface HTMLObjectElement extends HTMLElement {
 //             attribute 
 	  native String data{}
 //             attribute 
@@ -797,8 +755,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //             attribute 
 	  native String useMap{}
 //    readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
 //             attribute 
 	  native String width{}
 //             attribute
@@ -821,14 +778,14 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  void setCustomValidity(String error);
   }
 
-  public native interface param /*HTMLParamElement*/ extends HTMLElement {
+  public native interface HTMLParamElement extends HTMLElement {
 //             attribute 
 	  native String name{}
 //             attribute 
 	  native String value{}
   }
 
-  public native interface source /*HTMLSourceElement*/ extends HTMLElement {
+  public native interface HTMLSourceElement extends HTMLElement {
 //             attribute
 	  native String src{}
 //             attribute 
@@ -921,7 +878,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native boolean muted{}
   }
 
-  public native interface video /*HTMLVideoElement*/ extends HTMLMediaElement {
+  public native interface HTMLVideoElement extends HTMLMediaElement {
 //             attribute 
 	  native String width{}
 //             attribute 
@@ -936,7 +893,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 
 //  [NamedConstructor=Audio(),
 //   NamedConstructor=Audio(final String src)]
-  public native interface audio /*HTMLAudioElement*/ extends HTMLMediaElement {
+  public native interface HTMLAudioElement extends HTMLMediaElement {
     // no members
   }
 
@@ -965,7 +922,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  float end(final /*unsigned*/ long index);
   }
 
-  public native interface canvas /*HTMLCanvasElement*/ extends HTMLElement {
+  public native interface HTMLCanvasElement extends HTMLElement {
 //             attribute unsigned 
 	  native long width{}
 //             attribute unsigned 
@@ -988,7 +945,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 
     // back-reference to the canvas
 //    readonly attribute 
-	  /*HTMLCanvasElement*/ canvas canvas{}
+	  HTMLCanvasElement canvas{}
 
     // state
     void save(); // push state on state stack
@@ -1014,8 +971,8 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
     native Object fillStyle{} // (default black)
     CanvasGradient createLinearGradient(final float x0, final float y0, final float x1, final float y1);
     CanvasGradient createRadialGradient(final float x0, final float y0, final float r0, final float x1, final float y1, final float r1);
-    CanvasPattern createPattern(final img /*HTMLImageElement*/ image, final String repetition);
-    CanvasPattern createPattern(final canvas /*HTMLCanvasElement*/ image, final String repetition);
+    CanvasPattern createPattern(final HTMLImageElement image, final String repetition);
+    CanvasPattern createPattern(final HTMLCanvasElement image, final String repetition);
 
     // line caps/joins
 //             attribute 
@@ -1071,15 +1028,15 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
     TextMetrics measureText(final String text);
 
     // drawing images
-    void drawImage(final img /*HTMLImageElement*/ image, final float dx, final float dy, final float dh);
-    void drawImage(final img /*HTMLImageElement*/ image, final float dx, final float dy, final float dw, final float dh);
-    void drawImage(final img /*HTMLImageElement*/ image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
-    void drawImage(final canvas /*HTMLCanvasElement*/ image, final float dx, final float dy, final float dh);
-    void drawImage(final canvas /*HTMLCanvasElement*/ image, final float dx, final float dy, final float dw, final float dh);
-    void drawImage(final canvas /*HTMLCanvasElement*/ image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
-    void drawImage(final video /*HTMLVideoElement*/ image, final float dx, final float dy, final float dh);
-    void drawImage(final video /*HTMLVideoElement*/ image, final float dx, final float dy, final float dw, final float dh);
-    void drawImage(final video /*HTMLVideoElement*/ image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
+    void drawImage(final HTMLImageElement image, final float dx, final float dy, final float dh);
+    void drawImage(final HTMLImageElement image, final float dx, final float dy, final float dw, final float dh);
+    void drawImage(final HTMLImageElement image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
+    void drawImage(final HTMLCanvasElement image, final float dx, final float dy, final float dh);
+    void drawImage(final HTMLCanvasElement image, final float dx, final float dy, final float dw, final float dh);
+    void drawImage(final HTMLCanvasElement image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
+    void drawImage(final HTMLVideoElement image, final float dx, final float dy, final float dh);
+    void drawImage(final HTMLVideoElement image, final float dx, final float dy, final float dw, final float dh);
+    void drawImage(final HTMLVideoElement image, final float sx, final float sy, final float sw, final float sh, final float dx, final float dy, final float dw, final float dh);
 
     // pixel manipulation
     ImageData createImageData(final float sw, final float sh);
@@ -1117,7 +1074,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native long length{}
   }
 
-  public native interface map /*HTMLMapElement*/ extends HTMLElement {
+  public native interface HTMLMapElement extends HTMLElement {
 //             attribute 
 	  native String name{}
 //    readonly attribute 
@@ -1126,7 +1083,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native HTMLCollection images{}
   }
 
-  public native interface area /*HTMLAreaElement*/ extends HTMLElement {
+  public native interface HTMLAreaElement extends HTMLElement {
 //    attribute 
 	  native String alt{}
 //     attribute 
@@ -1152,10 +1109,9 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native String type{}
   }
 
-  public native interface table /*HTMLTableElement*/ extends HTMLElement {
+  public native interface HTMLTableElement extends HTMLElement {
 //             attribute 
-	  /*HTMLTableCaptionElement*/
-	  native caption caption{}
+	  native HTMLTableCaptionElement caption{}
 	  HTMLElement createCaption();
 	  void deleteCaption();
 //             attribute 
@@ -1179,7 +1135,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native boolean sortable{} // - Enables a sorting interface for the table
   }
 
-  public native interface caption /*HTMLTableCaptionElement*/ extends HTMLElement {
+  public native interface HTMLTableCaptionElement extends HTMLElement {
 //             attribute
 	  native String align{}
   }
@@ -1197,7 +1153,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  void deleteRow(final long index);
   }
 
-  public native interface tr /*HTMLTableRowElement*/ extends HTMLElement {
+  public native interface HTMLTableRowElement extends HTMLElement {
 //    readonly attribute 
 	  native long rowIndex{}
 //    readonly attribute 
@@ -1220,14 +1176,14 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native long cellIndex{}
   }
 
-  public native interface td /*HTMLTableDataCellElement*/ extends HTMLTableCellElement {};
+  public native interface HTMLTableDataCellElement extends HTMLTableCellElement {};
 
-  public native interface th /*HTMLTableHeaderCellElement*/ extends HTMLTableCellElement {
+  public native interface HTMLTableHeaderCellElement extends HTMLTableCellElement {
 //             attribute 
 	  native String scope{}
   }
 
-  public native interface form /*HTMLFormElement*/ extends HTMLElement {
+  public native interface HTMLFormElement extends HTMLElement {
 //             attribute 
 	  native String acceptCharset{}
 //             attribute
@@ -1261,11 +1217,11 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
     void dispatchFormChange();
   }
 
-  public native interface fieldset /*HTMLFieldSetElement*/ extends HTMLElement {
+  public native interface HTMLFieldSetElement extends HTMLElement {
 //             attribute 
 	  native boolean disabled{}
 //    readonly attribute 
-	  /*HTMLFormElement*/form form{}
+	  HTMLFormElement form{}
 //             attribute 
 	  native String name{}
 
@@ -1285,17 +1241,16 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  void setCustomValidity(final String error);
   }
 
-  public native interface label /*HTMLLabelElement*/ extends HTMLElement {
+  public native interface HTMLLabelElement extends HTMLElement {
 //    readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
 //             attribute 
 	  native String htmlFor{}
 //    readonly attribute
 	  native HTMLElement control{}
   }
 
-  public native interface input /*HTMLInputElement*/ extends HTMLElement {
+  public native interface HTMLInputElement extends HTMLElement {
 //             attribute
 	  native String accept{}
 //             attribute 
@@ -1311,8 +1266,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //             attribute 
 	  native boolean disabled{}
 //    readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
 //             attribute 
 	  native String formAction{}
 //             attribute 
@@ -1365,8 +1319,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //             attribute
 	  native float valueAsNumber{}
 //    readonly attribute 
-      /*HTMLOptionElement*/
-	  native option selectedOption{}
+	  native HTMLOptionElement selectedOption{}
 //             attribute 
       native String width{}
 
@@ -1396,14 +1349,13 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
       native FileList files{}
   }
 
-  public native interface button /*HTMLButtonElement*/ extends HTMLElement {
+  public native interface HTMLButtonElement extends HTMLElement {
 //             attribute 
 	  native boolean autofocus{}
 //             attribute 
 	  native boolean disabled{}
 //    readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
 //             attribute 
 	  native String formaction{}
 //             attribute 
@@ -1434,14 +1386,13 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native NodeList labels{}
   }
 
-  public native interface select /*HTMLSelectElement*/ extends HTMLElement {
+  public native interface HTMLSelectElement extends HTMLElement {
 //             attribute 
 	  native boolean autofocus{}
 //             attribute 
 	  native boolean disabled{}
 //    readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
 //             attribute 
 	  native boolean multiple{}
 //             attribute 
@@ -1485,12 +1436,12 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
       native NodeList labels{}
   }
 
-  public native interface datalist /*HTMLDataListElement*/ extends HTMLElement {
+  public native interface HTMLDataListElement extends HTMLElement {
 //    readonly attribute 
 	  native HTMLCollection options{}
   }
 
-  public native interface optgroup /*HTMLOptGroupElement*/ extends HTMLElement {
+  public native interface HTMLOptGroupElement extends HTMLElement {
 //             attribute
 	  native boolean disabled{}
 //             attribute 
@@ -1502,12 +1453,11 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //   NamedConstructor=Option(final String text, final String value),
 //   NamedConstructor=Option(final String text, final String value, final boolean defaultSelected),
 //   NamedConstructor=Option(final String text, final String value, final boolean defaultSelected, final boolean selected)]
-  public native interface option /*HTMLOptionElement*/ extends HTMLElement {
+  public native interface HTMLOptionElement extends HTMLElement {
 //             attribute 
 	  native boolean disabled{}
 //    readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
 //             attribute 
 	  native String label{}
 //             attribute 
@@ -1523,7 +1473,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  native long index{}
   }
 
-  public native interface textarea /*HTMLTextAreaElement*/ extends HTMLElement {
+  public native interface HTMLTextAreaElement extends HTMLElement {
 //             attribute 
 	  native boolean autofocus{}
 //             attribute unsigned 
@@ -1531,8 +1481,7 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 //             attribute 
 	  native boolean disabled{}
 //    readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
 //             attribute
 	  native long maxLength{}
 //             attribute 
@@ -1575,12 +1524,11 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  void setSelectionRange(final /*unsigned*/ long start, final /*unsigned*/ long end);
   }
 
-  public native interface output /*HTMLOutputElement*/ extends HTMLElement {
+  public native interface HTMLOutputElement extends HTMLElement {
 //             attribute 
 	  native String htmlFor{}
 //    readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
 //             attribute 
 	  native String name{}
 
@@ -1645,15 +1593,6 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
     // XXX void click(); // shadows HTMLElement.click()
   }
 
-  public native interface HTMLBrowserButtonElement extends HTMLElement {
-//             attribute 
-	  native String type{}
-//    readonly attribute 
-	  native boolean supported{}
-//    readonly attribute 
-	  native boolean disabled{}
-  }
-
   public native interface HTMLMenuElement extends HTMLElement {
 //             attribute 
 	  native String type{}
@@ -1682,10 +1621,9 @@ public native interface html /*HTMLHtmlElement*/ extends HTMLElement {}
 	  void click();
   }
 
-  public native interface legend /*HTMLLegendElement*/ extends HTMLElement {
+  public native interface HTMLLegendElement extends HTMLElement {
 //	  readonly attribute 
-	  /*HTMLFormElement*/
-	  native form form{}
+	  native HTMLFormElement form{}
   }
 
   public native interface BarProp {
@@ -1853,29 +1791,6 @@ public native interface NavigatorAbilities {
 	  void removeAllRanges();
   }
 
-//  public native interface DragEvent extends MouseEvent {
-////    readonly attribute 
-//	  native DataTransfer dataTransfer{}
-//
-//	  void initDragEvent(final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final AbstractView viewArg, final long detailArg, final long screenXArg, final long screenYArg, final long clientXArg, final long clientYArg, final boolean ctrlKeyArg, final boolean altKeyArg, final boolean shiftKeyArg, final boolean metaKeyArg, final /*unsigned*/ short buttonArg, final EventTarget relatedTargetArg, final DataTransfer dataTransferArg);
-//	  void initDragEventNS(final String namespaceURIArg, final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final AbstractView viewArg, final long detailArg, final long screenXArg, final long screenYArg, final long clientXArg, final long clientYArg, final /*unsigned*/ short buttonArg, final EventTarget relatedTargetArg, final String modifiersListArg, final DataTransfer dataTransferArg);
-//  }
-
-//  public native interface DataTransfer {
-////             attribute 
-//	  native String dropEffect{}
-////             attribute 
-//	  native String effectAllowed{}
-////    readonly attribute 
-//	  native DOMStringList types{}
-//	  void clearData();
-//	  void clearData(final /*optional*/ String format);
-//	  void setData(final String format, final String data);
-//	  String getData(final String format);
-//	  void setDragImage(final Element image, final long x, final long y);
-//	  void addElement(final Element element);
-//  }
-
   public native interface UndoManager {
 //    readonly attribute unsigned 
 	  long length{}
@@ -1963,14 +1878,14 @@ public native interface MediaModeAbstractView {
 	native String mediaMode{}
 }
 
-public native interface div /*HTMLDivElement*/ extends HTMLElement {
+public native interface HTMLDivElement extends HTMLElement {
 	
 }
 
-public native interface span /*HTMLSpanElement*/  extends HTMLElement {}
-public native interface pre /*HTMLPreElement*/ extends HTMLElement {}
-public native interface hr /*HTMLHRElement*/ extends HTMLElement {}
-public native interface p /*HTMLParagraphElement*/ extends HTMLElement {}
+public native interface HTMLSpanElement  extends HTMLElement {}
+public native interface HTMLPreElement extends HTMLElement {}
+public native interface HTMLHRElement extends HTMLElement {}
+public native interface HTMLParagraphElement extends HTMLElement {}
 public native interface HTMLDListElement extends HTMLElement {}
 public native interface HTMLHeadingElement extends HTMLElement {}
 public native interface HTMLDataElement extends HTMLElement {
@@ -2082,7 +1997,7 @@ public native interface keygen /*HTMLKeygenElement*/ extends HTMLElement {
 //    attribute 
 	native boolean disabled{}
 //    readonly attribute 
-	/*HTMLFormElement*/form/*?*/ form{}
+	HTMLFormElement /*?*/ form{}
 //    attribute 
 	native String keytype{}
 //    attribute 
@@ -2109,67 +2024,67 @@ public native interface template /*HTMLTemplateElement*/ extends HTMLElement {
 	native DocumentFragment content{}
 }
 
-public interface br /*HTMLBRElement*/ extends HTMLElement {}
-public interface wbr /*HTMLBRElement*/ extends HTMLElement {}
-
-public interface dd extends HTMLElement {} 
-public interface dl extends HTMLElement {} 
-public interface dt extends HTMLElement {} 
-
-public interface figure extends HTMLElement {} 
-public interface figcaption extends HTMLElement {}
-public interface main extends HTMLElement {}
-public interface article extends HTMLElement {}
-public interface section extends HTMLElement {} 
-public interface nav extends HTMLElement {}
-public interface aside extends HTMLElement {} 
-public interface header extends HTMLElement {} 
-public interface footer extends HTMLElement {} 
-public interface address extends HTMLElement {} 
-
-public interface em extends HTMLElement {} 
-public interface strong extends HTMLElement {} 
-public interface small extends HTMLElement {} 
-public interface s extends HTMLElement {}
-public interface cite extends HTMLElement {}
-public interface q extends HTMLElement {}
-public interface dfn extends HTMLElement {} 
-public interface abbr extends HTMLElement {}
-
-public interface code extends HTMLElement {}
-
-public interface var extends HTMLElement {} 
-public interface samp extends HTMLElement {} 
-public interface kbd extends HTMLElement {} 
-public interface sub extends HTMLElement {} 
-public interface sup extends HTMLElement {}
-public interface i extends HTMLElement {}
-public interface b extends HTMLElement {}
-public interface u extends HTMLElement {}
-public interface mark extends HTMLElement {} 
-public interface ruby extends HTMLElement {} 
-public interface rb extends HTMLElement {} 
-public interface rt extends HTMLElement {}
-public interface rtc extends HTMLElement {}
-public interface rp extends HTMLElement {}
-public interface bdi extends HTMLElement {}
-public interface bdo extends HTMLElement {}
-public interface ins extends HTMLModElement{}
-public interface del extends HTMLModElement{}
-
-public interface tbody extends HTMLTableSectionElement {}
-public interface thead extends HTMLTableSectionElement {}
-public interface tfoot extends HTMLTableSectionElement {}
-
-public interface colgroup extends HTMLTableColElement{}
-public interface col extends HTMLTableColElement{}
-
-public interface h1 extends HTMLHeadingElement{}
-public interface h2 extends HTMLHeadingElement{}
-public interface h3 extends HTMLHeadingElement{}
-public interface h4 extends HTMLHeadingElement{}
-public interface h5 extends HTMLHeadingElement{}
-public interface h6 extends HTMLHeadingElement{}
+public interface HTMLBRElement extends HTMLElement {}
+//public interface wbr /*HTMLBRElement*/ extends HTMLElement {}
+//
+//public interface dd extends HTMLElement {} 
+//public interface dl extends HTMLElement {} 
+//public interface dt extends HTMLElement {} 
+//
+//public interface figure extends HTMLElement {} 
+//public interface figcaption extends HTMLElement {}
+//public interface main extends HTMLElement {}
+//public interface article extends HTMLElement {}
+//public interface section extends HTMLElement {} 
+//public interface nav extends HTMLElement {}
+//public interface aside extends HTMLElement {} 
+//public interface header extends HTMLElement {} 
+//public interface footer extends HTMLElement {} 
+//public interface address extends HTMLElement {} 
+//
+//public interface em extends HTMLElement {} 
+//public interface strong extends HTMLElement {} 
+//public interface small extends HTMLElement {} 
+//public interface s extends HTMLElement {}
+//public interface cite extends HTMLElement {}
+//public interface q extends HTMLElement {}
+//public interface dfn extends HTMLElement {} 
+//public interface abbr extends HTMLElement {}
+//
+//public interface code extends HTMLElement {}
+//
+//public interface var extends HTMLElement {} 
+//public interface samp extends HTMLElement {} 
+//public interface kbd extends HTMLElement {} 
+//public interface sub extends HTMLElement {} 
+//public interface sup extends HTMLElement {}
+//public interface i extends HTMLElement {}
+//public interface b extends HTMLElement {}
+//public interface u extends HTMLElement {}
+//public interface mark extends HTMLElement {} 
+//public interface ruby extends HTMLElement {} 
+//public interface rb extends HTMLElement {} 
+//public interface rt extends HTMLElement {}
+//public interface rtc extends HTMLElement {}
+//public interface rp extends HTMLElement {}
+//public interface bdi extends HTMLElement {}
+//public interface bdo extends HTMLElement {}
+//public interface ins extends HTMLModElement{}
+//public interface del extends HTMLModElement{}
+//
+//public interface tbody extends HTMLTableSectionElement {}
+//public interface thead extends HTMLTableSectionElement {}
+//public interface tfoot extends HTMLTableSectionElement {}
+//
+//public interface colgroup extends HTMLTableColElement{}
+//public interface col extends HTMLTableColElement{}
+//
+//public interface h1 extends HTMLHeadingElement{}
+//public interface h2 extends HTMLHeadingElement{}
+//public interface h3 extends HTMLHeadingElement{}
+//public interface h4 extends HTMLHeadingElement{}
+//public interface h5 extends HTMLHeadingElement{}
+//public interface h6 extends HTMLHeadingElement{}
 
 
 
