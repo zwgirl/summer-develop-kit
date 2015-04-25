@@ -8,7 +8,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.views.AbstractView;
-
+ 
 
 // Introduced in DOM Level 2:
 public native interface CSSRuleList {

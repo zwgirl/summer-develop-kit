@@ -1,6 +1,6 @@
 @Module 
 package java.lang; 
-
+ 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
@@ -400,10 +400,10 @@ public native class Array<T> {
 	public native Array<T> splice(int start, int deleteCount, T ... items);
 	
 	/**
-	 * unshift() ·½·¨½«°ÑËüµÄ²ÎÊı²åÈë arrayObject µÄÍ·²¿£¬²¢½«ÒÑ¾­´æÔÚµÄÔªËØË³´ÎµØÒÆµ½½Ï¸ßµÄÏÂ±ê´¦£¬ÒÔ±ãÁô³ö¿Õ¼ä¡£¸Ã·½·¨µÄµÚÒ»¸ö²ÎÊı½«³ÉÎªÊı×éµÄĞÂÔªËØ 0£¬
-	 * Èç¹û»¹ÓĞµÚ¶ş¸ö²ÎÊı£¬Ëü½«³ÉÎªĞÂµÄÔªËØ 1£¬ÒÔ´ËÀàÍÆ¡£
-	 * Çë×¢Òâ£¬unshift() ·½·¨²»´´½¨ĞÂµÄ´´½¨£¬¶øÊÇÖ±½ÓĞŞ¸ÄÔ­ÓĞµÄÊı×é¡£
-	 * ·µ»ØÖµ  Êı×éµÄĞÂ³¤¶È¡£
+	 * unshift() é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿä¾¥è¯§æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹· arrayObject é”Ÿæ–¤æ‹·å¤´é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿçª–æ’…æ‹·é”Ÿæ–¤æ‹·é”ŸèŠ‚ç¢‰æ‹·å…ƒé”Ÿæ–¤æ‹·é¡ºé”Ÿè½¿ç¢‰æ‹·é”Ÿç‹¡ç¢‰æ‹·é”Ÿè¾ƒé«˜ç¢‰æ‹·é”Ÿé“°æ ‡å¤„é”Ÿæ–¤æ‹·é”Ÿçš†æ†‹æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿç§¸é—´ã€‚é”ŸçŸ«å‡¤æ‹·é”Ÿæ–¤æ‹·é”Ÿä¾¥ç¢‰æ‹·ä¸€é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·ä¸ºé”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿçš†îæ‹·é”Ÿï¿½ 0é”Ÿæ–¤æ‹·
+	 * é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æ¢°è¯™é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿè½¿îæ‹·ç¢Œé”Ÿçš†îæ‹·é”Ÿï¿½ 1é”Ÿæ–¤æ‹·é”Ÿçš†è¾¾æ‹·é”Ÿæ–¤æ‹·é”Ÿç‹¡â˜…æ‹·
+	 * é”Ÿæ–¤æ‹·æ³¨é”Ÿè§£ï¼Œunshift() é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿé“°çš„è¾¾æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·ç›´é”Ÿæ–¤æ‹·é”Ÿç«é©æ‹·åŸé”Ÿå«ç¢‰æ‹·é”Ÿæ–¤æ‹·é”Ÿä»‹ã€‚
+	 * é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·å€¼  é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é²é”Ÿæ–¤æ‹·å–é”Ÿï¿½
 	 * @param item
 	 */
 	public native int unshift(T ... item);
@@ -1692,9 +1692,7 @@ public class JSON {
 }
 
 /**
- * ´ú±í±àÒë³öÀ´Ò»¸ö¶ÀÁ¢htmlÎÄ¼ş£¬²¢ÇÒÒ»¶¨ÒªÓĞhtmlÎª¸ùÔªËØµÄhtmlÔªËØ¶¨Òå¡£
- * @author cym
- *
+ * a html page
  */
 public interface Page {
 
@@ -1703,14 +1701,29 @@ public interface Page {
 public class xlink {
 	public static final String xmlns = "http://www.w3.org/1999/xlink";
 	public static String href{};
-
+	public static String type{}
+	public static String role{}
+	public static String show{}
 }
 
-public class xmlns {
-
-}
-
-public class x {
+public class lark {
 	public static final String xmlns = "http://www.lark.org/2015/x";
 	public static String name{};
+}
+
+public class xml {
+	public static final String xmlns = "http://www.w3c.org/xml";
+	
+	/*
+	 * The xml:lang attribute gives XML authors a consistent way to identify the language 
+	 * contained within a particular element. Combined with XML's support for Unicode, 
+	 * this should make it easier to present internationalized versions of information. 
+	 * Developers can create documents with built-in translations, or make it easier for 
+	 * applications to know when to provide a translation.
+	 */
+	public static String lang {};
+	/**
+	 * default or preserve
+	 */
+	public static String space {};
 }
