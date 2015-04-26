@@ -269,23 +269,23 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String backgroundAttachment{}
+	String backgroundAttachment{}	//background-attachment
  // throws DOMException) on setting
 
 // attribute 
-	String backgroundColor{}
+	String backgroundColor{}		//background-color
  // throws DOMException) on setting
 
 // attribute 
-	String backgroundImage{}
+	String backgroundImage{}		//background-image
  // throws DOMException) on setting
 
 // attribute 
-	String backgroundPosition{}
+	String backgroundPosition{}		//background-position
  // throws DOMException) on setting
 
 // attribute 
-	String backgroundRepeat{}
+	String backgroundRepeat{}	//background-repeat
  // throws DOMException) on setting
 
 // attribute 
@@ -293,87 +293,87 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String borderCollapse{}
+	String borderCollapse{}		//border-collapse
  // throws DOMException) on setting
 
 // attribute 
-	String borderColor{}
+	String borderColor{}	//border-color
  // throws DOMException) on setting
 
 // attribute 
-	String borderSpacing{}
+	String borderSpacing{}	//border-spacing
  // throws DOMException) on setting
 
 // attribute 
-	String borderStyle{}
+	String borderStyle{}	//border-style
  // throws DOMException) on setting
 
 // attribute 
-	String borderTop{}
+	String borderTop{}	//border-top
  // throws DOMException) on setting
 
 // attribute 
-	String borderRight{}
+	String borderRight{}	//border-right
  // throws DOMException) on setting
 
 // attribute 
-	String borderBottom{}
+	String borderBottom{}	//border-bottom
  // throws DOMException) on setting
 
 // attribute 
-	String borderLeft{}
+	String borderLeft{}	//border-left
  // throws DOMException) on setting
 
 // attribute 
-	String borderTopColor{}
+	String borderTopColor{}	//border-top-color
  // throws DOMException) on setting
 
 // attribute 
-	String borderRightColor{}
+	String borderRightColor{}	//border-right-color
  // throws DOMException) on setting
 
 // attribute
-	String borderBottomColor{}
+	String borderBottomColor{}	//border-bottom-color
  // throws DOMException) on setting
 
 // attribute 
-	String borderLeftColor{}
+	String borderLeftColor{}		//border-left-color
  // throws DOMException) on setting
 
 // attribute 
-	String borderTopStyle{}
+	String borderTopStyle{}		//border-top-style
  // throws DOMException) on setting
 
 // attribute 
-	String borderRightStyle{}
+	String borderRightStyle{}		//border-right-style
  // throws DOMException) on setting
 
 // attribute 
-	String borderBottomStyle{}
+	String borderBottomStyle{}	//border-bottom-style
  // throws DOMException) on setting
 
 // attribute 
-	String borderLeftStyle{}
+	String borderLeftStyle{}		//border-left-style
  // throws DOMException) on setting
 
 // attribute 
-	String borderTopWidth{}
+	String borderTopWidth{}		//border-top-width
  // throws DOMException) on setting
 
 // attribute 
-	String borderRightWidth{}
+	String borderRightWidth{}		//border-right-width
  // throws DOMException) on setting
 
 // attribute 
-	String borderBottomWidth{}
+	String borderBottomWidth{}		//border-bottom-width
  // throws DOMException) on setting
 
 // attribute 
-	String borderLeftWidth{}
+	String borderLeftWidth{}	//border-left-width
  // throws DOMException) on setting
 
 // attribute 
-	String borderWidth{}
+	String borderWidth{}		//border-width
  // throws DOMException) on setting
 
 // attribute
@@ -381,7 +381,7 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String captionSide{}
+	String captionSide{}		//caption-side
  // throws DOMException) on setting
 
 // attribute
@@ -401,11 +401,11 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String counterIncrement{}
+	String counterIncrement{}	//counter-increment
  // throws DOMException) on setting
 
 // attribute 
-	String counterReset{}
+	String counterReset{}	//counter-reset
  // throws DOMException) on setting
 
 // attribute 
@@ -413,11 +413,11 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String cueAfter{}
+	String cueAfter{}		//cue-after
  // throws DOMException) on setting
 
 // attribute 
-	String cueBefore{}
+	String cueBefore{}		//cue-before
  // throws DOMException) on setting
 
 // attribute 
@@ -437,11 +437,11 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String emptyCells{}
+	String emptyCells{}		//empty-cells
  // throws DOMException) on setting
 
 // attribute 
-	String cssFloat{}
+	String cssFloat{}		//css-float
  // throws DOMException) on setting
 
 // attribute 
@@ -449,31 +449,31 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String fontFamily{}
+	String fontFamily{}		//font-family
  // throws DOMException) on setting
 
 // attribute 
-	String fontSize{}
+	String fontSize{}		//font-size
  // throws DOMException) on setting
 
 // attribute 
-	String fontSizeAdjust{}
+	String fontSizeAdjust{}		//font-size-adjust
  // throws DOMException) on setting
 
 // attribute 
-	String fontStretch{}
+	String fontStretch{}		//font-stretch
  // throws DOMException) on setting
 
 // attribute 
-	String fontStyle{}
+	String fontStyle{}		//font-style
  // throws DOMException) on setting
 
 // attribute 
-	String fontVariant{}
+	String fontVariant{}		//font-variant
  // throws DOMException) on setting
 
 // attribute 
-	String fontWeight{}
+	String fontWeight{}		//font-weight
  // throws DOMException) on setting
 
 // attribute 
@@ -485,27 +485,27 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String letterSpacing{}
+	String letterSpacing{}	//letter-spacing
  // throws DOMException) on setting
 
 // attribute 
-	String lineHeight{}
+	String lineHeight{}		//line-height
  // throws DOMException) on setting
 
 // attribute 
-	String listStyle{}
+	String listStyle{}		//list-style
  // throws DOMException) on setting
 
 // attribute 
-	String listStyleImage{}
+	String listStyleImage{}		//list-style-image
  // throws DOMException) on setting
 
 // attribute 
-	String listStylePosition{}
+	String listStylePosition{}	//list-style-position
  // throws DOMException) on setting
 
 // attribute 
-	String listStyleType{}
+	String listStyleType{}	//list-style-type
  // throws DOMException) on setting
 
 // attribute 
@@ -513,23 +513,23 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String marginTop{}
+	String marginTop{}	//margin-top
  // throws DOMException) on setting
 
 // attribute 
-	String marginRight{}
+	String marginRight{}	//margin-right
  // throws DOMException) on setting
 
 // attribute 
-	String marginBottom{}
+	String marginBottom{}	//margin-bottom
  // throws DOMException) on setting
 
 // attribute 
-	String marginLeft{}
+	String marginLeft{}		//margin-left
  // throws DOMException) on setting
 
 // attribute 
-	String markerOffset{}
+	String markerOffset{}	//marker-offset
  // throws DOMException) on setting
 
 // attribute 
@@ -537,19 +537,19 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String maxHeight{}
+	String maxHeight{}	//max-height
  // throws DOMException) on setting
 
 // attribute 
-	String maxWidth{}
+	String maxWidth{}	//max-width
  // throws DOMException) on setting
 
 // attribute 
-	String minHeight{}
+	String minHeight{}	//min-height
  // throws DOMException) on setting
 
 // attribute 
-	String minWidth{}
+	String minWidth{}	//min-width
  // throws DOMException) on setting
 
 // attribute 
@@ -561,15 +561,15 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String outlineColor{}
+	String outlineColor{}	//outline-color
  // throws DOMException) on setting
 
 // attribute 
-	String outlineStyle{}
+	String outlineStyle{}		//outline-style
  // throws DOMException) on setting
 
 // attribute 
-	String outlineWidth{}
+	String outlineWidth{}	//outline-width
  // throws DOMException) on setting
 
 // attribute 
@@ -581,19 +581,19 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String paddingTop{}
+	String paddingTop{}	//padding-top
  // throws DOMException) on setting
 
 // attribute 
-	String paddingRight{}
+	String paddingRight{}	//padding-right
  // throws DOMException) on setting
 
 // attribute 
-	String paddingBottom{}
+	String paddingBottom{}	//padding-bottom
  // throws DOMException) on setting
 
 // attribute 
-	String paddingLeft{}
+	String paddingLeft{}	//padding-left
  // throws DOMException) on setting
 
 // attribute 
@@ -601,15 +601,15 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String pageBreakAfter{}
+	String pageBreakAfter{}		//page-break-after
  // throws DOMException) on setting
 
 // attribute 
-	String pageBreakBefore{}
+	String pageBreakBefore{}	//page-break-before
  // throws DOMException) on setting
 
 // attribute 
-	String pageBreakInside{}
+	String pageBreakInside{}	//page-break-inside
  // throws DOMException) on setting
 
 // attribute 
@@ -617,11 +617,11 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String pauseAfter{}
+	String pauseAfter{}		//pause-after
  // throws DOMException) on setting
 
 // attribute 
-	String pauseBefore{}
+	String pauseBefore{}		//pause-before
  // throws DOMException) on setting
 
 // attribute
@@ -629,11 +629,11 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String pitchRange{}
+	String pitchRange{}		//pitch-range
  // throws DOMException) on setting
 
 // attribute 
-	String playDuring{}
+	String playDuring{}		//play-during
  // throws DOMException) on setting
 
 // attribute 
@@ -661,19 +661,19 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String speakHeader{}
+	String speakHeader{}	//speak-header
  // throws DOMException) on setting
 
 // attribute 
-	String speakNumeral{}
+	String speakNumeral{}	//speak-numeral
  // throws DOMException) on setting
 
 // attribute 
-	String speakPunctuation{}
+	String speakPunctuation{}	//speak-punctuation
  // throws DOMException) on setting
 
 // attribute 
-	String speechRate{}
+	String speechRate{}		//speech-rate
  // throws DOMException) on setting
 
 // attribute 
@@ -681,15 +681,15 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String tableLayout{}
+	String tableLayout{}	//table-layout
  // throws DOMException) on setting
 
 // attribute 
-	String textAlign{}
+	String textAlign{}	//text-align
  // throws DOMException) on setting
 
 // attribute 
-	String textDecoration{}
+	String textDecoration{}	//text-decoration
  // throws DOMException) on setting
 
 // attribute
@@ -697,11 +697,11 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String textShadow{}
+	String textShadow{}		//text-show
  // throws DOMException) on setting
 
 // attribute 
-	String textTransform{}
+	String textTransform{}			//text-transform
  // throws DOMException) on setting
 
 // attribute 
@@ -709,11 +709,11 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute 
-	String unicodeBidi{}
+	String unicodeBidi{}		//unicode-bidi
  // throws DOMException) on setting
 
 // attribute 
-	String verticalAlign{}
+	String verticalAlign{}		//vertical-align
  // throws DOMException) on setting
 
 // attribute 
@@ -721,7 +721,7 @@ public native interface CSS2Properties {
  // throws DOMException) on setting
 
 // attribute
-	public native String voiceFamily{}
+	public native String voiceFamily{}   //voice-family
  // throws DOMException) on setting
 
 // attribute 
@@ -747,7 +747,87 @@ public native interface CSS2Properties {
 // attribute 
 	public native String zIndex{}
  // throws DOMException) on setting
+	
+	//SVG
+//	Font properties: 
+//	public native String  font{ }
+//	public native String  fontFamily{ }  //font-family
+//	public native String  fontSize{ }  	//font-size
+//	public native String  fontSizeAdjust{ } //font-size-adjust
+//	public native String  fontStretch{ }	//font-stretch
+//	public native String  fontStyle{ }		//font-style
+//	public native String  fontVariant{ }	//font-variant
+//	public native String  fontWeight{ }	//font-weight
+//
+////	• Text properties: 
+//	public native String  direction{ }
+//	public native String  letterSpacing{ }		//letter-spacing
+//	public native String  textDecoration{ }		//text-decoration
+//	public native String  unicodeBidi{ }		//unicode-bidi
+//	public native String  wordSpacing{ }		//word-spacing
+//
+////	• Other properties for visual media: 
+//	public native String  clip{ }	//clip //only applicable to outermost svg element.
+//	public native String  color{ } //used to provide a potential indirect value (currentColor) for the ‘fill’, ‘stroke’, ‘stop-color’, ‘flood-color’ and ‘l{ }ghting-color’ properties. (The SVG properties which support color allow a color specification which is extended from CSS2 to accommodate color definitions in arbitrary color spaces. See Color profile descriptions.)
+//	public native String  cursor{ }
+//	public native String  display{ }
+//	public native String  overflow{ } //only applicable to elements which establish a new viewport.
+//	public native String  visibility{ }
 
+
+//	The following SVG properties are not defined in CSS2. The complete normative definitions for these properties are found in this specification:
+//	Clipping, //Masking and Compositing properties: public native String  clip-path’
+	public native String  clipRule{ }		//clip-rule
+	public native String  mask{ }
+	public native String  opacity{ }
+
+//	• Filter Effects properties: 
+	public native String  enableBackground{ }	//enable-background
+	public native String  filter{ }
+	public native String  floodColor{ }			//flood-color
+	public native String  floodOpacity{ }		//flood-opacity
+	public native String  lightingColor{ }		//lighting-color
+
+//	• Gradient properties: 
+	public native String  stopColor{ }			//stop-color
+	public native String  stopOpacity{ }		//stop-opacity
+
+//	• Interactivity properties: 
+	public native String  pointerEvents{ }		//pointer-events
+
+//	• Color and Painting properties: 
+	public native String  colorInterpolation{ }	//color-interpolation
+	public native String  colorInterpolationFilters{ }		//color-interpolation-filters
+	public native String  colorProfile{ }		//color-profile
+	public native String  colorRendering{ }		//color-rendering
+	public native String  fill{ }				//fill
+	public native String  fillOpacity{ }		//fill-opacity
+	public native String  fillRule{ }			//fill-rule
+	public native String  imageRendering{ }	//image-rendering
+	public native String  marker{ }				//marker
+	public native String  markerEnd{ }			//marker-end
+	public native String  markerMid{ }			//marker-mid
+	public native String  markerStart{ }		//marker-start
+	public native String  shapeRendering{ }	//shape-rendering
+	public native String  stroke{ }				//stroke
+	public native String  strokeDasharray{ }	//stroke-dasharray
+	public native String  strokeDashoffset{ }	//stroke-dashoffset
+	public native String  strokeLinecap{ }		//stroke-linecap
+	public native String  strokeLinejoin{ }	//stroke-linejoin
+	public native String  strokeMiterlimit{ }	//stroke-miterlimit
+	public native String  strokeOpacity{ }		//stroke-opacity
+	public native String  strokeWidth{ }		//stroke-width
+	public native String  textRendering{ }		//text-rendering
+
+//	• Text properties: 
+	public native String  alignmentBaseline{ }	//alignment-baseline
+	public native String  baselineShift{ }		//baseline-shift
+	public native String  dominantBaseline{ }	//dominant-baseline
+	public native String  glyphOrientationHorizontal{ } //glyph-orientation-horizontal
+	public native String  glyphOrientationVertical{ }	//glyph-orientation-vertical
+	public native String  kerning{ }
+	public native String  textAnchor{ }	//text-anchor
+	public native String  writingMode{ }	//writing-mode
 }
 
 //Introduced in CSS 3
