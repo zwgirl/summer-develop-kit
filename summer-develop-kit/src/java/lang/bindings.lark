@@ -115,6 +115,43 @@ public interface INotifyPropertyChanged {
 		}); 
 	}
 	
+	@SuppressWarnings("unchecked")
+	default void addPropertyChangeListener4(String[] propNames, PropertyChange handler){
+		Map<String, PropertyChange[]> _propertyListeners = (Map<String, PropertyChange[]>)this["__propListeners"];
+		if(_propertyListeners == null){
+			this["__propListeners"] = _propertyListeners = new Map<String, PropertyChange[]>();
+		}
+		
+		for(String propName : propNames){
+			PropertyChange[] listeners = _propertyListeners.get(propName);
+			if(listeners == null){
+				listeners = new Array<PropertyChange>();
+				_propertyListeners.set(propName, listeners);
+			}
+			listeners.push(handler);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	default void removePropertyChangeListener4(PropertyChange handler){
+		Map<String, PropertyChange[]> _propertyListeners = (Map<String, PropertyChange[]>)this["__propListeners"];
+		if(_propertyListeners == null){
+			return;
+		}
+		
+		_propertyListeners.forEach((Array<PropertyChange> listeners, String key, Map<String, PropertyChange[]> context)->{
+			listeners.forEach((PropertyChange h, int index, PropertyChange[] array)->{
+				if(handler === h){
+					listeners.splice(index, 1);
+					if(listeners.length == 0){
+						_propertyListeners.delete(key);
+					}
+					return;
+				}
+			}); 
+		});
+	}
+	
 	default void addPropertyChangeListener3(Predicate predicate, PropertyChange handler){
 		Array<Array<Object>> _listeners = (Object[][])this["__pListeners"];
 		if(_listeners == null){
@@ -690,7 +727,7 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		}
 		
 		Object oldValue = tag[properties[length-1]];
-		if(data == oldValue){
+		if(data === oldValue){
 			return;
 		}
 		
@@ -756,7 +793,7 @@ public enum DataContextMode {
 	Ancestor;
 }
 
-public final class DataContext implements PropertyChangeListener, INotifyPropertyChanged{  
+public final class DataContext implements PropertyChangeListener, INotifyPropertyChanged, MarkupExtension{  
 	private DataContextMode _mode;
 	private String _property;
 	private Binding[] _bindings = {};
@@ -764,36 +801,52 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	private BaseTemplateSetting[] _templates = {};
 	private Object _dataItem;
 	
-	/**
-	 * only for dataContext of document 
-	 */
-	@Overload("0")
-	public native DataContext() /*-{
-		this._mode = __lc("java.lang.DataContextMode").Root;
-		this._dataItem = __this; 
-		this._bindings = [];
-		this._dependents = [];
-		this._templates = [];
-	}-*/;
+	public DataContext(Object options){
+		if(options["property"] != undefined){
+			this._property = (String) options["property"];
+		}
+		
+		if(options["dataItem"] != undefined){
+			this._dataItem = options["dataItem"];
+		}
+		
+		if(options["mode"] != undefined){
+			this._mode = (DataContextMode) options["mode"];
+		} else {
+			this._mode = DataContextMode.Ancestor;
+		}
+	}
 	
-	/**
-	 * for ancestor mode
-	 */
-	@Overload("1")
-	public DataContext(String property) {
-		this._mode = DataContextMode.Ancestor;
-		this._property = property;
-	};
-	
-	/**
-	 * for dataContext of Standalone  mode, Template mode and Root mode
-	 */
-	@Overload("2")
-	public DataContext(String property, Object dataItem, DataContextMode mode) {
-		this._mode = mode; //DataContextMode.Standalone;
-		this._property = property;
-		this._dataItem = dataItem; 
-	};
+//	/**
+//	 * only for dataContext of document 
+//	 */
+//	@Overload("0")
+//	public native DataContext() /*-{
+//		this._mode = __lc("java.lang.DataContextMode").Root;
+//		this._dataItem = __this; 
+//		this._bindings = [];
+//		this._dependents = [];
+//		this._templates = [];
+//	}-*/;
+//	
+//	/**
+//	 * for ancestor mode
+//	 */
+//	@Overload("1")
+//	public DataContext(String property) {
+//		this._mode = DataContextMode.Ancestor;
+//		this._property = property;
+//	};
+//	
+//	/**
+//	 * for dataContext of Standalone  mode, Template mode and Root mode
+//	 */
+//	@Overload("2")
+//	public DataContext(String property, Object dataItem, DataContextMode mode) {
+//		this._mode = mode; //DataContextMode.Standalone;
+//		this._property = property;
+//		this._dataItem = dataItem; 
+//	};
 	
 	public String property{
 		&{
@@ -830,11 +883,11 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		}
 	}
 	
-	public void inject(Node target, String targetProperty, String targetProperty1){
-		target.dataContext = this;
+	public void inject(Object target, String[] properties){
+		((Node)target).dataContext = this;
 	}
 	
-	public void addBinding(Binding binding){
+	public void addBinding(Binding binding){ 
 		_bindings.push(binding);
 		if(String.isNullOrEmpty(binding.property)){
 			this.addPropertyChangeListener("dataItem", binding.propertyChange);
@@ -1044,6 +1097,7 @@ public function void AfterCallback(Node node, int index);
 public abstract class Template {
 	protected Node[] _rootNodes = {};
 	protected Object _data;
+	private BaseTemplateSetting _templateSetting;
 	protected DataContextCallback _dataContextCallback;
 	
 	public DataContextCallback dataContextCallback{
@@ -1070,12 +1124,21 @@ public abstract class Template {
 		}
 	}
 	
+	public BaseTemplateSetting templateSetting{
+		&{
+			return this._templateSetting;
+		}
+		+{
+			this._templateSetting = value;
+		}
+	}
+	
 	public final void applyTemplate(Node parent, Object data, int index){
 		doApplyTemplate(parent, data, index);
 	}
 	
 	protected void doApplyTemplate(Node parent, Object data, int index){
-		throw new Error(0, "illegal call!");
+		
 	}
 
 	public void undoTemplate(Node parent) {
@@ -1121,7 +1184,7 @@ public abstract class BaseTemplateSetting implements MarkupExtension, PropertyCh
 	protected boolean _invariant;
 	protected Object _dataItem;
 	protected DataContextCallback _dataContextCalback;
-	protected DataContext _dataContext;
+//	protected DataContext _dataContext;
 	
 	@SuppressWarnings("unchecked")
 	public BaseTemplateSetting(Object option){
@@ -1211,18 +1274,18 @@ public abstract class BaseTemplateSetting implements MarkupExtension, PropertyCh
 		}
 	}
 	
-	public DataContext dataContext{
-		&{
-			return this._dataContext;
-		}
-		+{
-			if(this._dataItem === value){
-				return;
-			}
-			this._dataContext = value;
-			dirty();
-		}
-	}
+//	public DataContext dataContext{
+//		&{
+//			return this._dataContext;
+//		}
+//		+{
+//			if(this._dataItem === value){
+//				return;
+//			}
+//			this._dataContext = value;
+//			dirty();
+//		}
+//	}
 	
 	protected abstract void dirty();
 	
@@ -1244,12 +1307,11 @@ public abstract class BaseTemplateSetting implements MarkupExtension, PropertyCh
 	protected abstract void internalApplyTemplate(Object data, int index);
 	
 	/**
-	 * ����ģ��չ���Ľڵ�
+	 * 
 	 */
 	public abstract void undoTemplate();
 	
 	/**
-	 * source���ϼ�dataContext��event��property��dataItem��
 	 * 
 	 */
 	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent event)-> {
@@ -1338,7 +1400,9 @@ public class TemplateSetting extends BaseTemplateSetting implements MarkupExtens
 	
 	private DataContextCallback _setupDataContext = (Node node, Object data, int index) ->{
 		if(String.isNullOrEmpty(this._property)){
-			node.dataContext = new DataContext(this._property, data, DataContextMode.Ancestor);
+			Object options = new Object();
+			options["property"] = this._property;
+			node.dataContext = new DataContext(options);
 		}
 		return node;
 	};
@@ -1415,7 +1479,7 @@ public class CollectionTemplateSetting extends BaseTemplateSetting implements Ma
 	}
 	
 	/**
-	 * ����ģ��չ���Ľڵ�
+	 * 
 	 */
 	public void undoTemplate(){
 		this.itemsMap.forEach((Template temp, Object data, Map<Object, Template> map)->{
@@ -1474,11 +1538,18 @@ public class CollectionTemplateSetting extends BaseTemplateSetting implements Ma
 			result._dataContextCallback = _setupDataContext;
 		}
 		
+		if(result != null){
+			result.templateSetting = this;
+		}
+		
 		return result;
 	}
 	
 	private  DataContextCallback _setupDataContext = (Node n, Object d, int index) ->{
-		n.dataContext = new DataContext(null, d, DataContextMode.Standalone);
+		Object options = new Object();
+		options["dataItem"] = d;
+		options["mode"] = DataContextMode.Standalone;
+		n.dataContext = new DataContext(options);
 		return n;
 	};
 }

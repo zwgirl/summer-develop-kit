@@ -197,15 +197,34 @@ public native interface Node {
     	}
     }
     
+    public default void addTemplate(BaseTemplateSetting template){
+    	Map<String, BaseTemplateSetting> templates = (Map<String, BaseTemplateSetting>) this["__templates"];
+    	if(templates == null){
+    		this["__templates"] = templates = new Map<String, BaseTemplateSetting>();
+    	}
+    	template["_container"] = this;
+    	templates.set(template.name, template);
+    	dataContext.addTemplateSetting(template);
+    }
+    
+    public default boolean removeTemplate(String name){
+    	Map<String, BaseTemplateSetting> templates = (Map<String, BaseTemplateSetting>) this["__templates"];
+    	if(templates != null){
+    		dataContext.removeTemplateSetting(template);
+    		return templates.delete(name);
+    	}
+		return false;
+    }
+    
     public DataContext dataContext{
     	&{
     		if(this["__dataContext"] === undefined){
-    			if(this.parentNode == null){
-    				return (DataContext)(this["__dataContext"] = new DataContext()); 
-    			} else {
+//    			if(this.parentNode == null){
+//    				return (DataContext)(this["__dataContext"] = new DataContext(new Object())); 
+//    			} else {
     				return parentNode.dataContext;
-    			}
-    		} else {
+//    			}
+    		} else { 
     			return (DataContext)this["__dataContext"];
     		}
     	}
@@ -221,12 +240,12 @@ public native interface Node {
     		}
     		
     		this["__dataContext"] = value;
-    		
+    		 
     		switch(value.mode){
     		case Ancestor:
     			break;
     		case Root:
-    			document.dataContext.addDependent(value);
+    			document.documentElement.dataContext.addDependent(value);
     			return;
     		case Standalone:
     			return;
@@ -258,7 +277,7 @@ public native interface Node {
     }
     
     //DOM 4
-//  attribute 
+//  attribute  
 	public native String textContent{&{}+;}
 }
 
