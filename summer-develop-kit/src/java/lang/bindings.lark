@@ -61,6 +61,9 @@ public interface Bindable{
 	public default void update(Binding binding){}
     
     default public DataContext getDataContext(String name){
+    	if(String.isNullOrEmpty(name)){
+    		return null;
+    	}
     	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
     	if(contexts != null){
     		DataContext result = contexts.get(name);
@@ -69,7 +72,9 @@ public interface Bindable{
     		}
     	}
     	
-    	if(parentNode != null){
+    	if(this.logicParent != null){
+        	return this.logicParent.getDataContext(name);
+      	} else if(parentNode != null){
     		return this.parentNode.getDataContext(name);
     	}
     	
@@ -89,17 +94,28 @@ public interface Bindable{
     	
     	contexts.set(context.name, context);
    	
-    	if(this.parentNode != null){
+    	if(this.logicParent != null){
+        	DataContext parent = this.logicParent.getDataContext(context.ancestor);
+        	if(parent != null){
+        		parent.addDependent(context);
+        	} else {
+        		throw new Error(0, "ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        	}
+    	} else if(this.parentNode != null){
         	DataContext parent = this.parentNode.getDataContext(context.ancestor);
         	if(parent != null){
         		parent.addDependent(context);
         	} else {
-        		throw new Error(0, "ancestor of DataContext[" + context.name + "] does not exists!");
+        		throw new Error(0, "ancestor of DataContext[" + context.ancestor + "] does not exists!");
         	}
     	}
     }
     
     default public void removeContext(String name){
+    	if(String.isNullOrEmpty(name)){
+    		return;
+    	}
+    	
        	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
     	if(contexts == null){
     		return;
@@ -107,12 +123,20 @@ public interface Bindable{
     	DataContext context = contexts.get(name);
     	if(context != null){
     		context.clearDependents();
-        	if(this.parentNode != null){
+    		
+    		if(logicParent != null){
+    			DataContext parent = this.logicParent.getDataContext(context.ancestor);
+            	if(parent != null){
+            		parent.addDependent(context);
+            	} else {
+            		throw new Error(0, "ancestor of DataContext[" + context.ancestor + "] does not exists!");
+            	}
+    		} else if(this.parentNode != null){
             	DataContext parent = this.parentNode.getDataContext(context.ancestor);
             	if(parent != null){
             		parent.addDependent(context);
             	} else {
-            		throw new Error(0, "ancestor of DataContext[" + context.name + "] does not exists!");
+            		throw new Error(0, "ancestor of DataContext[" + context.ancestor + "] does not exists!");
             	}
         	}
         	contexts.delete(name);
@@ -120,6 +144,17 @@ public interface Bindable{
     }
     
     public Bindable parentNode{}
+    
+    public Bindable logicParent{
+    	&{
+    		return (Bindable)this["_logicParent"];
+    	}
+    	+{
+    		this["_logicParent"] = value;
+    	}
+    }
+    
+    public Bindable appendChild(Bindable child);
     
     public default void reset(){}
 	    
@@ -1180,350 +1215,6 @@ public abstract class Template implements Bindable{
 	}
 }
 
-//public abstract class TemplateSelector{
-//	public Template select(Object data){
-//		return doSelect(data);
-//	}
-//	
-//	protected abstract Template doSelect(Object data);
-//}
-//
-//public function void ApplyTemplateCallback();
-//
-//public abstract class BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
-//	private Class<Template> _template;
-//	protected Class<TemplateSelector> _selector;
-//	protected TemplateSelector _selectorInstance;
-//	protected String _property;  
-//	protected String _name;  
-//	protected Node _container;
-//	protected boolean _invariant;
-//	protected Object _dataItem;
-//	
-//	@SuppressWarnings("unchecked")
-//	public BaseTemplateSetting(Object option){
-//		if(option["template"] != null){
-//			this._template = (Class<Template>) option["template"];
-//		}
-//		if(option["selector"] != null){
-//			this.selector = (Class<TemplateSelector>) option["selector"];
-//			this._selectorInstance = (TemplateSelector) _selector.newInstance();
-//		} 
-//		if(option["property"] != null){
-//			this._property = (String) option["property"];
-//		} 
-//		if(option["name"] != null){
-//			this._name = (String) option["name"];
-//		} 
-//		if(option["invariant"] != null){
-//			this._invariant = (boolean) option["invariant"];
-//		}
-//	} 
-//	
-//	public Class<Template> template{
-//		&{
-//			return this._template;
-//		}
-//		+{
-//			this._template = value;
-//		}
-//	}
-//	
-//	public Class<TemplateSelector> selector{
-//		&{
-//			return this._selector;
-//		}
-//		+{
-//			this._selector = value;
-//		}
-//	}
-//	
-//	public String property{
-//		&{
-//			
-//			return this._property;
-//		}
-//		+{
-//			this._property = value;
-//		}
-//	}
-//	
-//	public String name{
-//		&{
-//			return this._name;
-//		}
-//		+{
-//			this._name = value;
-//		}
-//	}
-//	
-//	public boolean invariant{
-//		&{
-//			return this._invariant;
-//		}
-//		+{
-//			this._invariant = value;
-//		}
-//	}
-//	
-//	public Node container{
-//		&{
-//			return this._container;
-//		}
-//	}
-//	
-//	public Object dataItem{
-//		&{
-//			return this._dataItem;
-//		}
-//		+{
-//			if(this._dataItem === value){
-//				return;
-//			}
-//			this._dataItem = value;
-//			dirty();
-//		}
-//	}
-//	
-//	protected abstract void dirty();
-//	
-//	protected abstract Node setupDataContext(Node node, Object data, int index);
-//	
-//	public void applyTemplate(){
-//		internalApplyTemplate(this._dataItem, -1);
-//	}
-//	
-//	protected abstract void internalApplyTemplate(Object data, int index);
-//	
-//	/**
-//	 * 
-//	 */
-//	public abstract void undoTemplate();
-//	
-//	/**
-//	 * 
-//	 */
-//	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent event)-> {
-//		Object data = source[event.property];
-//		if(data != null){
-//			if(String.isNullOrEmpty(this.property)){
-//				this._dataItem = data;
-//			} else {
-//				this.dataItem = data[this.property];  
-//			}
-//		} else {
-//			this._dataItem = null;
-//		}
-//	};
-//	
-//	public PropertyChange propertyChange{
-//		&{
-//			return this._propertyChange;
-//		}
-//	}
-//
-//	@Override
-//	public final void inject(Object node, String[] properties) {
-//		this._container = (Node) node;
-//		node[properties[0]] = this;   //node.template = this
-//	}
-//	
-//	public void unInject(){
-//		
-//	}
-//}
-//
-//public class TemplateSetting extends BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
-//	private Template _templateInstance;
-//	
-//	public TemplateSetting(Object option){
-//		super(option);
-//	} 
-//	
-//	public void applyTemplate(){
-//		internalApplyTemplate(this._dataItem, -1);
-//	}
-//	
-//	protected void internalApplyTemplate(Object data, int index){
-//		if(this._templateInstance == null){
-//			this._templateInstance = createTemplate(data);
-//		} else {
-//			if(this._selectorInstance != null){
-//				Template newTemp = createTemplate(data);
-//				if(newTemp.getClass().id == this._templateInstance.getClass().id){
-//					return;
-//				}
-//				undoTemplate();
-//				this._templateInstance = newTemp;
-//			} else {
-//				return;
-//			}
-//		}
-//		if(this._templateInstance != null) this._templateInstance.buildDOMTree(container, data, index);
-//	}
-//	
-//	/**
-//	 *
-//	 */
-//	public void undoTemplate(){
-//		if(this._templateInstance != null) this._templateInstance.removeDOMTree(this.container);
-//	}
-//	
-//	private Template createTemplate(Object data){
-//		Template result = null;
-//		if(this._selectorInstance != null){
-//			result = this._selectorInstance.select(data);
-//		} else {
-//			result =  (Template) this.template.newInstance();
-//		}
-//		
-//		return result;
-//	}
-//	
-//	protected Node setupDataContext(Node node, Object data, int index){
-//		return node;
-//	}
-//
-//	@Override
-//	protected void dirty() {
-//		
-//		
-//	}
-//}
-//
-//public class CollectionTemplateSetting extends BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
-////	private ApplyTemplateCallback _applyTemplateCallback;
-//	protected Map<Object, Template> itemsMap = new Map<Object, Template>();
-//	
-//	public CollectionTemplateSetting(Object option){
-//		super(option); 
-//		
-////		if(option["applyTemplateCallback"] != null){
-////			this._applyTemplateCallback = (ApplyTemplateCallback) option["applyTemplateCallback"];
-////		} 
-//	} 
-//	
-////	public ApplyTemplateCallback applyTemplateCallback{
-////		&{
-////			return this._applyTemplateCallback;
-////		}
-////		+{
-////			this._applyTemplateCallback = value;
-////		}
-////	}
-//	
-//	protected void dirty(){
-//		undoTemplate();
-//		
-//		if(this._dataItem != null){
-//			if(this._dataItem instanceof INotifyCollectionChanged){
-//				((INotifyCollectionChanged<Object>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
-//			}
-//		}
-//
-//		if(this._dataItem  != null){
-//			if(this._dataItem instanceof INotifyCollectionChanged){
-//				((INotifyCollectionChanged<Object>)this._dataItem).addCollectionChangedListener(this.onCollectionChanged);
-//			}
-//			
-//			applyTemplate();
-//		}
-//	}
-//	public void applyTemplate(){
-////		if(this._applyTemplateCallback != null){
-////			this._applyTemplateCallback(this._dataItem);
-////		} else {
-//			if(this._dataItem instanceof Collection){
-//				int index = 0;
-//				for(Object item : (Collection<?>)this._dataItem){
-//					internalApplyTemplate(item, index++);
-//				}
-//			}
-////		}
-//	}
-//	
-//	protected void internalApplyTemplate(Object data, int index){
-//		Template template = createTemplate(data);
-//		if(template == null){
-//			return;
-//		}
-//		template.buildDOMTree(container, data, index);
-//		itemsMap.set(data, template);
-//	}
-//	
-//	/**
-//	 * 
-//	 */
-//	public void undoTemplate(){
-//		this.itemsMap.forEach((Template temp, Object data, Map<Object, Template> map)->{
-//			temp.removeDOMTree(this.container);
-//		});
-//		itemsMap.clear();
-//	}
-//	
-//	protected CollectionChanged<Object> onCollectionChanged = (Object sender, CollectionChangedEvent<Object> event) ->{
-//		switch(event.action){
-//		case Add:
-//			Array<?> items = event.newItems;
-//			if(items == null || items.length <= 0){
-//				break;
-//			}
-//			int start = event.newStartingIndex;
-//			for(Object item : items){
-//				Template template = createTemplate(item);
-//				template.buildDOMTree(this._container, item, start++);
-//				itemsMap.set(item, template);
-//			} 
-//			break;
-//		case Reset:
-//			undoTemplate();
-//			break;
-//		case Remove:
-//			Template[] toBeRemoved = {};
-//			for(Object item : event.oldItems){
-//				Template temp = itemsMap.get(item);
-//				temp.removeDOMTree(this._container);
-//				itemsMap.delete(item);
-//			}
-//			break;
-//		case Replace:
-//			Object newItem = event.newItems[0], old = event.oldItems[0];
-//			Template oldTemp = itemsMap.get(old);
-//			Template newTemp = createTemplate(newItem);
-//			if(newTemp ==null || newTemp.getClass().id != oldTemp.getClass().id){
-//				oldTemp.removeDOMTree(this._container);
-//				newTemp.buildDOMTree(this._container, newItem,  event.newStartingIndex);
-//			}
-//		case Move:
-//			
-//		}
-//	};
-//	
-//	protected Template createTemplate(Object data){
-//		Template result = null;
-//		if(this._selectorInstance != null){
-//			result = this._selectorInstance.select(data);
-//		} else {
-//			if(this.template != null) result = (Template) this.template.newInstance();
-//		}
-//		
-//		if(result != null){
-//			result.templateSetting = this;
-//		}
-//		
-//		return result;
-//	}
-//	
-//	protected Node setupDataContext(Node node, Object data, int index){
-//		if(String.isNullOrEmpty(this._property)){
-//			Object options = new Object();
-//			options["property"] = this._property;
-//			node.dataContext = new DataContext(options);
-//		}
-//		return node;
-//	}
-//}
-
 public class Router implements MarkupExtension{
 	private Class<Page> _page;
 	public Router(Object options){
@@ -1546,21 +1237,57 @@ public class Router implements MarkupExtension{
 	}
 }
 
-function void ItemHandler(Node parent, int index, Iterator.LoopStatus status);
+public function void BodyHandler(Node parent);
+public interface Tag extends Bindable{
+	public default void doBody(){
+		this.bodyHandler(this.parentNode);
+	}
+	
+	public BodyHandler bodyHandler{
+		&{
+			return (BodyHandler)this["_handler"];
+		}
+		+{
+			this["_handler"]= value;
+		}
+	}
+}
 
-public class Iterator implements Bindable{
+public abstract class AbstractTag implements Tag{
+	private Bindable[] _nodes;
+	
+	protected AbstractTag(Bindable parent, Bindable logicParent){
+		
+	}
+	
+	@Override
+	public Bindable appendChild(Bindable child) {
+		if(this._nodes == null){
+			this._nodes = new Bindable[]{};
+		}
+		this._nodes.push(child);
+		return this.parentNode.appendChild(child);
+	}
+}
+
+public function void ItemHandler(Bindable parent, int index, Iterator.LoopStatus status);
+
+public class Iterator extends AbstractTag{
 	private Object[] _items = new Array<Object>();
-	private Array<Bindable>[] _nodes = new Array<Array<Bindable>>();
 	
 	private Object _iterator;
-	private Node _parent;
+	private Bindable _parent;
 	
 	private int _begin;
 	private int _end;
 	private int _step;
 	private boolean _trace;  //trace ObjserableCollection
 	
-	private ItemHandler _itemHandler = (Node parent, int index, LoopStatus status)->{
+	public Iterator(Bindable parent, Bindable logicParent){
+		super(parent, logicParent);
+	}
+	
+	private ItemHandler _itemHandler = (Bindable parent, int index, LoopStatus status)->{
 		this._parent = parent;
 		//var ele = document.createElement(..);	
 		//setup properties
@@ -1576,6 +1303,15 @@ public class Iterator implements Bindable{
 		//createTemplate
 		//template.apply(parent);
 	};
+	
+	public Bindable parentNode{
+		&{
+			return this._parent;
+		}
+		+{
+			this._parent = value;
+		}
+	}
 	
 	//begin 属性值  
 	public int begin{
@@ -1614,7 +1350,8 @@ public class Iterator implements Bindable{
 		}
 	}
 	
-	protected void doBody(Node parent){
+	@Override
+	public void doBody(){
 		LoopStatus status = new LoopStatus();
 		if(items != null){
 			if(items instanceof Collection){
@@ -1782,20 +1519,94 @@ public class Iterator implements Bindable{
 	}
 }
 
-public class Choose implements Bindable{
-	
+public class Choose extends AbstractTag{
+	public Choose(Bindable parent, Bindable logicParent){
+		super(parent, logicParent);
+	}
 }
 
-public class When implements Bindable{
+public function boolean TestCallback(Object data);
+public final class When extends AbstractTag{
+	private Object _data;
+	private TestCallback _test;
 	
+	public When(Bindable parent, Bindable logicParent){
+		super(parent, logicParent);
+	}
+	
+	public Object data{
+		&{
+			return this._data;
+		}
+		+{
+			this._data = value;
+		}
+	}
+	
+	public TestCallback test{
+		&{
+			return this._test;
+		}
+		+{
+			this._test = value;
+		}
+	}
+	
+	@Override
+	public void doBody(){
+		if(this._test == null ){
+			if((Boolean)this._data){
+				this.bodyHandler(parent);
+			}
+		} else {
+			if(this._test()){
+				this.bodyHandler(parent);
+			}
+		}
+	}
 }
 
-public class Otherwise implements Bindable{
-	
+public final class Otherwise extends AbstractTag{
+	public Otherwise(Bindable parent, Bindable logicParent){
+		super(parent, logicParent);
+	}
 }
 
-public class If implements Bindable{
+public final class If extends AbstractTag{
+	private Object _data;
+	private TestCallback _test;
+	public If(Bindable parent, Bindable logicParent){
+		super(parent, logicParent);
+	}
+	public Object data{
+		&{
+			return this._data;
+		}
+		+{
+			this._data = value;
+		}
+	}
 	
+	public TestCallback test{
+		&{
+			return this._test;
+		}
+		+{
+			this._test = value;
+		}
+	}
+	@Override
+	public void doBody(){
+		if(this._test == null ){
+			if((Boolean)this._data){
+				this.bodyHandler(parent);
+			}
+		} else {
+			if(this._test()){
+				this.bodyHandler(parent);
+			}
+		}
+	}
 }
 
 public class ParameterBinding implements MarkupExtension{
@@ -1865,7 +1676,7 @@ public class ProxyPrrameter implements Parameters{
 			bindings.forEach((ParameterBinding binding, int index, Array<ParameterBinding> array)->{
 				update(binding);
 			});
-			this._target.href = _page.toURL() + "?" + URL();
+//			this._target.href = _page.toURL() + "?" + URL(); //TODO
 		}
 	}
 
@@ -1873,7 +1684,6 @@ public class ProxyPrrameter implements Parameters{
 		DataContext context = this._target.getDataContext(binding.context);
 		_parameters.set(binding.context,(String)context[binding.property]);
 	}
-	
 }
 
 /**
