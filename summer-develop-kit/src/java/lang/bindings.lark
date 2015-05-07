@@ -2,12 +2,128 @@
 package java.lang;
 
 import java.util.Collection;
+import java.util.ObservableCollection;
 
 import org.w3c.dom.Node;
 import org.w3c.event.Event;
 import org.w3c.event.EventHandler;
-import org.w3c.html.HTMLElement; 
+import org.w3c.html.HTMLAnchorElement;
 
+public interface Bindable{
+	 default public Binding getBinding(String[] properties){ 
+    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+    	if(bindings == null){
+    		return null;
+    	}
+    	return bindings.get(properties.join("."));
+    }
+    
+    default public void setBinding(String[] properties, Binding binding){
+    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+    	if(bindings == null){
+    		this["__bindings"] = bindings = new Map<String, Binding>();
+    	}
+    	Binding old = bindings.get(properties.join("."));
+    	if(old === binding){
+    		return;
+    	}
+    	
+    	if(old != null){
+        	old.unInject(this);
+    	}
+    	
+    	bindings.set(properties.join("."), binding);
+    	binding.inject(this, properties);
+    }
+    
+    default public boolean removeBinding(String[] properties){
+    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+    	if(bindings == null){
+    		return false;
+    	}
+    	
+    	Binding old = bindings.get(properties.join("."));
+    	if(old == null){
+    		return false;
+    	}
+    	
+    	if(old != null){
+        	old.unInject(this);
+    	}
+    	
+    	bindings.delete(properties.join("."));
+    	return true;
+    }
+    
+	public default void attach(Binding binding){}
+	public default  void detach(Binding binding){}
+	
+	public default void update(Binding binding){}
+    
+    default public DataContext getDataContext(String name){
+    	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+    	if(contexts != null){
+    		DataContext result = contexts.get(name);
+    		if(result != null){
+    			return result;
+    		}
+    	}
+    	
+    	if(parentNode != null){
+    		return this.parentNode.getDataContext(name);
+    	}
+    	
+    	return null;
+    }
+    
+    default public void addContext(DataContext context){
+    	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+    	if(contexts == null){
+    		contexts = new Map<String, DataContext>();
+    	}
+    	
+    	DataContext old = contexts.get(name);
+    	if(old != null){
+    		old.moveDependentTo(context);
+    	}
+    	
+    	contexts.set(context.name, context);
+   	
+    	if(this.parentNode != null){
+        	DataContext parent = this.parentNode.getDataContext(context.ancestor);
+        	if(parent != null){
+        		parent.addDependent(context);
+        	} else {
+        		throw new Error(0, "ancestor of DataContext[" + context.name + "] does not exists!");
+        	}
+    	}
+    }
+    
+    default public void removeContext(String name){
+       	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+    	if(contexts == null){
+    		return;
+    	}
+    	DataContext context = contexts.get(name);
+    	if(context != null){
+    		context.clearDependents();
+        	if(this.parentNode != null){
+            	DataContext parent = this.parentNode.getDataContext(context.ancestor);
+            	if(parent != null){
+            		parent.addDependent(context);
+            	} else {
+            		throw new Error(0, "ancestor of DataContext[" + context.name + "] does not exists!");
+            	}
+        	}
+        	contexts.delete(name);
+    	}
+    }
+    
+    public Bindable parentNode{}
+    
+    public default void reset(){}
+	    
+}
 /**
  */
 public function void PropertyChange(Object source, PropertyChangeEvent evt); 
@@ -58,7 +174,7 @@ public interface INotifyPropertyChanged {
 		}
 	}
 	
-	default void addPropertyChangeListener1(PropertyChange handler){
+	default void addAllPropertyChangeListener(PropertyChange handler){
 		PropertyChange[] _listeners = (PropertyChange[])this["__listeners"];
 		if(_listeners == null){
 			this["__listeners"] = _listeners = new Array<PropertyChange>();
@@ -66,7 +182,7 @@ public interface INotifyPropertyChanged {
 		_listeners.push(handler);
 	}
 	
-	default void removePropertyChangeListener1(PropertyChange handler){
+	default void removeAllPropertyChangeListener(PropertyChange handler){
 		PropertyChange[] _listeners = (PropertyChange[])this["__listeners"];
 		if(_listeners == null){
 			return;
@@ -116,7 +232,7 @@ public interface INotifyPropertyChanged {
 	}
 	
 	@SuppressWarnings("unchecked")
-	default void addPropertyChangeListener4(String[] propNames, PropertyChange handler){
+	default void addPropertyChangeListeners(String[] propNames, PropertyChange handler){
 		Map<String, PropertyChange[]> _propertyListeners = (Map<String, PropertyChange[]>)this["__propListeners"];
 		if(_propertyListeners == null){
 			this["__propListeners"] = _propertyListeners = new Map<String, PropertyChange[]>();
@@ -133,7 +249,7 @@ public interface INotifyPropertyChanged {
 	}
 	
 	@SuppressWarnings("unchecked")
-	default void removePropertyChangeListener4(PropertyChange handler){
+	default void removePropertyChangeListeners(PropertyChange handler){
 		Map<String, PropertyChange[]> _propertyListeners = (Map<String, PropertyChange[]>)this["__propListeners"];
 		if(_propertyListeners == null){
 			return;
@@ -507,7 +623,7 @@ public class PropertyChangeEvent {
 }
   
 public interface MarkupExtension {
-	public void inject (Object target, String[] properties);
+	public void inject (Bindable target, String[] properties);
 }
 
 public enum UpdateSourceTrigger {
@@ -544,10 +660,11 @@ public function void UpdateTargetCallback(Object target, String[] property, Obje
 public function void UpdateSourceCallback(Object source, String property, Object value);
 
 public final class Binding implements MarkupExtension, PropertyChangeListener {
+	private String _context;
+	private String	_property; 
+	private Bindable _target;
 	private BindingMode _mode;
 	private UpdateSourceTrigger _trigger;
-	private String	_property; 
-	private Node _target;
 	private boolean _trace;
 	private String[] _targetProperties;
 	private UpdateTargetCallback _updateTargetCallback;
@@ -568,6 +685,12 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 			this._mode = (BindingMode) options["mode"];
 		} else {
 			this._mode = BindingMode.OneTime;
+		}
+		
+		if(options["context"] != undefined){
+			this._context = (String) options["context"];
+		} else {
+			throw new Error(0, "context of Binding may not be null!");
 		}
 		
 		if(options["trigger"] != undefined){
@@ -664,40 +787,46 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		}
 	}
 	
-	public void inject(Object target, String[] targetProperties){
-		this._target = (Node)target;
+	public String context{
+		&{
+			return this._context;
+		}
+		+{
+			this._context = value;
+		}
+	}
+	
+	public void inject(Bindable target, String[] targetProperties){
+		this._target = target;
 		this._targetProperties = targetProperties;
 		
   		switch(this._mode){
   		case TwoWay:
-  			if(target instanceof HTMLElement){
-	  			attachTarget((HTMLElement)_target);
-  			}
+  			target.attach(this);
   		case OneWay:
-  			_target.dataContext.addBinding(this);
+  			((Bindable)target).setBinding(targetProperties, this);
   		case OneTime:
-  			updateTarget(_target, targetProperties, _target.dataContext.dataItem);
+//  			updateTarget((Bindable)target, targetProperties, ((Bindable)target).dataContext.dataItem);
+  			target.update(this);
 		}
 	}
 	
-	public void unInject(){
+	public void unInject(Bindable target){
   		switch(this._mode){
   		case TwoWay:
-  			if(_target instanceof HTMLElement){
-  				detachTarget((HTMLElement)_target);
-  			}
+			target.detach(this);
   		case OneWay:
-  			_target.dataContext.removeBinding(this);
+  			target.removeBinding(this._targetProperties);
   		case OneTime:
-//  			updateTarget(_target, _targetProperties, _target.dataContext.dataItem);
+  			
 		}
 	}
 	
-	protected void updateTarget(Node target, String[] properties, Object data){
+	protected void updateTarget(Bindable target, String[] properties, Object data){
 		if(!String.isNullOrEmpty(this.property)){
 			data = data == null ? null : data[this.property];
 		}
-		setTargetProperty(_targetProperties, data);
+		setTargetProperty(properties, data);
 	}
 
 	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent evt)-> {
@@ -748,57 +877,56 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		return result[properties[length-1]];
 	}
 
-	protected void attachTarget(HTMLElement target){
-		// listen for lost focus and input 
-		switch(this._trigger) { 
-			case LostFocus:
-				target.addEventListener("blur", this.updateSource, false);
-				break; 
-			case PropertyChanged: 
-				target.addEventListener("input", this.updateSource, false);
-				target.addEventListener("change", this.updateSource, false);
-				break;
-			default:
-		}  
-	}
+//	protected void attachTarget(HTMLElement target){
+//		// listen for lost focus and input 
+//		switch(this._trigger) { 
+//			case LostFocus:
+//				target.addEventListener("blur", this.updateSource, false);
+//				break; 
+//			case PropertyChanged: 
+//				target.addEventListener("input", this.updateSource, false);
+//				target.addEventListener("change", this.updateSource, false);
+//				break;
+//			default:
+//		}  
+//	}
 	
-	protected void detachTarget(HTMLElement target){
-		// listen for lost focus and input 
-		switch(this._trigger) { 
-			case LostFocus:
-				target.removeEventListener("blur", this.updateSource, false);
-				break; 
-			case PropertyChanged: 
-				target.removeEventListener("input", this.updateSource, false);
-				target.removeEventListener("change", this.updateSource, false);
-				break;
-			default:
-		}  
-	} 
-	
-	protected EventHandler updateSource = (Event event) ->{
+	public EventHandler updateSource = (Event event) ->{
 		Object value = getProperty((Node)event.target, this._targetProperties);
 		if(this._converterFrom != null){
 			value = this._converterFrom(value);
 		}
-		return this._target.dataContext.updateSource(this._property, value, this._updateSourceCallback);
+		return this._target.getDataContext(this._context).updateSource(this._property, value, this._updateSourceCallback);
 	};
+	
+//	protected void detachTarget(HTMLElement target){
+//		// listen for lost focus and input 
+//		switch(this._trigger) { 
+//			case LostFocus:
+//				target.removeEventListener("blur", this.updateSource, false);
+//				break; 
+//			case PropertyChanged: 
+//				target.removeEventListener("input", this.updateSource, false);
+//				target.removeEventListener("change", this.updateSource, false);
+//				break;
+//			default:
+//		}  
+//	} 
 }
 public function Object ConverterFunction(Object data);
 
 public enum DataContextMode {
-	Root,
+	Page,
 	Template,
-	Standalone,
-	Ancestor;
+	Standalone
 }
 
 public final class DataContext implements PropertyChangeListener, INotifyPropertyChanged, MarkupExtension{  
-	private DataContextMode _mode;
+	private String _name;
 	private String _property;
+	private String _ancestor;
 	private Binding[] _bindings = {};
-	private DataContext[] _dependents = {};
-	private BaseTemplateSetting[] _templates = {};
+	private Map<String,DataContext> _dependents = new Map<String, DataContext>();
 	private Object _dataItem;
 	
 	public DataContext(Object options){
@@ -810,45 +938,35 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 			this._dataItem = options["dataItem"];
 		}
 		
-		if(options["mode"] != undefined){
-			this._mode = (DataContextMode) options["mode"];
+		if(options["name"] != undefined){
+			this._name = (String) options["name"];
 		} else {
-			this._mode = DataContextMode.Ancestor;
+			throw new Error(0, "DataContext name may not be null!");
 		}
 	}
 	
-//	/**
-//	 * only for dataContext of document 
-//	 */
-//	@Overload("0")
-//	public native DataContext() /*-{
-//		this._mode = __lc("java.lang.DataContextMode").Root;
-//		this._dataItem = __this; 
-//		this._bindings = [];
-//		this._dependents = [];
-//		this._templates = [];
-//	}-*/;
-//	
-//	/**
-//	 * for ancestor mode
-//	 */
-//	@Overload("1")
-//	public DataContext(String property) {
-//		this._mode = DataContextMode.Ancestor;
-//		this._property = property;
-//	};
-//	
-//	/**
-//	 * for dataContext of Standalone  mode, Template mode and Root mode
-//	 */
-//	@Overload("2")
-//	public DataContext(String property, Object dataItem, DataContextMode mode) {
-//		this._mode = mode; //DataContextMode.Standalone;
-//		this._property = property;
-//		this._dataItem = dataItem; 
-//	};
+	public String name{
+		&{
+			return this._name;
+		}
+		+{
+			if(value === this._name)
+				return;
+
+			this._name = value;
+		}
+	}
 	
 	public String property{
+		&{
+			return this._ancestor; 
+		}
+		+{
+			this._ancestor = value;
+		}
+	}
+	
+	public String ancestor{
 		&{
 			return this._property; 
 		}
@@ -870,21 +988,9 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 			dirty(value);
 		}
 	}
-
-	public DataContextMode mode{
-		&{
-			return this._mode;
-		}
-		+{
-			if(value === this._mode)
-				return;
-
-			this._mode = value;
-		}
-	}
 	
-	public void inject(Object target, String[] properties){
-		((Node)target).dataContext = this;
+	public void inject(Bindable target, String[] properties){
+		target.addContext(this);
 	}
 	
 	public void addBinding(Binding binding){ 
@@ -893,7 +999,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 			this.addPropertyChangeListener("dataItem", binding.propertyChange);
 			if(binding.trace){
 				if(this._dataItem instanceof INotifyPropertyChanged){
-					((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener1(binding.propertyChange);
+					((INotifyPropertyChanged) this._dataItem).addAllPropertyChangeListener(binding.propertyChange);
 				}
 			}
 		} else {
@@ -914,7 +1020,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		if(String.isNullOrEmpty(binding.property)){
 			this.removePropertyChangeListener("dataItem", binding.propertyChange);
 			if(binding.trace){
-				this.removePropertyChangeListener1(binding.propertyChange);
+				this.removeAllPropertyChangeListener(binding.propertyChange);
 			}
 		} else {
 			if(this._dataItem instanceof INotifyPropertyChanged){
@@ -923,38 +1029,8 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		}
 	}
 	
-	public void addTemplateSetting(BaseTemplateSetting ts){ 
-		_templates.push(ts);
-		if(String.isNullOrEmpty(ts.property)){
-			this.addPropertyChangeListener("dataItem", ts.propertyChange);
-			ts.dataItem = this._dataItem;
-		} else {
-			if(this._dataItem instanceof INotifyPropertyChanged){
-				((INotifyPropertyChanged) this._dataItem).addPropertyChangeListener(ts.property, ts.propertyChange);
-			}
-			ts.dataItem = this._dataItem != null ? this._dataItem[ts.property] : null;
-		}
-	}
-	
-	public void removeTemplateSetting(TemplateSetting ts){
-		_templates.forEach((BaseTemplateSetting ts1, int index, Array<BaseTemplateSetting> array)->{
-			if(ts == ts1){
-				_templates.splice(index, 1);
-				return;
-			}
-		});
-		
-		if(String.isNullOrEmpty(ts.property)){
-			this.removePropertyChangeListener("dataItem", ts.propertyChange);
-		} else {
-			if(this._dataItem instanceof INotifyPropertyChanged){
-				((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(ts.property, ts.propertyChange);
-			}
-		}
-	}
-	
 	public void addDependent(DataContext dependent){ 
-		_dependents.push(dependent);
+		_dependents.set(dependent.name, dependent);
 		
 		if(this._dataItem != null){
 			dependent.dataItem = this.dataItem[dependent.property];
@@ -964,12 +1040,15 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	}
 	
 	public void removeDependent(DataContext dependent){
-		_dependents.forEach((DataContext dc, int index, Array<DataContext> array)->{
-			if(dc === dependent){
-				_dependents.splice(index, 1); 
-				return;
-			}
-		});
+		_dependents.delete(dependent.name);
+	}
+	
+	public void moveDependentTo(DataContext target){
+		//TODO
+	}
+	
+	public void clearDependents(){
+		//TODO
 	}
 	
 	protected void dirty(Object data){
@@ -977,43 +1056,31 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 			binding.propertyChange(this.dataItem, new PropertyChangeEvent(binding.property));
 		});
 		
-		_dependents.forEach((DataContext dc, int index, Array<DataContext> array)->{
+		_dependents.forEach((DataContext dc, String name, Map<String, DataContext> map)->{
 			dc.propertyChange(this.dataItem, new PropertyChangeEvent(dc.property));
-		});
-		
-		_templates.forEach((BaseTemplateSetting ts, int index, Array<BaseTemplateSetting> array)->{
-			ts.propertyChange(this.dataItem, new PropertyChangeEvent(ts.property));
 		});
 	}
 	 
 	protected void replaceDataItem(Object newDataItem){
 		if(this._dataItem != null && this._dataItem instanceof INotifyPropertyChanged){  
 			INotifyPropertyChanged oldPc = (INotifyPropertyChanged) this._dataItem;
-			for(int i=0, length = _dependents.length; i<length; i++){
-				oldPc.removePropertyChangeListener(_dependents[i].property, _dependents[i].propertyChange);
-			}
+			_dependents.forEach((DataContext dc, String name, Map<String, DataContext> map)->{
+				oldPc.removePropertyChangeListener(dc.property, dc.propertyChange);
+			});
 			
 			for(int i=0, length = _bindings.length; i<length; i++){
 				oldPc.removePropertyChangeListener(_bindings[i].property, _bindings[i].propertyChange);
-			}
-			
-			for(int i=0, length = _templates.length; i<length; i++){
-				oldPc.removePropertyChangeListener(_templates[i].property, _templates[i].propertyChange);
 			}
 		}
 		
 		if(newDataItem != null && newDataItem instanceof INotifyPropertyChanged){
 			INotifyPropertyChanged newPc = (INotifyPropertyChanged) newDataItem;
-			for(int i=0, length = _dependents.length; i<length; i++){
-				newPc.addPropertyChangeListener(_dependents[i].property, _dependents[i].propertyChange);
-			}
+			_dependents.forEach((DataContext dc, String name, Map<String, DataContext> map)->{
+				newPc.addPropertyChangeListener(dc.property, dc.propertyChange);
+			});
 			
 			for(int i=0, length = _bindings.length; i<length; i++){
 				newPc.addPropertyChangeListener(_bindings[i].property, _bindings[i].propertyChange);
-			}
-			
-			for(int i=0, length = _templates.length; i<length; i++){
-				newPc.addPropertyChangeListener(_templates[i].property, _templates[i].propertyChange);
 			}
 		}
 	}
@@ -1052,17 +1119,6 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	}
 
 	public void reset() {
-		_templates.forEach((BaseTemplateSetting ts, int index, Array<BaseTemplateSetting> array)->{
-			if(String.isNullOrEmpty(ts.property)){
-				this.removePropertyChangeListener("dataItem", ts.propertyChange);
-			} else {
-				if(this._dataItem instanceof INotifyPropertyChanged){
-					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(ts.property, ts.propertyChange);
-				}
-			}
-		});
-		_templates.length = 0;
-		
 		_bindings.forEach((Binding binding, int index, Array<Binding> array)->{
 			if(String.isNullOrEmpty(binding.property)){
 				this.removePropertyChangeListener("dataItem", binding.propertyChange);
@@ -1074,16 +1130,16 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		});
 		_bindings.length = 0;
 		
-		_dependents.forEach((DataContext dataContext, int index, Array<DataContext> array)->{
-			if(String.isNullOrEmpty(dataContext.property)){
-				this.removePropertyChangeListener("dataItem", dataContext.propertyChange);
+		_dependents.forEach((DataContext dc, String name, Map<String, DataContext> map)->{
+			if(String.isNullOrEmpty(dc.property)){
+				this.removePropertyChangeListener("dataItem", dc.propertyChange);
 			} else {
 				if(this._dataItem instanceof INotifyPropertyChanged){
-					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(dataContext.property, dataContext.propertyChange);
+					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(dc.property, dc.propertyChange);
 				}
 			}
 		});
-		_dependents.length = 0;
+		_dependents.clear();
 	}
 }
 
@@ -1092,66 +1148,27 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
  * @author cym
  * 
  */
-public function boolean BeforeCallback(Object data, int index);
-public function void AfterCallback(Node node, int index);
-public abstract class Template {
+public abstract class Template implements Bindable{
 	protected Node[] _rootNodes = {};
-	protected Object _data;
-	private BaseTemplateSetting _templateSetting;
-	protected DataContextCallback _dataContextCallback;
 	
-	public DataContextCallback dataContextCallback{
-		&{
-			return this._dataContextCallback;
-		}
-		+{
-			this._dataContextCallback = value;
-		}
-	};
-
 	public Node[] rootNodes{
 		&{
 			return this._rootNodes;
 		}
 	}
 	
-	protected Object data{
-		&{
-			return this._data;
-		}
-		+{
-			this._data = value;
-		}
+	public final void buildDOMTree(Node parent, Object data, int index){
+		doBuildDOMTree(parent, data, index);
 	}
 	
-	public BaseTemplateSetting templateSetting{
-		&{
-			return this._templateSetting;
-		}
-		+{
-			this._templateSetting = value;
-		}
-	}
-	
-	public final void applyTemplate(Node parent, Object data, int index){
-		doApplyTemplate(parent, data, index);
-	}
-	
-	protected void doApplyTemplate(Node parent, Object data, int index){
+	protected void doBuildDOMTree(Node parent, Object data, int index){
 		
 	}
 
-	public void undoTemplate(Node parent) {
+	public void removeDOMTree(Node parent) {
 		_rootNodes.forEach((Node node, int index, Array<Node> array)->{
 			parent.removeChild(node);
 		});
-	}
-	
-	protected Node setupDataContext(Node node, Object data, int index){
-		if(this._dataContextCallback != null){
-			return this._dataContextCallback(node, data, index);
-		}
-		return node;
 	}
 	
 	protected void before(Object data, int index){
@@ -1163,68 +1180,634 @@ public abstract class Template {
 	}
 }
 
-public abstract class TemplateSelector{
-	public Template select(Object data){
-		return doSelect(data);
+//public abstract class TemplateSelector{
+//	public Template select(Object data){
+//		return doSelect(data);
+//	}
+//	
+//	protected abstract Template doSelect(Object data);
+//}
+//
+//public function void ApplyTemplateCallback();
+//
+//public abstract class BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
+//	private Class<Template> _template;
+//	protected Class<TemplateSelector> _selector;
+//	protected TemplateSelector _selectorInstance;
+//	protected String _property;  
+//	protected String _name;  
+//	protected Node _container;
+//	protected boolean _invariant;
+//	protected Object _dataItem;
+//	
+//	@SuppressWarnings("unchecked")
+//	public BaseTemplateSetting(Object option){
+//		if(option["template"] != null){
+//			this._template = (Class<Template>) option["template"];
+//		}
+//		if(option["selector"] != null){
+//			this.selector = (Class<TemplateSelector>) option["selector"];
+//			this._selectorInstance = (TemplateSelector) _selector.newInstance();
+//		} 
+//		if(option["property"] != null){
+//			this._property = (String) option["property"];
+//		} 
+//		if(option["name"] != null){
+//			this._name = (String) option["name"];
+//		} 
+//		if(option["invariant"] != null){
+//			this._invariant = (boolean) option["invariant"];
+//		}
+//	} 
+//	
+//	public Class<Template> template{
+//		&{
+//			return this._template;
+//		}
+//		+{
+//			this._template = value;
+//		}
+//	}
+//	
+//	public Class<TemplateSelector> selector{
+//		&{
+//			return this._selector;
+//		}
+//		+{
+//			this._selector = value;
+//		}
+//	}
+//	
+//	public String property{
+//		&{
+//			
+//			return this._property;
+//		}
+//		+{
+//			this._property = value;
+//		}
+//	}
+//	
+//	public String name{
+//		&{
+//			return this._name;
+//		}
+//		+{
+//			this._name = value;
+//		}
+//	}
+//	
+//	public boolean invariant{
+//		&{
+//			return this._invariant;
+//		}
+//		+{
+//			this._invariant = value;
+//		}
+//	}
+//	
+//	public Node container{
+//		&{
+//			return this._container;
+//		}
+//	}
+//	
+//	public Object dataItem{
+//		&{
+//			return this._dataItem;
+//		}
+//		+{
+//			if(this._dataItem === value){
+//				return;
+//			}
+//			this._dataItem = value;
+//			dirty();
+//		}
+//	}
+//	
+//	protected abstract void dirty();
+//	
+//	protected abstract Node setupDataContext(Node node, Object data, int index);
+//	
+//	public void applyTemplate(){
+//		internalApplyTemplate(this._dataItem, -1);
+//	}
+//	
+//	protected abstract void internalApplyTemplate(Object data, int index);
+//	
+//	/**
+//	 * 
+//	 */
+//	public abstract void undoTemplate();
+//	
+//	/**
+//	 * 
+//	 */
+//	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent event)-> {
+//		Object data = source[event.property];
+//		if(data != null){
+//			if(String.isNullOrEmpty(this.property)){
+//				this._dataItem = data;
+//			} else {
+//				this.dataItem = data[this.property];  
+//			}
+//		} else {
+//			this._dataItem = null;
+//		}
+//	};
+//	
+//	public PropertyChange propertyChange{
+//		&{
+//			return this._propertyChange;
+//		}
+//	}
+//
+//	@Override
+//	public final void inject(Object node, String[] properties) {
+//		this._container = (Node) node;
+//		node[properties[0]] = this;   //node.template = this
+//	}
+//	
+//	public void unInject(){
+//		
+//	}
+//}
+//
+//public class TemplateSetting extends BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
+//	private Template _templateInstance;
+//	
+//	public TemplateSetting(Object option){
+//		super(option);
+//	} 
+//	
+//	public void applyTemplate(){
+//		internalApplyTemplate(this._dataItem, -1);
+//	}
+//	
+//	protected void internalApplyTemplate(Object data, int index){
+//		if(this._templateInstance == null){
+//			this._templateInstance = createTemplate(data);
+//		} else {
+//			if(this._selectorInstance != null){
+//				Template newTemp = createTemplate(data);
+//				if(newTemp.getClass().id == this._templateInstance.getClass().id){
+//					return;
+//				}
+//				undoTemplate();
+//				this._templateInstance = newTemp;
+//			} else {
+//				return;
+//			}
+//		}
+//		if(this._templateInstance != null) this._templateInstance.buildDOMTree(container, data, index);
+//	}
+//	
+//	/**
+//	 *
+//	 */
+//	public void undoTemplate(){
+//		if(this._templateInstance != null) this._templateInstance.removeDOMTree(this.container);
+//	}
+//	
+//	private Template createTemplate(Object data){
+//		Template result = null;
+//		if(this._selectorInstance != null){
+//			result = this._selectorInstance.select(data);
+//		} else {
+//			result =  (Template) this.template.newInstance();
+//		}
+//		
+//		return result;
+//	}
+//	
+//	protected Node setupDataContext(Node node, Object data, int index){
+//		return node;
+//	}
+//
+//	@Override
+//	protected void dirty() {
+//		
+//		
+//	}
+//}
+//
+//public class CollectionTemplateSetting extends BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
+////	private ApplyTemplateCallback _applyTemplateCallback;
+//	protected Map<Object, Template> itemsMap = new Map<Object, Template>();
+//	
+//	public CollectionTemplateSetting(Object option){
+//		super(option); 
+//		
+////		if(option["applyTemplateCallback"] != null){
+////			this._applyTemplateCallback = (ApplyTemplateCallback) option["applyTemplateCallback"];
+////		} 
+//	} 
+//	
+////	public ApplyTemplateCallback applyTemplateCallback{
+////		&{
+////			return this._applyTemplateCallback;
+////		}
+////		+{
+////			this._applyTemplateCallback = value;
+////		}
+////	}
+//	
+//	protected void dirty(){
+//		undoTemplate();
+//		
+//		if(this._dataItem != null){
+//			if(this._dataItem instanceof INotifyCollectionChanged){
+//				((INotifyCollectionChanged<Object>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
+//			}
+//		}
+//
+//		if(this._dataItem  != null){
+//			if(this._dataItem instanceof INotifyCollectionChanged){
+//				((INotifyCollectionChanged<Object>)this._dataItem).addCollectionChangedListener(this.onCollectionChanged);
+//			}
+//			
+//			applyTemplate();
+//		}
+//	}
+//	public void applyTemplate(){
+////		if(this._applyTemplateCallback != null){
+////			this._applyTemplateCallback(this._dataItem);
+////		} else {
+//			if(this._dataItem instanceof Collection){
+//				int index = 0;
+//				for(Object item : (Collection<?>)this._dataItem){
+//					internalApplyTemplate(item, index++);
+//				}
+//			}
+////		}
+//	}
+//	
+//	protected void internalApplyTemplate(Object data, int index){
+//		Template template = createTemplate(data);
+//		if(template == null){
+//			return;
+//		}
+//		template.buildDOMTree(container, data, index);
+//		itemsMap.set(data, template);
+//	}
+//	
+//	/**
+//	 * 
+//	 */
+//	public void undoTemplate(){
+//		this.itemsMap.forEach((Template temp, Object data, Map<Object, Template> map)->{
+//			temp.removeDOMTree(this.container);
+//		});
+//		itemsMap.clear();
+//	}
+//	
+//	protected CollectionChanged<Object> onCollectionChanged = (Object sender, CollectionChangedEvent<Object> event) ->{
+//		switch(event.action){
+//		case Add:
+//			Array<?> items = event.newItems;
+//			if(items == null || items.length <= 0){
+//				break;
+//			}
+//			int start = event.newStartingIndex;
+//			for(Object item : items){
+//				Template template = createTemplate(item);
+//				template.buildDOMTree(this._container, item, start++);
+//				itemsMap.set(item, template);
+//			} 
+//			break;
+//		case Reset:
+//			undoTemplate();
+//			break;
+//		case Remove:
+//			Template[] toBeRemoved = {};
+//			for(Object item : event.oldItems){
+//				Template temp = itemsMap.get(item);
+//				temp.removeDOMTree(this._container);
+//				itemsMap.delete(item);
+//			}
+//			break;
+//		case Replace:
+//			Object newItem = event.newItems[0], old = event.oldItems[0];
+//			Template oldTemp = itemsMap.get(old);
+//			Template newTemp = createTemplate(newItem);
+//			if(newTemp ==null || newTemp.getClass().id != oldTemp.getClass().id){
+//				oldTemp.removeDOMTree(this._container);
+//				newTemp.buildDOMTree(this._container, newItem,  event.newStartingIndex);
+//			}
+//		case Move:
+//			
+//		}
+//	};
+//	
+//	protected Template createTemplate(Object data){
+//		Template result = null;
+//		if(this._selectorInstance != null){
+//			result = this._selectorInstance.select(data);
+//		} else {
+//			if(this.template != null) result = (Template) this.template.newInstance();
+//		}
+//		
+//		if(result != null){
+//			result.templateSetting = this;
+//		}
+//		
+//		return result;
+//	}
+//	
+//	protected Node setupDataContext(Node node, Object data, int index){
+//		if(String.isNullOrEmpty(this._property)){
+//			Object options = new Object();
+//			options["property"] = this._property;
+//			node.dataContext = new DataContext(options);
+//		}
+//		return node;
+//	}
+//}
+
+public class Router implements MarkupExtension{
+	private Class<Page> _page;
+	public Router(Object options){
+		if(options["page"] != undefined){
+			this._page = (Class<Page>) options["page"];
+		}
 	}
 	
-	protected abstract Template doSelect(Object data);
+	public Class<Page> page{
+		&{
+			return this._page;
+		}
+		+{
+			this._page = value;
+		}
+	}
+	@Override
+	public  void inject(Bindable target, String[] properties) {
+//		((HTMLAnchorElement)target).route = this;
+	}
 }
 
-public function void ApplyTemplateCallback();
-public function Node DataContextCallback(Node node, Object data, int index);
+function void ItemHandler(Node parent, int index, Iterator.LoopStatus status);
 
-public abstract class BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
-	private Class<Template> _template;
-	protected Class<TemplateSelector> _selector;
-	protected TemplateSelector _selectorInstance;
-	protected String _property;  
-	protected String _name;  
-	protected Node _container;
-	protected boolean _invariant;
-	protected Object _dataItem;
-	protected DataContextCallback _dataContextCalback;
-//	protected DataContext _dataContext;
+public class Iterator implements Bindable{
+	private Object[] _items = new Array<Object>();
+	private Array<Bindable>[] _nodes = new Array<Array<Bindable>>();
 	
-	@SuppressWarnings("unchecked")
-	public BaseTemplateSetting(Object option){
-		if(option["template"] != null){
-			this._template = (Class<Template>) option["template"];
-		}
-		if(option["selector"] != null){
-			this.selector = (Class<TemplateSelector>) option["selector"];
-			this._selectorInstance = (TemplateSelector) _selector.newInstance();
-		} 
-		if(option["property"] != null){
-			this._property = (String) option["property"];
-		} 
-		if(option["name"] != null){
-			this._name = (String) option["name"];
-		} 
-		if(option["invariant"] != null){
-			this._invariant = (boolean) option["invariant"];
-		}
+	private Object _iterator;
+	private Node _parent;
+	
+	private int _begin;
+	private int _end;
+	private int _step;
+	private boolean _trace;  //trace ObjserableCollection
+	
+	private ItemHandler _itemHandler = (Node parent, int index, LoopStatus status)->{
+		this._parent = parent;
+		//var ele = document.createElement(..);	
+		//setup properties
+		//var elements = nodes[index] = [];
+		//elements.push(ele);
+		//setup context
+		//setup local status context
+		//create children
 		
-		if(option["dataContextCalback"] != null){
-			this._dataContextCalback = (DataContextCallback) option["dataContextCalback"];
-		} 
-	} 
+		//other elements
+		
+		//template
+		//createTemplate
+		//template.apply(parent);
+	};
 	
-	public Class<Template> template{
+	//begin 属性值  
+	public int begin{
 		&{
-			return this._template;
+			return this._begin;
 		}
 		+{
-			this._template = value;
+			this._begin = value;
+		}
+	} 
+	//end 属性值  
+	public int end{
+		&{
+			return this._end;
+		}
+		+{
+			this._end = value;
+		}
+	}
+	 //step
+	public int step{
+		&{
+			return this._step;
+		}
+		+{
+			this._step = value;
 		}
 	}
 	
-	public Class<TemplateSelector> selector{
+	public Object items{
 		&{
-			return this._selector;
+			return this._iterator;
 		}
 		+{
-			this._selector = value;
+			this._iterator = value;
+		}
+	}
+	
+	protected void doBody(Node parent){
+		LoopStatus status = new LoopStatus();
+		if(items != null){
+			if(items instanceof Collection){
+				int index = 0, size = ((Collection) items).size;
+				for(Object obj : (Collection)items){
+					this._items.push(obj);
+					if(index ++ < this._begin){
+						continue;
+					}
+					if(!status._first){
+						status._first = true;
+					} else {
+						status._first = false;
+					}
+					
+					status.count ++;
+					status.current = obj;
+					if(index == end || index == size){
+						status._last = true;
+					}
+					this._itemHandler(parent, index, status);
+					if(index == end){
+						break;
+					}
+				}
+				
+				if(items instanceof ObservableCollection<?>){
+					((ObservableCollection) items).addCollectionChangedListener(this.onCollectionChanged);
+				}
+			}
+		} else if(this._end > -1){
+			for(int i= this._begin; i<this._end; i+=this._step){
+				if(i == this._begin){
+					status.first = true;
+				} else {
+					status.first = false;
+				}
+				
+				if(i + this._step > this._end){
+					status.last = true;
+				} else {
+					status.last = false;
+				}
+				status.count ++ ;
+				this._itemHandler(parent, null, status);
+			}
+		}
+	}
+	
+	protected CollectionChanged<Object> onCollectionChanged = (Object sender, CollectionChangedEvent<Object> event) ->{
+//		switch(event.action){
+//		case Add:
+//			Array<?> items = event.newItems;
+//			if(items == null || items.length <= 0){
+//				break;
+//			}
+//			int start = event.newStartingIndex;
+//			for(Object item : items){
+//				Template template = createTemplate(item);
+//				template.buildDOMTree(this._container, item, start++);
+//				itemsMap.set(item, template);
+//			} 
+//			break;
+//		case Reset:
+//			undoTemplate();
+//			break;
+//		case Remove:
+//			Template[] toBeRemoved = {};
+//			for(Object item : event.oldItems){
+//				Template temp = itemsMap.get(item);
+//				temp.removeDOMTree(this._container);
+//				itemsMap.delete(item);
+//			}
+//			break;
+//		case Replace:
+//			Object newItem = event.newItems[0], old = event.oldItems[0];
+//			Template oldTemp = itemsMap.get(old);
+//			Template newTemp = createTemplate(newItem);
+//			if(newTemp ==null || newTemp.getClass().id != oldTemp.getClass().id){
+//				oldTemp.removeDOMTree(this._container);
+//				newTemp.buildDOMTree(this._container, newItem,  event.newStartingIndex);
+//			}
+//		case Move:
+//			
+//		}
+	};
+	
+	class LoopStatus {
+		private Object _current;
+		private int _index = 0;
+		private boolean _first;
+		private boolean _last;
+		private int _count = 0;
+//		private int _begin;
+//		private int _end;
+//		private int _step;
+		
+		//当前这次迭代的（集合中的）项 
+		public Object current{
+			&{
+				return this._current;
+			}
+			+{
+				this._current = value;
+			}
+		}
+		//当前这次迭代从 0 开始的迭代索引  
+		public int index{
+			&{
+				return this._index;
+			}
+			+{
+				this._index = value;
+			}
+		}
+		//当前这次迭代从 1 开始的迭代计数
+		public int count{
+			&{
+				return this._count;
+			}
+			+{
+				this._count = value;
+			}
+		}
+		
+		//用来表明当前这轮迭代是否为第一次迭代的标志  
+		public boolean first{
+			&{
+				return this._first;
+			}
+			+{
+				this._first = value;
+			}
+		}
+		
+		//用来表明当前这轮迭代是否为最后一次迭代的标志  
+		public boolean last{
+			&{
+				return this._last;
+			}
+			+{
+				this._last = value;
+			}
+		} 
+		
+		//begin 属性值
+		public int begin{
+			&{
+				return Iterator.this._begin;
+			}
+		}
+		//end 属性值
+		public int end{
+			&{
+				return Iterator.this._end;
+			}
+		}
+		
+		//step
+		public int step{
+			&{
+				return Iterator.this._step;
+			} 
+		} 
+	}
+}
+
+public class Choose implements Bindable{
+	
+}
+
+public class When implements Bindable{
+	
+}
+
+public class Otherwise implements Bindable{
+	
+}
+
+public class If implements Bindable{
+	
+}
+
+public class ParameterBinding implements MarkupExtension{
+	private String _context;
+	private String _property;
+	
+	public String context{
+		&{
+			return this._context;
+		}
+		+{
+			this._context = value;
 		}
 	}
 	
@@ -1236,320 +1819,95 @@ public abstract class BaseTemplateSetting implements MarkupExtension, PropertyCh
 			this._property = value;
 		}
 	}
-	
-	public String name{
-		&{
-			return this._name;
-		}
-		+{
-			this._name = value;
-		}
+	@Override
+	public void inject(Bindable target, Array<String> properties) {
+		// TODO Auto-generated method stub
 	}
 	
-	public boolean invariant{
-		&{
-			return this._invariant;
-		}
-		+{
-			this._invariant = value;
-		}
-	}
-	
-	public Node container{
-		&{
-			return this._container;
-		}
-	}
-	
-	public Object dataItem{
-		&{
-			return this._dataItem;
-		}
-		+{
-			if(this._dataItem === value){
-				return;
-			}
-			this._dataItem = value;
-			dirty();
-		}
-	}
-	
-//	public DataContext dataContext{
-//		&{
-//			return this._dataContext;
-//		}
-//		+{
-//			if(this._dataItem === value){
-//				return;
-//			}
-//			this._dataContext = value;
-//			dirty();
-//		}
-//	}
-	
-	protected abstract void dirty();
-	
-	public DataContextCallback dataContextCalback{
-		&{
-			return this._dataContextCalback;
-		}
-		+{
-			this._dataContextCalback = value;
-		}
-	}
-	
-	public void applyTemplate(){
-		internalApplyTemplate(this._dataItem, -1);
-	}
-	
-	protected Node setupDataContext(Node current, Object data, int index){return current;}
-	
-	protected abstract void internalApplyTemplate(Object data, int index);
-	
-	/**
-	 * 
-	 */
-	public abstract void undoTemplate();
-	
-	/**
-	 * 
-	 */
-	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent event)-> {
-		Object data = source[event.property];
-		if(data != null){
-			if(String.isNullOrEmpty(this.property)){
-				this._dataItem = data;
-			} else {
-				this.dataItem = data[this.property];  
-			}
-		} else {
-			this._dataItem = null;
-		}
-	};
-	
-	public PropertyChange propertyChange{
-		&{
-			return this._propertyChange;
+}
+
+public interface Parameters /*extends MarkupExtension*/{
+	String URL();
+	public void inject(HTMLAnchorElement a, String property, ParameterBinding[] bindings);
+}
+
+public class ProxyPrrameter implements Parameters{
+	private Class<Page> _page;
+	private HTMLAnchorElement _target;
+	private Map<String, String> _parameters = new Map<String, String>();
+	public ProxyPrrameter(ParameterBinding[] bindings){
+		if(bindings != null){
+			bindings.forEach((ParameterBinding value, int index, Array<ParameterBinding> array)->{
+				
+			});
 		}
 	}
 
 	@Override
-	public void inject(Object node, String[] properties) {
-		this._container = (Node) node;
-		node[properties[0]] = this;   //node.template = this
-	}
-	
-	public void unInject(){
-		
-	}
-}
-
-public class TemplateSetting extends BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
-	private Template _templateInstance;
-	
-	public TemplateSetting(Object option){
-		super(option);
-		if(this._dataContextCalback == null){
-			this._dataContextCalback = this._setupDataContext;
-		}
-	} 
-	
-	public void applyTemplate(){
-		internalApplyTemplate(this._dataItem, -1);
-	}
-	
-	protected void internalApplyTemplate(Object data, int index){
-		if(this._templateInstance == null){
-			this._templateInstance = createTemplate(data);
-		} else {
-			if(this._selectorInstance != null){
-				Template newTemp = createTemplate(data);
-				if(newTemp.getClass().id == this._templateInstance.getClass().id){
-					return;
-				}
-				undoTemplate();
-				this._templateInstance = newTemp;
-			} else {
-				return;
+	public String URL() {
+		String r = "";
+		boolean and = false;
+		_parameters.forEach((String value, String key, Map<String,String> _this)->{
+			if(and){
+				key += '&';
 			}
-		}
-		if(this._templateInstance != null) this._templateInstance.applyTemplate(container, data, index);
-	}
-	
-	/**
-	 *
-	 */
-	public void undoTemplate(){
-		if(this._templateInstance != null) this._templateInstance.undoTemplate(this.container);
-	}
-	
-	private Template createTemplate(Object data){
-		Template result = null;
-		if(this._selectorInstance != null){
-			result = this._selectorInstance.select(data);
-		} else {
-			result =  (Template) this.template.newInstance();
-		}
-		
-		if(result != null){
-			result._dataContextCallback = _setupDataContext;
-		}
-		
-		return result;
-	}
-	
-	private DataContextCallback _setupDataContext = (Node node, Object data, int index) ->{
-		if(String.isNullOrEmpty(this._property)){
-			Object options = new Object();
-			options["property"] = this._property;
-			node.dataContext = new DataContext(options);
-		}
-		return node;
-	};
-
-	@Override
-	protected void dirty() {
-		
-		
-	}
-}
-
-public class CollectionTemplateSetting extends BaseTemplateSetting implements MarkupExtension, PropertyChangeListener{
-	private ApplyTemplateCallback _applyTemplateCallback;
-	protected Map<Object, Template> itemsMap = new Map<Object, Template>();
-	
-	public CollectionTemplateSetting(Object option){
-		super(option); 
-		
-		if(this._dataContextCalback == null){
-			this._dataContextCalback = this._setupDataContext;
-		}
-		
-		if(option["applyTemplateCallback"] != null){
-			this._applyTemplateCallback = (ApplyTemplateCallback) option["applyTemplateCallback"];
-		} 
-	} 
-	
-	public ApplyTemplateCallback applyTemplateCallback{
-		&{
-			return this._applyTemplateCallback;
-		}
-		+{
-			this._applyTemplateCallback = value;
-		}
-	}
-	
-	protected void dirty(){
-		undoTemplate();
-		
-		if(this._dataItem != null){
-			if(this._dataItem instanceof INotifyCollectionChanged){
-				((INotifyCollectionChanged<Object>)this._dataItem).removeCollectionChangedListener(this.onCollectionChanged);
-			}
-		}
-
-		if(this._dataItem  != null){
-			if(this._dataItem instanceof INotifyCollectionChanged){
-				((INotifyCollectionChanged<Object>)this._dataItem).addCollectionChangedListener(this.onCollectionChanged);
-			}
-			
-			applyTemplate();
-		}
-	}
-	public void applyTemplate(){
-		if(this._applyTemplateCallback != null){
-			this._applyTemplateCallback(this._dataItem);
-		} else {
-			if(this._dataItem instanceof Collection){
-				int index = 0;
-				for(Object item : (Collection<?>)this._dataItem){
-					internalApplyTemplate(item, index++);
-				}
-			}
-		}
-	}
-	
-	protected void internalApplyTemplate(Object data, int index){
-		Template template = createTemplate(data);
-		if(template == null){
-			return;
-		}
-		template.applyTemplate(container, data, index);
-		itemsMap.set(data, template);
-	}
-	
-	/**
-	 * 
-	 */
-	public void undoTemplate(){
-		this.itemsMap.forEach((Template temp, Object data, Map<Object, Template> map)->{
-			temp.undoTemplate(this.container);
+			key = key + '=' + encodeURIComponent(value);
+			and = true;
 		});
-		itemsMap.clear();
+		return r;
 	}
 	
-	protected CollectionChanged<Object> onCollectionChanged = (Object sender, CollectionChangedEvent<Object> event) ->{
-		switch(event.action){
-		case Add:
-			Array<?> items = event.newItems;
-			if(items == null || items.length <= 0){
-				break;
-			}
-			int start = event.newStartingIndex;
-			for(Object item : items){
-				Template template = createTemplate(item);
-				template.applyTemplate(this._container, item, start++);
-				itemsMap.set(item, template);
-			} 
-			break;
-		case Reset:
-			undoTemplate();
-			break;
-		case Remove:
-			Template[] toBeRemoved = {};
-			for(Object item : event.oldItems){
-				Template temp = itemsMap.get(item);
-				temp.undoTemplate(this._container);
-				itemsMap.delete(item);
-			}
-			break;
-		case Replace:
-			Object newItem = event.newItems[0], old = event.oldItems[0];
-			Template oldTemp = itemsMap.get(old);
-			Template newTemp = createTemplate(newItem);
-			if(newTemp ==null || newTemp.getClass().id != oldTemp.getClass().id){
-				oldTemp.undoTemplate(this._container);
-				newTemp.applyTemplate(this._container, newItem,  event.newStartingIndex);
-			}
-		case Move:
-			
+
+	@Override
+	public void inject(HTMLAnchorElement a, String prop, Array<ParameterBinding> bindings) {
+		this._target = a;
+		if(bindings != null){
+			bindings.forEach((ParameterBinding binding, int index, Array<ParameterBinding> array)->{
+				update(binding);
+			});
+			this._target.href = _page.toURL() + "?" + URL();
 		}
-	};
+	}
+
+	private void update(ParameterBinding binding) {
+		DataContext context = this._target.getDataContext(binding.context);
+		_parameters.set(binding.context,(String)context[binding.property]);
+	}
 	
-	protected Template createTemplate(Object data){
-		Template result = null;
-		if(this._selectorInstance != null){
-			result = this._selectorInstance.select(data);
-		} else {
-			if(this.template != null) result = (Template) this.template.newInstance();
-		}
+}
+
+/**
+ * a html page
+ */
+public interface Page extends MarkupExtension{
+	default String encodeRequest(Map<String, String> parameters){
+		String r = "";
+		boolean and = false;
+		parameters.forEach((String value, String key, Map<String,String> _this)->{
+			if(and){
+				key += '&';
+			}
+			key = key + '=' + encodeURIComponent(value);
+			and = true;
+		});
+		return r;
 		
-		if(result != null){
-			result._dataContextCallback = _setupDataContext;
+	}
+	default Map<String, String> getRequestParameter(String search){
+		Map<String, String> result = new Map<String, String>();
+		if(String.isNullOrEmpty(location.search)){
+			return null;
 		}
-		
-		if(result != null){
-			result.templateSetting = this;
-		}
-		
+		String[] parts = search.split("&");
+		parts.forEach((String value, int index, String[] _this)->{
+			String[] assign = value.split("=");
+			result.set(assign[0], assign[1]);
+		});
 		return result;
 	}
 	
-	private  DataContextCallback _setupDataContext = (Node n, Object d, int index) ->{
-		Object options = new Object();
-		options["dataItem"] = d;
-		options["mode"] = DataContextMode.Standalone;
-		n.dataContext = new DataContext(options);
-		return n;
-	};
+	default String toURL(){
+		return this.getClass().toURL();
+	}
 }
+

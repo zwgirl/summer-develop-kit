@@ -30,9 +30,10 @@ public final class Class<T> {
 		this._factory = factory; 
 		this._id = __index++;
 		this._flags = flags; 
-		this._interfaces = interfaces;
+		this._interfaces = interfaces;  
 		this._superClass = superClass;
 	}
+	
 	public String toString() { 
 		return (isInterface ? "interface " : (isPrimitive ? "" : "class ")) + name;
 	}
@@ -155,6 +156,10 @@ public final class Class<T> {
 	public native Object newInstance()/*-{
 	  	return new (this._factory)();
   	}-*/;
+	
+	public String toURL() {
+		return this._name.split(".").join("/").concat(".html");
+	}
 }
 
 
@@ -536,7 +541,7 @@ public native final class Function {
 
 }
 
-public final native class Math {  
+public final native class Math { 
 	private native Math();
 	/**
 	 * The mathematical constant e. This is Euler's number, the base of natural
@@ -571,7 +576,7 @@ public final native class Math {
 	public static native float SQRT1_2{} // = 0.707f;
 	/**
 	 * The square root of 2.
-	 */
+	 */ 
 	public static final float SQRT2{} // = 1.414f;
 
 	public static native int abs(int number);
@@ -1688,13 +1693,6 @@ public class JSON {
 
 	public native static String stringify(Object value, Array<String> replacer,
 			String space);
-
-}
-
-/**
- * a html page
- */
-public interface Page {
 
 }
 

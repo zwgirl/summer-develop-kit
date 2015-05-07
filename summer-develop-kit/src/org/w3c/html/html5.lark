@@ -462,6 +462,34 @@ public native interface HTMLHtmlElement extends HTMLElement {}
       public native float clientWidth{}
 //    readonly attribute 
       public native float clientHeight{}
+      
+      //cym 2015-05-07
+  	  public default void attach(Binding binding){
+		// listen for lost focus and input 
+  		switch(binding.trigger) { 
+			case LostFocus:
+				this.addEventListener("blur", binding.updateSource, false);
+				break; 
+			case PropertyChanged: 
+				this.addEventListener("input", binding.updateSource, false);
+				this.addEventListener("change", binding.updateSource, false);
+				break;
+			default:
+		 }  
+  	  }
+  	  public default void detach(Binding binding){
+ 		// listen for lost focus and input 
+   		switch(binding.trigger) { 
+ 			case LostFocus:
+ 				this.removeEventListener("blur", binding.updateSource, false);
+ 				break; 
+ 			case PropertyChanged: 
+ 				this.removeEventListener("input", binding.updateSource, false);
+ 				this.removeEventListener("change", binding.updateSource, false);
+ 				break;
+ 			default:
+ 		 }  
+   	  }
   }
   
 //	interface ElementView {
@@ -607,28 +635,28 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLAnchorElement extends HTMLElement {
 //	  stringifier attribute 
-	  native String href{}
-//  attribute 
+	  public native String href{&;+;}
+//    attribute 
 	  native String target{}
-//             attribute 
+//    attribute 
 	  native String ping{}
-//             attribute 
+//    attribute 
 	  native String rel{}
 //    readonly attribute 
 	  native DOMTokenList relList{}
-//             attribute 
+//    attribute 
 	  native String media{}
-//             attribute 
+//    attribute 
 	  native String hreflang{}
-//             attribute 
+//    attribute 
 	  native String type{}
 	  
-	  public Class<?> page{
+	  public Router route{
 		  &{
-			  return (Class<?>)this["__page"];
+			  return (Router)this["__route"];
 		  }
 		  +{
-			  this["__page"] = value;
+			  this["__route"] = value;
 		  }
 	  }
   }
