@@ -10,15 +10,66 @@ import org.w3c.event.EventHandler;
 import org.w3c.html.HTMLAnchorElement;
 
 public interface Bindable{
-	 default public Binding getBinding(String[] properties){ 
-    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+	public Binding getBinding(String[] properties);
+	public void setBinding(String[] properties, Binding binding);
+	public boolean removeBinding(String[] properties);
+	public void attach(Binding binding);
+	public void detach(Binding binding);
+	public void update(Binding binding);
+	public DataContext getDataContext(String name);
+	public void addDataContext(DataContext context);
+	public void removeDataContext(String name);
+	public Bindable parentNode{+;&;}
+	public Bindable logicParent{
+		&;+;
+	}
+   
+	public Bindable appendChild(Bindable child);
+   
+	public void reset();
+}
+
+public function void BodyHandler();
+public interface Tag {
+	public void body();
+	
+	public BodyHandler bodyHandler{
+		&;
+		+;
+	}
+}
+public abstract class AbstractBindable implements Bindable, Tag{
+	protected Bindable[] _childs;
+	protected Bindable _parent;
+	
+	protected AbstractBindable(Bindable parent){
+		this._parent = parent;
+	}
+	
+	@Override
+	public Bindable appendChild(Bindable child) {
+		processChild(child);
+		return this.parentNode.appendChild(child);
+	}
+	
+	public Bindable processChild(Bindable child) {
+		if(this._childs == null){
+			this._childs = new Bindable[]{};
+		}
+		this._childs.push(child);
+		child["_logicParent"] = this;
+		return child;
+	}
+	
+	public Binding getBinding(String[] properties){ 
+		Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
     	if(bindings == null){
     		return null;
     	}
     	return bindings.get(properties.join("."));
     }
     
-    default public void setBinding(String[] properties, Binding binding){
+    public void setBinding(String[] properties, Binding binding){
     	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
     	if(bindings == null){
     		this["__bindings"] = bindings = new Map<String, Binding>();
@@ -36,7 +87,7 @@ public interface Bindable{
     	binding.inject(this, properties);
     }
     
-    default public boolean removeBinding(String[] properties){
+    public boolean removeBinding(String[] properties){
     	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
     	if(bindings == null){
     		return false;
@@ -55,12 +106,41 @@ public interface Bindable{
     	return true;
     }
     
-	public default void attach(Binding binding){}
-	public default  void detach(Binding binding){}
+	public void attach(Binding binding){}
+	public void detach(Binding binding){}
 	
-	public default void update(Binding binding){}
+	public void update(Binding binding){
+		Object data = this.getDataContext(binding.context).dataItem;
+		if(!String.isNullOrEmpty(binding.property)){
+			
+			data = data == null ? null : data[binding.property];
+		}
+
+		Object tag = this;
+		String[] properties = binding.targetProperties;
+		int length = properties.length; 
+		for(int i = 0 ; i < length - 1; i++){
+			if(tag == null) return;
+			tag = tag[properties[i]];
+		}
+		
+		if(binding.converterTo != null){
+			data = binding.converterTo(data);
+		}
+		
+		Object oldValue = tag[properties[length-1]];
+		if(data === oldValue){
+			return;
+		}
+		
+		if(binding.updateTargetCallback != null){
+			binding.updateTargetCallback(this, properties, data);
+		} else {
+			tag[properties[length-1]] = data;
+		}
+	}
     
-    default public DataContext getDataContext(String name){
+    public DataContext getDataContext(String name){
     	if(String.isNullOrEmpty(name)){
     		return null;
     	}
@@ -81,10 +161,10 @@ public interface Bindable{
     	return null;
     }
     
-    default public void addContext(DataContext context){
+    public void addDataContext(DataContext context){
     	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
     	if(contexts == null){
-    		contexts = new Map<String, DataContext>();
+    		this["__contexts"] = contexts = new Map<String, DataContext>();
     	}
     	
     	DataContext old = contexts.get(name);
@@ -94,24 +174,28 @@ public interface Bindable{
     	
     	contexts.set(context.name, context);
    	
+    	if(context.name == "ROOT" || context.name == "TEMPLATE"){
+    		return;
+    	}
+    	
     	if(this.logicParent != null){
         	DataContext parent = this.logicParent.getDataContext(context.ancestor);
         	if(parent != null){
         		parent.addDependent(context);
         	} else {
-        		throw new Error(0, "ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
         	}
     	} else if(this.parentNode != null){
         	DataContext parent = this.parentNode.getDataContext(context.ancestor);
         	if(parent != null){
         		parent.addDependent(context);
         	} else {
-        		throw new Error(0, "ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
         	}
     	}
     }
     
-    default public void removeContext(String name){
+    public void removeDataContext(String name){
     	if(String.isNullOrEmpty(name)){
     		return;
     	}
@@ -129,35 +213,57 @@ public interface Bindable{
             	if(parent != null){
             		parent.addDependent(context);
             	} else {
-            		throw new Error(0, "ancestor of DataContext[" + context.ancestor + "] does not exists!");
+            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
             	}
     		} else if(this.parentNode != null){
             	DataContext parent = this.parentNode.getDataContext(context.ancestor);
             	if(parent != null){
             		parent.addDependent(context);
             	} else {
-            		throw new Error(0, "ancestor of DataContext[" + context.ancestor + "] does not exists!");
+            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
             	}
         	}
         	contexts.delete(name);
     	}
     }
     
-    public Bindable parentNode{}
-    
-    public Bindable logicParent{
-    	&{
-    		return (Bindable)this["_logicParent"];
-    	}
-    	+{
-    		this["_logicParent"] = value;
-    	}
+    public Bindable parentNode{
+	    &{
+			return (Bindable)this._parent;
+		}
+		+{
+			this._parent = value;
+		}
     }
     
-    public Bindable appendChild(Bindable child);
+    public Bindable logicParent{
+	   	&{
+	   		return (Bindable)this["_logicParent"];
+	   	}
+	   	+{
+	   		this["_logicParent"] = value;
+	   	}
+    }
     
-    public default void reset(){}
-	    
+    public void reset(){}
+    
+    @Override
+    public void body(){
+    	doBody();
+    }
+    
+    protected void doBody(){
+    	this.bodyHandler();
+    }
+    
+	public BodyHandler bodyHandler{
+		&{
+			return (BodyHandler)this["_bodyHandler"];
+		}
+		+{
+			this["_bodyHandler"]= value;
+		}
+	}
 }
 /**
  */
@@ -725,7 +831,7 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		if(options["context"] != undefined){
 			this._context = (String) options["context"];
 		} else {
-			throw new Error(0, "context of Binding may not be null!");
+			this._context = "ROOT";
 		}
 		
 		if(options["trigger"] != undefined){
@@ -757,6 +863,15 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		} 
 		+ {
 			_property = value;
+		} 
+	} 
+	
+	public String[] targetProperties {
+		& { 
+			return _targetProperties; 
+		} 
+		+ {
+			_targetProperties = value;
 		} 
 	} 
 	 
@@ -839,9 +954,9 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
   		case TwoWay:
   			target.attach(this);
   		case OneWay:
+  			target.getDataContext(this.context).addBinding(this);
   			((Bindable)target).setBinding(targetProperties, this);
   		case OneTime:
-//  			updateTarget((Bindable)target, targetProperties, ((Bindable)target).dataContext.dataItem);
   			target.update(this);
 		}
 	}
@@ -857,48 +972,49 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		}
 	}
 	
-	protected void updateTarget(Bindable target, String[] properties, Object data){
-		if(!String.isNullOrEmpty(this.property)){
-			data = data == null ? null : data[this.property];
-		}
-		setTargetProperty(properties, data);
-	}
+//	protected void updateTarget(Bindable target, String[] properties, Object data){
+//		if(!String.isNullOrEmpty(this.property)){
+//			data = data == null ? null : data[this.property];
+//		}
+//		setTargetProperty(properties, data);
+//	}
+//	
+//	protected void setTargetProperty(String[] properties, Object data){
+//		Object tag = this._target;
+//		int length = properties.length; 
+//		for(int i = 0 ; i < length - 1; i++){
+//			if(tag == null) return;
+//			tag = tag[properties[i]];
+//		}
+//		
+//		if(this._converterTo != null){
+//			data = this._converterTo(data);
+//		}
+//		
+//		Object oldValue = tag[properties[length-1]];
+//		if(data === oldValue){
+//			return;
+//		}
+//		
+//		if(this._updateTargetCallback != null){
+//			this._updateTargetCallback(this._target, properties, data);
+//		} else {
+//			tag[properties[length-1]] = data;
+//		}
+//	}
 
 	private PropertyChange _propertyChange = (Object source, PropertyChangeEvent evt)-> {
-		Object data = source;
-		if(!String.isNullOrEmpty(this._property)){
-			data = source[evt.property];
-		}
-		setTargetProperty(_targetProperties, data);
+//		Object data = source;
+//		if(!String.isNullOrEmpty(this._property)){
+//			data = source[evt.property];
+//		}
+//		setTargetProperty(_targetProperties, data);
+		this._target.update(this);
 	};
 	
 	public PropertyChange propertyChange{
 		&{
 			return this._propertyChange;
-		}
-	}
-	
-	protected void setTargetProperty(String[] properties, Object data){
-		Object tag = this._target;
-		int length = properties.length; 
-		for(int i = 0 ; i < length - 1; i++){
-			if(tag == null) return;
-			tag = tag[properties[i]];
-		}
-		
-		if(this._converterTo != null){
-			data = this._converterTo(data);
-		}
-		
-		Object oldValue = tag[properties[length-1]];
-		if(data === oldValue){
-			return;
-		}
-		
-		if(this._updateTargetCallback != null){
-			this._updateTargetCallback(this._target, properties, data);
-		} else {
-			tag[properties[length-1]] = data;
 		}
 	}
 	
@@ -950,12 +1066,6 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 }
 public function Object ConverterFunction(Object data);
 
-public enum DataContextMode {
-	Page,
-	Template,
-	Standalone
-}
-
 public final class DataContext implements PropertyChangeListener, INotifyPropertyChanged, MarkupExtension{  
 	private String _name;
 	private String _property;
@@ -977,6 +1087,13 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 			this._name = (String) options["name"];
 		} else {
 			throw new Error(0, "DataContext name may not be null!");
+		}
+		
+		if(options["ancestor"] != undefined){
+			this._ancestor = (String) options["ancestor"];
+		} else {
+			if(this._name != "ROOT")
+				this._ancestor = "ROOT";
 		}
 	}
 	
@@ -1025,7 +1142,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	}
 	
 	public void inject(Bindable target, String[] properties){
-		target.addContext(this);
+		target.addDataContext(this);
 	}
 	
 	public void addBinding(Binding binding){ 
@@ -1183,34 +1300,36 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
  * @author cym
  * 
  */
-public abstract class Template implements Bindable{
-	protected Node[] _rootNodes = {};
+public abstract class Template extends AbstractBindable{
 	
-	public Node[] rootNodes{
-		&{
-			return this._rootNodes;
-		}
+	protected Template(Bindable parent){
+		super(parent);
+		
+		Object options = new Object();
+		options["name"] = "TEMPLATE";
+		options["dataItem"] = this;
+		addDataContext(new DataContext(options));
 	}
 	
-	public final void buildDOMTree(Node parent, Object data, int index){
-		doBuildDOMTree(parent, data, index);
+	public final void body(){
+		doBody();
 	}
 	
-	protected void doBuildDOMTree(Node parent, Object data, int index){
+	protected void doBody(){
 		
 	}
 
-	public void removeDOMTree(Node parent) {
-		_rootNodes.forEach((Node node, int index, Array<Node> array)->{
-			parent.removeChild(node);
+	public void removeBody(Bindable parent) {
+		this._childs.forEach((Bindable node, int index, Array<Bindable> array)->{
+//			parent.removeChild(node);
 		});
 	}
 	
-	protected void before(Object data, int index){
+	protected void before(){
 		
 	}
 	
-	protected Node after(Node node, Object data, int index){
+	protected Bindable after(Bindable node){
 		return node;
 	}
 }
@@ -1237,80 +1356,19 @@ public class Router implements MarkupExtension{
 	}
 }
 
-public function void BodyHandler(Node parent);
-public interface Tag extends Bindable{
-	public default void doBody(){
-		this.bodyHandler(this.parentNode);
-	}
-	
-	public BodyHandler bodyHandler{
-		&{
-			return (BodyHandler)this["_handler"];
-		}
-		+{
-			this["_handler"]= value;
-		}
-	}
-}
+//public function void ItemHandler(Bindable parent, int index, Iterator.LoopStatus status);
 
-public abstract class AbstractTag implements Tag{
-	private Bindable[] _nodes;
-	
-	protected AbstractTag(Bindable parent, Bindable logicParent){
-		
-	}
-	
-	@Override
-	public Bindable appendChild(Bindable child) {
-		if(this._nodes == null){
-			this._nodes = new Bindable[]{};
-		}
-		this._nodes.push(child);
-		return this.parentNode.appendChild(child);
-	}
-}
-
-public function void ItemHandler(Bindable parent, int index, Iterator.LoopStatus status);
-
-public class Iterator extends AbstractTag{
-	private Object[] _items = new Array<Object>();
-	
-	private Object _iterator;
-	private Bindable _parent;
+public class Iterator extends AbstractBindable{
+	private Object _items;
+	private Object[] _datas = new Array<Object>();
 	
 	private int _begin;
 	private int _end;
 	private int _step;
 	private boolean _trace;  //trace ObjserableCollection
 	
-	public Iterator(Bindable parent, Bindable logicParent){
-		super(parent, logicParent);
-	}
-	
-	private ItemHandler _itemHandler = (Bindable parent, int index, LoopStatus status)->{
-		this._parent = parent;
-		//var ele = document.createElement(..);	
-		//setup properties
-		//var elements = nodes[index] = [];
-		//elements.push(ele);
-		//setup context
-		//setup local status context
-		//create children
-		
-		//other elements
-		
-		//template
-		//createTemplate
-		//template.apply(parent);
-	};
-	
-	public Bindable parentNode{
-		&{
-			return this._parent;
-		}
-		+{
-			this._parent = value;
-		}
+	public Iterator(Bindable parent){
+		super(parent);
 	}
 	
 	//begin 属性值  
@@ -1343,21 +1401,39 @@ public class Iterator extends AbstractTag{
 	
 	public Object items{
 		&{
-			return this._iterator;
+			return this._items;
 		}
 		+{
-			this._iterator = value;
+			this._items = value;
 		}
+	}
+	
+	private Item createItem(Object data){
+		Item item = new Item(this.parentNode);
+		Object options = new Object();
+		options["name"] = "current";
+		options["dataItem"] = data;
+		item.addDataContext(new DataContext(options));
+		return item;
 	}
 	
 	@Override
 	public void doBody(){
 		LoopStatus status = new LoopStatus();
+		Object options = new Object();
+		options["name"] = "status";
+		options["dataItem"] = status;
+		this.addDataContext(new DataContext(options));
+		
 		if(items != null){
 			if(items instanceof Collection){
 				int index = 0, size = ((Collection) items).size;
 				for(Object obj : (Collection)items){
-					this._items.push(obj);
+					this._datas.push(obj);
+					
+					Item item = createItem(obj);
+					this.processChild(item);
+					
 					if(index ++ < this._begin){
 						continue;
 					}
@@ -1368,11 +1444,12 @@ public class Iterator extends AbstractTag{
 					}
 					
 					status.count ++;
+					status.index ++;
 					status.current = obj;
 					if(index == end || index == size){
 						status._last = true;
 					}
-					this._itemHandler(parent, index, status);
+					this.bodyHandler.call(item);
 					if(index == end){
 						break;
 					}
@@ -1384,6 +1461,9 @@ public class Iterator extends AbstractTag{
 			}
 		} else if(this._end > -1){
 			for(int i= this._begin; i<this._end; i+=this._step){
+				Item item = createItem(null);
+				this.processChild(item);
+				
 				if(i == this._begin){
 					status.first = true;
 				} else {
@@ -1396,7 +1476,7 @@ public class Iterator extends AbstractTag{
 					status.last = false;
 				}
 				status.count ++ ;
-				this._itemHandler(parent, null, status);
+				this.bodyHandler.call(item);
 			}
 		}
 	}
@@ -1444,7 +1524,7 @@ public class Iterator extends AbstractTag{
 		private int _index = 0;
 		private boolean _first;
 		private boolean _last;
-		private int _count = 0;
+		private int _count = 1;
 //		private int _begin;
 //		private int _end;
 //		private int _step;
@@ -1517,23 +1597,118 @@ public class Iterator extends AbstractTag{
 			} 
 		} 
 	}
+	
+	class Item extends AbstractBindable{
+		Item(Bindable parent){
+			super(parent);
+		}
+	}
 }
 
-public class Choose extends AbstractTag{
-	public Choose(Bindable parent, Bindable logicParent){
-		super(parent, logicParent);
+public class Choose extends AbstractBindable{
+	private Object _data;
+	private ConverterFunction _converter;
+	private boolean _otherwise = true;
+	public Choose(Bindable parent){
+		super(parent);
 	}
+	
+	public Object data{
+		&{
+			return this._data;
+		}
+		+{
+			this._data = value;
+		}
+	}
+	
+	public ConverterFunction converter{
+		&{
+			return this._converter;
+		}
+		+{
+			this._converter = value;
+		}
+	}
+	public boolean test(Object value) {
+		if(this._data == null){
+			return false;
+		}
+		
+		boolean result = false;
+		if(this._converter != null){
+			result =  this._converter(this._data) == value;
+		} else {
+			result = this._data == value;
+		}
+		
+		if(result){
+			this._otherwise = false;
+		}
+		
+		return result;
+	}
+
 }
 
 public function boolean TestCallback(Object data);
-public final class When extends AbstractTag{
-	private Object _data;
-	private TestCallback _test;
+public final class When extends AbstractBindable{
+	private Object _value;
 	
-	public When(Bindable parent, Bindable logicParent){
-		super(parent, logicParent);
+	public When(Bindable parent){
+		super(parent);
 	}
 	
+	public Object value{
+		&{
+			return this._value;
+		}
+		+{
+			this._value = value;
+		}
+	}
+	
+	@Override
+	protected void doBody(){
+		if(this._value == null ){
+			return;
+		} 
+		
+		if(!(this.logicParent instanceof Choose)){
+			return;
+		}
+		
+		Choose choose = (Choose) this.logicParent;
+		if(choose.test(this.value)){
+			this.bodyHandler(parent);
+		}
+	}
+}
+
+public final class Otherwise extends AbstractBindable{
+	public Otherwise(Bindable parent){
+		super(parent);
+	}
+	
+	@Override
+	protected void doBody(){
+		if(!(this.logicParent instanceof Choose)){
+			return;
+		}
+		
+		Choose choose = (Choose) this.logicParent;
+		if((boolean)choose["_otherwise"]){
+			this.bodyHandler(parent);
+		}
+	}
+}
+
+public final class If extends AbstractBindable{
+	private Object _data;
+	private TestCallback _test;
+	public If(Bindable parent){
+		super(parent);
+	}
 	public Object data{
 		&{
 			return this._data;
@@ -1553,50 +1728,7 @@ public final class When extends AbstractTag{
 	}
 	
 	@Override
-	public void doBody(){
-		if(this._test == null ){
-			if((Boolean)this._data){
-				this.bodyHandler(parent);
-			}
-		} else {
-			if(this._test()){
-				this.bodyHandler(parent);
-			}
-		}
-	}
-}
-
-public final class Otherwise extends AbstractTag{
-	public Otherwise(Bindable parent, Bindable logicParent){
-		super(parent, logicParent);
-	}
-}
-
-public final class If extends AbstractTag{
-	private Object _data;
-	private TestCallback _test;
-	public If(Bindable parent, Bindable logicParent){
-		super(parent, logicParent);
-	}
-	public Object data{
-		&{
-			return this._data;
-		}
-		+{
-			this._data = value;
-		}
-	}
-	
-	public TestCallback test{
-		&{
-			return this._test;
-		}
-		+{
-			this._test = value;
-		}
-	}
-	@Override
-	public void doBody(){
+	protected void doBody(){
 		if(this._test == null ){
 			if((Boolean)this._data){
 				this.bodyHandler(parent);
@@ -1638,8 +1770,11 @@ public class ParameterBinding implements MarkupExtension{
 }
 
 public interface Parameters /*extends MarkupExtension*/{
-	String URL();
-	public void inject(HTMLAnchorElement a, String property, ParameterBinding[] bindings);
+	default String URL(){
+		return "";}
+	default void inject(HTMLAnchorElement a, String property, ParameterBinding[] bindings){
+		
+	}
 }
 
 public class ProxyPrrameter implements Parameters{
@@ -1689,7 +1824,7 @@ public class ProxyPrrameter implements Parameters{
 /**
  * a html page
  */
-public interface Page extends MarkupExtension{
+public interface Page extends Parameters{
 	default String encodeRequest(Map<String, String> parameters){
 		String r = "";
 		boolean and = false;

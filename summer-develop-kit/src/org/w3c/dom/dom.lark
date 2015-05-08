@@ -78,7 +78,7 @@ public native interface DocumentFragment extends Node {
     native NodeList querySelectorAll(String selectors);
 }
 
-public native interface Node extends Bindable{
+public native interface Node extends EventTarget, Bindable{
 
 	// NodeType
 	public native short ELEMENT_NODE   = 1; 
@@ -151,6 +151,206 @@ public native interface Node extends Bindable{
  	// Introduced in DOM Level 2:
  	public native boolean hasAttributes();
  	
+ 	public default Binding getBinding(String[] properties){ 
+	    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+	    	if(bindings == null){
+	    		return null;
+	    	}
+	    	return bindings.get(properties.join("."));
+	    }
+	    
+ 	public default void setBinding(String[] properties, Binding binding){
+	    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+	    	if(bindings == null){
+	    		this["__bindings"] = bindings = new Map<String, Binding>();
+	    	}
+	    	Binding old = bindings.get(properties.join("."));
+	    	if(old === binding){
+	    		return;
+	    	}
+	    	
+	    	if(old != null){
+	        	old.unInject(this);
+	    	}
+	    	
+	    	bindings.set(properties.join("."), binding);
+	    	binding.inject(this, properties);
+	    }
+	    
+ 	public default boolean removeBinding(String[] properties){
+	    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+	    	if(bindings == null){
+	    		return false;
+	    	}
+	    	
+	    	Binding old = bindings.get(properties.join("."));
+	    	if(old == null){
+	    		return false;
+	    	}
+	    	
+	    	if(old != null){
+	        	old.unInject(this);
+	    	}
+	    	
+	    	bindings.delete(properties.join("."));
+	    	return true;
+	    }
+	    
+    //cym 2015-05-07
+	  public default void attach(Binding binding){
+		// listen for lost focus and input 
+		switch(binding.trigger) { 
+			case LostFocus:
+				this.addEventListener("blur", binding.updateSource, false);
+				break; 
+			case PropertyChanged: 
+				this.addEventListener("input", binding.updateSource, false);
+				this.addEventListener("change", binding.updateSource, false);
+				break;
+			default:
+		 }  
+	  }
+	  
+	  public default void detach(Binding binding){
+		// listen for lost focus and input 
+ 		switch(binding.trigger) { 
+			case LostFocus:
+				this.removeEventListener("blur", binding.updateSource, false);
+				break; 
+			case PropertyChanged: 
+				this.removeEventListener("input", binding.updateSource, false);
+				this.removeEventListener("change", binding.updateSource, false);
+				break;
+			default:
+		 }  
+ 	  }
+		
+		public default void update(Binding binding){
+			Object data = this.getDataContext(binding.context).dataItem;
+			if(!String.isNullOrEmpty(binding.property)){
+				
+				data = data == null ? null : data[binding.property];
+			}
+
+			Object tag = this;
+			String[] properties = binding.targetProperties;
+			int length = properties.length; 
+			for(int i = 0 ; i < length - 1; i++){
+				if(tag == null) return;
+				tag = tag[properties[i]];
+			}
+			
+			if(binding.converterTo != null){
+				data = binding.converterTo(data);
+			}
+			
+			Object oldValue = tag[properties[length-1]];
+			if(data === oldValue){
+				return;
+			}
+			
+			if(binding.updateTargetCallback != null){
+				binding.updateTargetCallback(this, properties, data);
+			} else {
+				tag[properties[length-1]] = data;
+			}
+		}
+	    
+	    default public DataContext getDataContext(String name){
+	    	if(String.isNullOrEmpty(name)){
+	    		return null;
+	    	}
+	    	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+	    	if(contexts != null){
+	    		DataContext result = contexts.get(name);
+	    		if(result != null){
+	    			return result;
+	    		}
+	    	}
+	    	
+	    	if(this.logicParent != null){
+	        	return this.logicParent.getDataContext(name);
+	      	} else if(parentNode != null){
+	    		return this.parentNode.getDataContext(name);
+	    	}
+	    	
+	    	return null;
+	    }
+	    
+	    default public void addDataContext(DataContext context){
+	    	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+	    	if(contexts == null){
+	    		this["__contexts"] = contexts = new Map<String, DataContext>();
+	    	}
+	    	
+	    	DataContext old = contexts.get(name);
+	    	if(old != null){
+	    		old.moveDependentTo(context);
+	    	}
+	    	
+	    	contexts.set(context.name, context);
+	   	
+	    	if(context.name == "ROOT" || context.name == "TEMPLATE"){
+	    		return;
+	    	}
+	    	
+	    	if(this.logicParent != null){
+	        	DataContext parent = this.logicParent.getDataContext(context.ancestor);
+	        	if(parent != null){
+	        		parent.addDependent(context);
+	        	} else {
+	        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+	        	}
+	    	} else if(this.parentNode != null){
+	        	DataContext parent = this.parentNode.getDataContext(context.ancestor);
+	        	if(parent != null){
+	        		parent.addDependent(context);
+	        	} else {
+	        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+	        	}
+	    	}
+	    }
+	    
+	    default public void removeDataContext(String name){
+	    	if(String.isNullOrEmpty(name)){
+	    		return;
+	    	}
+	    	
+	       	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+	    	if(contexts == null){
+	    		return;
+	    	}
+	    	DataContext context = contexts.get(name);
+	    	if(context != null){
+	    		context.clearDependents();
+	    		
+	    		if(logicParent != null){
+	    			DataContext parent = this.logicParent.getDataContext(context.ancestor);
+	            	if(parent != null){
+	            		parent.addDependent(context);
+	            	} else {
+	            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+	            	}
+	    		} else if(this.parentNode != null){
+	            	DataContext parent = this.parentNode.getDataContext(context.ancestor);
+	            	if(parent != null){
+	            		parent.addDependent(context);
+	            	} else {
+	            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+	            	}
+	        	}
+	        	contexts.delete(name);
+	    	}
+	    }
+	    
+	    public Bindable logicParent{
+	    	&{
+	    		return (Bindable)this["_logicParent"];
+	    	}
+	    	+{
+	    		this["_logicParent"] = value;
+	    	}
+	    }
   
     default public void reset(){
     	NodeList children = this.childNodes;
