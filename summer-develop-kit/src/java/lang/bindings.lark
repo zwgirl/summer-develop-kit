@@ -1,6 +1,7 @@
 @java.lang.Module 
 package java.lang;
 
+import java.lang.Iterator.Item;
 import java.util.Collection;
 import java.util.ObservableCollection;
 
@@ -245,7 +246,11 @@ public abstract class AbstractBindable implements Bindable, Tag{
 	   	}
     }
     
-    public void reset(){}
+    public void reset(){
+    	for(int i=0, length=this._childs.length; i< length; i++){
+    		((Node)this.parentNode).removeChild((Node)this._childs[i]);  //TODO
+    	}
+    }
     
     @Override
     public void body(){
@@ -1362,6 +1367,8 @@ public class Iterator extends AbstractBindable{
 	private Object _items;
 	private Object[] _datas = new Array<Object>();
 	
+	private LoopStatus _status;
+	
 	private int _begin;
 	private int _end;
 	private int _step;
@@ -1369,6 +1376,12 @@ public class Iterator extends AbstractBindable{
 	
 	public Iterator(Bindable parent){
 		super(parent);
+		
+		this._status = new LoopStatus();
+		Object options = new Object();
+		options["name"] = "status";
+		options["dataItem"] = this._status;
+		this.addDataContext(new DataContext(options));
 	}
 	
 	//begin 属性值  
@@ -1419,12 +1432,6 @@ public class Iterator extends AbstractBindable{
 	
 	@Override
 	public void doBody(){
-		LoopStatus status = new LoopStatus();
-		Object options = new Object();
-		options["name"] = "status";
-		options["dataItem"] = status;
-		this.addDataContext(new DataContext(options));
-		
 		if(items != null){
 			if(items instanceof Collection){
 				int index = 0, size = ((Collection) items).size;
@@ -1437,17 +1444,17 @@ public class Iterator extends AbstractBindable{
 					if(index ++ < this._begin){
 						continue;
 					}
-					if(!status._first){
-						status._first = true;
+					if(!this._status._first){
+						this._status._first = true;
 					} else {
-						status._first = false;
+						this._status._first = false;
 					}
 					
-					status.count ++;
-					status.index ++;
-					status.current = obj;
+					this._status.count ++;
+					this._status.index ++;
+					this._status.current = obj;
 					if(index == end || index == size){
-						status._last = true;
+						this._status._last = true;
 					}
 					this.bodyHandler.call(item);
 					if(index == end){
@@ -1465,47 +1472,64 @@ public class Iterator extends AbstractBindable{
 				this.processChild(item);
 				
 				if(i == this._begin){
-					status.first = true;
+					this._status.first = true;
 				} else {
-					status.first = false;
+					this._status.first = false;
 				}
 				
 				if(i + this._step > this._end){
-					status.last = true;
+					this._status.last = true;
 				} else {
-					status.last = false;
+					this._status.last = false;
 				}
-				status.count ++ ;
+				this._status.count ++ ;
 				this.bodyHandler.call(item);
 			}
 		}
 	}
 	
 	protected CollectionChanged<Object> onCollectionChanged = (Object sender, CollectionChangedEvent<Object> event) ->{
-//		switch(event.action){
-//		case Add:
-//			Array<?> items = event.newItems;
-//			if(items == null || items.length <= 0){
-//				break;
-//			}
-//			int start = event.newStartingIndex;
-//			for(Object item : items){
-//				Template template = createTemplate(item);
-//				template.buildDOMTree(this._container, item, start++);
-//				itemsMap.set(item, template);
-//			} 
-//			break;
+		switch(event.action){
+		case Add:
+			Array<?> items = event.newItems;
+			if(items == null || items.length <= 0){
+				break;
+			}
+			int start = event.newStartingIndex;
+			for(Object obj : items){
+				Item item = createItem(obj);
+				this.processChild(item);
+				
+				this._status.count ++;
+				this._status.index ++;
+				this._status.current = obj;
+				this.bodyHandler.call(item);
+			} 
+			break;
 //		case Reset:
 //			undoTemplate();
 //			break;
-//		case Remove:
-//			Template[] toBeRemoved = {};
-//			for(Object item : event.oldItems){
-//				Template temp = itemsMap.get(item);
-//				temp.removeDOMTree(this._container);
-//				itemsMap.delete(item);
-//			}
-//			break;
+		case Remove:
+			items = event.oldItems;
+			if(items == null || items.length <= 0){
+				break;
+			}
+			
+			Bindable[] toBeRemove = new Array<Bindable>();
+			for(int i=0,length=items.length;i<length;i++){
+				for(int j=0,size=this._childs.length;j<size;j++){
+					if(this._childs[j].getDataContext("current").dataItem == items[i]){
+						toBeRemove.push(this._childs[j]);
+					}
+				}
+			}
+			
+			for(int i =0, lengt = toBeRemove.length; i<length;i++){
+				this._status.count--;
+				this._status._index--;
+				toBeRemove[i].reset();
+			}
+			break;
 //		case Replace:
 //			Object newItem = event.newItems[0], old = event.oldItems[0];
 //			Template oldTemp = itemsMap.get(old);
@@ -1515,8 +1539,8 @@ public class Iterator extends AbstractBindable{
 //				newTemp.buildDOMTree(this._container, newItem,  event.newStartingIndex);
 //			}
 //		case Move:
-//			
-//		}
+			
+		}
 	};
 	
 	class LoopStatus {
