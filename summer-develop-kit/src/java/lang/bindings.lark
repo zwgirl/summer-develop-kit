@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.ObservableCollection;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.event.Event;
 import org.w3c.event.EventHandler;
 import org.w3c.html.HTMLAnchorElement;
@@ -26,6 +27,8 @@ public interface Bindable{
 	}
    
 	public Bindable appendChild(Bindable child);
+	public void setAttribute(final String name, final Object value);
+	public void setAttributeNS(final String namespaceURI, final String qualifiedName, final Object value);
    
 	public void reset();
 }
@@ -125,8 +128,8 @@ public abstract class AbstractBindable implements Bindable, Tag{
 			tag = tag[properties[i]];
 		}
 		
-		if(binding.converterTo != null){
-			data = binding.converterTo(data);
+		if(binding.converteTo != null){
+			data = binding.converteTo(data);
 		}
 		
 		Object oldValue = tag[properties[length-1]];
@@ -247,10 +250,24 @@ public abstract class AbstractBindable implements Bindable, Tag{
     }
     
     public void reset(){
-    	for(int i=0, length=this._childs.length; i< length; i++){
-    		((Node)this.parentNode).removeChild((Node)this._childs[i]);  //TODO
+    	if(this._childs != null){
+    		this._childs.forEach((Bindable child, int index, Array<Bindable> array)->{
+    			child.reset();
+    		});
     	}
-    }
+    	
+    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+		if(bindings != null){
+			bindings.forEach((Binding binding, String key, Map<String, Binding> map)->{
+				binding.reset();
+			});
+		}
+		
+		Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+		contexts.forEach((DataContext context, String key, Map<String, DataContext> mapObj)->{
+			context.reset(this);
+		});
+	}
     
     @Override
     public void body(){
@@ -268,6 +285,13 @@ public abstract class AbstractBindable implements Bindable, Tag{
 		+{
 			this["_bodyHandler"]= value;
 		}
+	}
+	
+	public void setAttribute(final String name, final Object value){
+		this[name] = value;
+	}
+	public void setAttributeNS(final String namespaceURI, final String qualifiedName, final Object value){
+		this[name] = value;
 	}
 }
 /**
@@ -815,8 +839,8 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 	private String[] _targetProperties;
 	private UpdateTargetCallback _updateTargetCallback;
 	private UpdateSourceCallback _updateSourceCallback;
-	private ConverterFunction _converterTo;
-	private ConverterFunction _converterFrom;
+	private ConverterFunction _converteTo;
+	private ConverterFunction _converteFrom;
 
 	public Binding(Object options) {
 		if(options["property"] != undefined){
@@ -853,12 +877,12 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 			this._updateSourceCallback = (UpdateSourceCallback) options["updateSourceCallback"];
 		}
 		
-		if(options["converterTo"] != undefined){
-			this._converterTo = ((ConverterFunction) options["converterTo"]);
+		if(options["converteTo"] != undefined){
+			this._converteTo = ((ConverterFunction) options["converteTo"]);
 		}
 		
-		if(options["converterFrom"] != undefined){
-			this._converterFrom = ((ConverterFunction) options["converterFrom"]);
+		if(options["converteFrom"] != undefined){
+			this._converteFrom = ((ConverterFunction) options["converteFrom"]);
 		}
 	} 
 
@@ -924,21 +948,21 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 		}
 	}
 	
-	public ConverterFunction converterTo{
+	public ConverterFunction converteTo{
 		&{
-			return this._converterTo;
+			return this._converteTo;
 		}
 		+{
-			this._converterTo = value;
+			this._converteTo = value;
 		}
 	}
 	
-	public ConverterFunction converterFrom{
+	public ConverterFunction converteFrom{
 		&{
-			return this._converterFrom;
+			return this._converteFrom;
 		}
 		+{
-			this._converterFrom = value;
+			this._converteFrom = value;
 		}
 	}
 	
@@ -1049,11 +1073,26 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 	
 	public EventHandler updateSource = (Event event) ->{
 		Object value = getProperty((Node)event.target, this._targetProperties);
-		if(this._converterFrom != null){
-			value = this._converterFrom(value);
+		if(this._converteFrom != null){
+			value = this._converteFrom(value);
 		}
 		return this._target.getDataContext(this._context).updateSource(this._property, value, this._updateSourceCallback);
 	};
+
+	public void reset() {
+		if(this.context != null){
+			DataContext ancestor = this._target.getDataContext(this.context);
+			if(ancestor != null){
+				ancestor.removeBinding(this);
+			}
+		} else {
+			DataContext ancestor = this._target.getDataContext("ROOT");
+			if(ancestor != null){
+				ancestor.removeBinding(this);
+			}
+		}
+		this._target.detach(this);
+	}
 	
 //	protected void detachTarget(HTMLElement target){
 //		// listen for lost focus and input 
@@ -1076,7 +1115,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	private String _property;
 	private String _ancestor;
 	private Binding[] _bindings = {};
-	private Map<String,DataContext> _dependents = new Map<String, DataContext>();
+	private Array<DataContext> _dependents = new Array<DataContext>();
 	private Object _dataItem;
 	
 	public DataContext(Object options){
@@ -1187,7 +1226,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	}
 	
 	public void addDependent(DataContext dependent){ 
-		_dependents.set(dependent.name, dependent);
+		_dependents.push(dependent);
 		
 		if(this._dataItem != null){
 			dependent.dataItem = this.dataItem[dependent.property];
@@ -1197,7 +1236,11 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	}
 	
 	public void removeDependent(DataContext dependent){
-		_dependents.delete(dependent.name);
+		_dependents.forEach((DataContext dc, int index, Array<DataContext> array)->{
+			if(dc == dependent){
+				_dependents.splice(index, 1);
+			}
+		});
 	}
 	
 	public void moveDependentTo(DataContext target){
@@ -1213,7 +1256,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 			binding.propertyChange(this.dataItem, new PropertyChangeEvent(binding.property));
 		});
 		
-		_dependents.forEach((DataContext dc, String name, Map<String, DataContext> map)->{
+		_dependents.forEach((DataContext dc, int index, Array<DataContext> array)->{
 			dc.propertyChange(this.dataItem, new PropertyChangeEvent(dc.property));
 		});
 	}
@@ -1221,7 +1264,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	protected void replaceDataItem(Object newDataItem){
 		if(this._dataItem != null && this._dataItem instanceof INotifyPropertyChanged){  
 			INotifyPropertyChanged oldPc = (INotifyPropertyChanged) this._dataItem;
-			_dependents.forEach((DataContext dc, String name, Map<String, DataContext> map)->{
+			_dependents.forEach((DataContext dc, int index, Array<DataContext> array)->{
 				oldPc.removePropertyChangeListener(dc.property, dc.propertyChange);
 			});
 			
@@ -1232,7 +1275,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		
 		if(newDataItem != null && newDataItem instanceof INotifyPropertyChanged){
 			INotifyPropertyChanged newPc = (INotifyPropertyChanged) newDataItem;
-			_dependents.forEach((DataContext dc, String name, Map<String, DataContext> map)->{
+			_dependents.forEach((DataContext dc, int index, Array<DataContext> array)->{
 				newPc.addPropertyChangeListener(dc.property, dc.propertyChange);
 			});
 			
@@ -1275,28 +1318,40 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		return true;
 	}
 
-	public void reset() {
-		_bindings.forEach((Binding binding, int index, Array<Binding> array)->{
-			if(String.isNullOrEmpty(binding.property)){
-				this.removePropertyChangeListener("dataItem", binding.propertyChange);
-			} else {
-				if(this._dataItem instanceof INotifyPropertyChanged){
-					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(binding.property, binding.propertyChange);
-				}
-			}
-		});
-		_bindings.length = 0;
+	public void reset(Bindable target) {
+//		_bindings.forEach((Binding binding, int index, Array<Binding> array)->{
+//			if(String.isNullOrEmpty(binding.property)){
+//				this.removePropertyChangeListener("dataItem", binding.propertyChange);
+//			} else {
+//				if(this._dataItem instanceof INotifyPropertyChanged){
+//					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(binding.property, binding.propertyChange);
+//				}
+//			}
+//		});
+//		_bindings.length = 0;
 		
-		_dependents.forEach((DataContext dc, String name, Map<String, DataContext> map)->{
-			if(String.isNullOrEmpty(dc.property)){
-				this.removePropertyChangeListener("dataItem", dc.propertyChange);
-			} else {
-				if(this._dataItem instanceof INotifyPropertyChanged){
-					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(dc.property, dc.propertyChange);
-				}
+//		_dependents.forEach((DataContext dc, int index, Array<DataContext> array)->{
+//			if(String.isNullOrEmpty(dc.property)){
+//				this.removePropertyChangeListener("dataItem", dc.propertyChange);
+//			} else {
+//				if(this._dataItem instanceof INotifyPropertyChanged){
+//					((INotifyPropertyChanged) this._dataItem).removePropertyChangeListener(dc.property, dc.propertyChange);
+//				}
+//			}
+//		});
+//		_dependents.length = 0;
+		
+		if(this.ancestor != null){
+			DataContext ancestor = target.getDataContext(this.ancestor);
+			if(ancestor != null){
+				ancestor.removeDependent(this);
 			}
-		});
-		_dependents.clear();
+		} else {
+			DataContext ancestor = target.getDataContext("ROOT");
+			if(ancestor != null){
+				ancestor.removeDependent(this);
+			}
+		}
 	}
 }
 
@@ -1441,7 +1496,9 @@ public class Iterator extends AbstractBindable{
 					Item item = createItem(obj);
 					this.processChild(item);
 					
-					if(index ++ < this._begin){
+					this._status.index = index;
+
+					if(index++ < this._begin){
 						continue;
 					}
 					if(!this._status._first){
@@ -1451,7 +1508,6 @@ public class Iterator extends AbstractBindable{
 					}
 					
 					this._status.count ++;
-					this._status.index ++;
 					this._status.current = obj;
 					if(index == end || index == size){
 						this._status._last = true;
@@ -1467,10 +1523,10 @@ public class Iterator extends AbstractBindable{
 				}
 			}
 		} else if(this._end > -1){
-			for(int i= this._begin; i<this._end; i+=this._step){
+			for(int i= this._begin, index=0; i<this._end; i+=this._step){
 				Item item = createItem(null);
 				this.processChild(item);
-				
+				this._status.index = index ++  ;
 				if(i == this._begin){
 					this._status.first = true;
 				} else {

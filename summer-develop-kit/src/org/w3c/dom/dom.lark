@@ -3,7 +3,7 @@ package org.w3c.dom;
 
 import org.w3c.event.EventTarget;
 import org.w3c.html.HTMLElement;
-
+import org.w3c.dom.css.CSSStyleDeclaration;
 //File: dom.idl
 
 //#ifndef _DOM_IDL_
@@ -152,52 +152,52 @@ public native interface Node extends EventTarget, Bindable{
  	public native boolean hasAttributes();
  	
  	public default Binding getBinding(String[] properties){ 
-	    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
-	    	if(bindings == null){
-	    		return null;
-	    	}
-	    	return bindings.get(properties.join("."));
-	    }
+    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+    	if(bindings == null){
+    		return null;
+    	}
+    	return bindings.get(properties.join("."));
+    }
 	    
  	public default void setBinding(String[] properties, Binding binding){
-	    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
-	    	if(bindings == null){
-	    		this["__bindings"] = bindings = new Map<String, Binding>();
-	    	}
-	    	Binding old = bindings.get(properties.join("."));
-	    	if(old === binding){
-	    		return;
-	    	}
-	    	
-	    	if(old != null){
-	        	old.unInject(this);
-	    	}
-	    	
-	    	bindings.set(properties.join("."), binding);
-	    	binding.inject(this, properties);
-	    }
+    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+    	if(bindings == null){
+    		this["__bindings"] = bindings = new Map<String, Binding>();
+    	}
+    	Binding old = bindings.get(properties.join("."));
+    	if(old === binding){
+    		return;
+    	}
+    	
+    	if(old != null){
+        	old.unInject(this);
+    	}
+    	
+    	bindings.set(properties.join("."), binding);
+    	binding.inject(this, properties);
+    }
 	    
  	public default boolean removeBinding(String[] properties){
-	    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
-	    	if(bindings == null){
-	    		return false;
-	    	}
-	    	
-	    	Binding old = bindings.get(properties.join("."));
-	    	if(old == null){
-	    		return false;
-	    	}
-	    	
-	    	if(old != null){
-	        	old.unInject(this);
-	    	}
-	    	
-	    	bindings.delete(properties.join("."));
-	    	return true;
-	    }
+    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+    	if(bindings == null){
+    		return false;
+    	}
+    	
+    	Binding old = bindings.get(properties.join("."));
+    	if(old == null){
+    		return false;
+    	}
+    	
+    	if(old != null){
+        	old.unInject(this);
+    	}
+    	
+    	bindings.delete(properties.join("."));
+    	return true;
+    }
 	    
     //cym 2015-05-07
-	  public default void attach(Binding binding){
+	public default void attach(Binding binding){
 		// listen for lost focus and input 
 		switch(binding.trigger) { 
 			case LostFocus:
@@ -209,9 +209,9 @@ public native interface Node extends EventTarget, Bindable{
 				break;
 			default:
 		 }  
-	  }
+	}
 	  
-	  public default void detach(Binding binding){
+	public default void detach(Binding binding){
 		// listen for lost focus and input 
  		switch(binding.trigger) { 
 			case LostFocus:
@@ -223,146 +223,245 @@ public native interface Node extends EventTarget, Bindable{
 				break;
 			default:
 		 }  
- 	  }
+ 	}
 		
-		public default void update(Binding binding){
-			Object data = this.getDataContext(binding.context).dataItem;
-			if(!String.isNullOrEmpty(binding.property)){
-				
-				data = data == null ? null : data[binding.property];
-			}
+//	public default void update(Binding binding){
+//		Object data = this.getDataContext(binding.context).dataItem;
+//		if(!String.isNullOrEmpty(binding.property)){
+//			data = data == null ? null : data[binding.property];
+//		}
+//
+//		Object tag = this;
+//		String[] properties = binding.targetProperties;
+//		int length = properties.length; 
+//		for(int i = 0 ; i < length - 1; i++){
+//			if(tag == null) return;
+//			tag = tag[properties[i]];
+//		}
+//			
+//		if(binding.converterTo != null){
+//			data = binding.converterTo(data);
+//		}
+//			
+//		Object oldValue = tag[properties[length-1]];
+//		if(data === oldValue){
+//			return;
+//		}
+//			
+//		if(binding.updateTargetCallback != null){
+//			binding.updateTargetCallback(this, properties, data);
+//		} else {
+//			tag[properties[length-1]] = data;
+//		}
+//	}
+	
+	public default void update(Binding binding){
+		Object data = this.getDataContext(binding.context).dataItem;
+		if(!String.isNullOrEmpty(binding.property)){
+			data = data == null ? null : data[binding.property];
+		}
 
-			Object tag = this;
-			String[] properties = binding.targetProperties;
-			int length = properties.length; 
-			for(int i = 0 ; i < length - 1; i++){
-				if(tag == null) return;
+		Object tag = this;
+		String[] properties = binding.targetProperties;
+		int length = properties.length; 
+		for(int i = 0 ; i < length - 1; i++){
+			if(tag == null) return;
+//			if(tag["getAttributeNS"] != null){
+//				tag = ((Element)tag).getAttribute(properties[i]);
+//			} else 
+				if(tag["setAttribute"] != null) {
+				tag = ((Element)tag).getAttribute(properties[i]);
+			} else if(tag["getProperty"] != null){
+				tag = ((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
+			} else {
 				tag = tag[properties[i]];
 			}
+		}
 			
-			if(binding.converterTo != null){
-				data = binding.converterTo(data);
+		if(binding.converteTo != null){
+			data = binding.converteTo(data);
+		}
+		
+		Object oldValue = tag[properties[length-1]];
+		if(oldValue === undefined){
+//			if(tag["getAttributeNS"] != null){
+//				oldValue = ((Element)tag).getAttribute(properties[length-1]);
+//			} else 
+				if(tag["getAttribute"] != null) {
+				oldValue = ((Element)tag).getAttribute(properties[length-1]);
+			} else if(tag["getProperty"] != null){
+				oldValue = ((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
 			}
+		}
+		
+		if(data === oldValue){
+			return;
+		}
 			
-			Object oldValue = tag[properties[length-1]];
-			if(data === oldValue){
-				return;
-			}
-			
-			if(binding.updateTargetCallback != null){
-				binding.updateTargetCallback(this, properties, data);
+		if(binding.updateTargetCallback != null){
+			binding.updateTargetCallback(this, properties, data);
+		} else {
+//			if(tag["setAttributeNS"] != null){
+//				((Element)tag).setAttributeNS(null, properties[length-1], data);
+//			} else 
+				if(tag["setAttribute"] != null) {
+				((Element)tag).setAttribute(properties[length-1], data);
+			} else if(tag["setProperty"] != null){
+				((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
 			} else {
 				tag[properties[length-1]] = data;
 			}
 		}
+	}
 	    
-	    default public DataContext getDataContext(String name){
-	    	if(String.isNullOrEmpty(name)){
-	    		return null;
-	    	}
-	    	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
-	    	if(contexts != null){
-	    		DataContext result = contexts.get(name);
-	    		if(result != null){
-	    			return result;
-	    		}
-	    	}
-	    	
-	    	if(this.logicParent != null){
-	        	return this.logicParent.getDataContext(name);
-	      	} else if(parentNode != null){
-	    		return this.parentNode.getDataContext(name);
-	    	}
-	    	
-	    	return null;
-	    }
-	    
-	    default public void addDataContext(DataContext context){
-	    	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
-	    	if(contexts == null){
-	    		this["__contexts"] = contexts = new Map<String, DataContext>();
-	    	}
-	    	
-	    	DataContext old = contexts.get(name);
-	    	if(old != null){
-	    		old.moveDependentTo(context);
-	    	}
-	    	
-	    	contexts.set(context.name, context);
-	   	
-	    	if(context.name == "ROOT" || context.name == "TEMPLATE"){
-	    		return;
-	    	}
-	    	
-	    	if(this.logicParent != null){
-	        	DataContext parent = this.logicParent.getDataContext(context.ancestor);
-	        	if(parent != null){
-	        		parent.addDependent(context);
-	        	} else {
-	        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
-	        	}
-	    	} else if(this.parentNode != null){
-	        	DataContext parent = this.parentNode.getDataContext(context.ancestor);
-	        	if(parent != null){
-	        		parent.addDependent(context);
-	        	} else {
-	        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
-	        	}
-	    	}
-	    }
-	    
-	    default public void removeDataContext(String name){
-	    	if(String.isNullOrEmpty(name)){
-	    		return;
-	    	}
-	    	
-	       	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
-	    	if(contexts == null){
-	    		return;
-	    	}
-	    	DataContext context = contexts.get(name);
-	    	if(context != null){
-	    		context.clearDependents();
-	    		
-	    		if(logicParent != null){
-	    			DataContext parent = this.logicParent.getDataContext(context.ancestor);
-	            	if(parent != null){
-	            		parent.addDependent(context);
-	            	} else {
-	            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
-	            	}
-	    		} else if(this.parentNode != null){
-	            	DataContext parent = this.parentNode.getDataContext(context.ancestor);
-	            	if(parent != null){
-	            		parent.addDependent(context);
-	            	} else {
-	            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
-	            	}
-	        	}
-	        	contexts.delete(name);
-	    	}
-	    }
-	    
-	    public Bindable logicParent{
-	    	&{
-	    		return (Bindable)this["_logicParent"];
-	    	}
-	    	+{
-	    		this["_logicParent"] = value;
-	    	}
-	    }
-  
-    default public void reset(){
-    	NodeList children = this.childNodes;
-    	for(long i = 0, len = children.length; i<len; i++){
-    		children[i].reset(); 
+	default public DataContext getDataContext(String name){
+    	if(String.isNullOrEmpty(name)){
+    		return null;
+    	}
+    	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+    	if(contexts != null){
+    		DataContext result = contexts.get(name);
+    		if(result != null){
+    			return result;
+    		}
     	}
     	
-    	DataContext dc = (DataContext)this["__dataContext"];
-    	if(dc != null){
-    		dc.reset();
+    	if(this.logicParent != null){
+        	return this.logicParent.getDataContext(name);
+      	} else if(parentNode != null){
+    		return this.parentNode.getDataContext(name);
+    	}
+    	
+    	return null;
+    }
+	    
+    default public void addDataContext(DataContext context){
+    	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+    	if(contexts == null){
+    		this["__contexts"] = contexts = new Map<String, DataContext>();
+    	}
+    	
+    	DataContext old = contexts.get(name);
+    	if(old != null){
+    		old.moveDependentTo(context);
+    	}
+    	
+    	contexts.set(context.name, context);
+   	
+    	if(context.name == "ROOT" || context.name == "TEMPLATE"){
+    		return;
+    	}
+    	
+    	if(this.logicParent != null){
+        	DataContext parent = this.logicParent.getDataContext(context.ancestor);
+        	if(parent != null){
+        		parent.addDependent(context);
+        	} else {
+        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        	}
+    	} else if(this.parentNode != null){
+        	DataContext parent = this.parentNode.getDataContext(context.ancestor);
+        	if(parent != null){
+        		parent.addDependent(context);
+        	} else {
+        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        	}
     	}
     }
+	    
+    default public void removeDataContext(String name){
+    	if(String.isNullOrEmpty(name)){
+    		return;
+    	}
+    	
+       	Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+    	if(contexts == null){
+    		return;
+    	}
+    	DataContext context = contexts.get(name);
+    	if(context != null){
+    		context.clearDependents();
+    		
+    		if(logicParent != null){
+    			DataContext parent = this.logicParent.getDataContext(context.ancestor);
+            	if(parent != null){
+            		parent.addDependent(context);
+            	} else {
+            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+            	}
+    		} else if(this.parentNode != null){
+            	DataContext parent = this.parentNode.getDataContext(context.ancestor);
+            	if(parent != null){
+            		parent.addDependent(context);
+            	} else {
+            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+            	}
+        	}
+        	contexts.delete(name);
+    	}
+    }
+	    
+    public Bindable logicParent{
+    	&{
+    		return (Bindable)this["_logicParent"];
+    	}
+    	+{
+    		this["_logicParent"] = value;
+    	}
+    }
+    
+    default public void addLogicChild(Bindable child){
+    	Array<Bindable> tags = (Array<Bindable>) this["_logicChilds"];
+    	if(tags == null){
+    		this["_logicChilds"] = tags = new Array<Bindable>();
+    	}
+    	tags.push(child);
+    }
+    
+    default public void remmoveLogicChild(Bindable child){
+    	Array<Tag> tags = (Array<Tag>) this["_logicChilds"];
+    	if(tags != null){
+    		tags.forEach((Tag tag, int index, Array<Tag> array)->{
+    			if(tag == child){
+    				tags.splice(index, 1);
+    			}
+    		});
+    	}
+    }
+  
+    default public void reset(){
+//    	if(this.childNodes != null){
+//        	for(long i = 0, len = this.childNodes.length; i<len; i++){
+//        		this.childNodes[i].reset(); 
+//        	}
+//    	}
+    	while(this.firstChild != null){
+//    		this.removeChild(this.firstChild);
+    		this.firstChild.reset(); 
+    	}
+    	
+    	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
+		if(bindings != null){
+			bindings.forEach((Binding binding, String key, Map<String, Binding> map)->{
+				binding.reset();
+			});
+		}
+		
+		Map<String, DataContext> contexts = (Map<String, DataContext>) this["__contexts"];
+		if(contexts != null){
+			contexts.forEach((DataContext context, String key, Map<String, DataContext> mapObj)->{
+				context.reset(this);
+			});
+		}
+		
+		Array<Bindable> tags = (Array<Bindable>) this["_logicChilds"];
+    	if(tags != null){
+    		tags.forEach((Bindable tag, int index, Array<Bindable> array)->{
+    			tag.reset();
+    		});
+    	}
+    	this.parentNode.removeChild(this);
+	}
     
     //DOM 4
 //  attribute  
