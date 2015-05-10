@@ -44,10 +44,10 @@ public interface Tag {
 }
 public abstract class AbstractBindable implements Bindable, Tag{
 	protected Bindable[] _childs;
-	protected Bindable _parent;
+	protected Bindable _parentNode;
 	
 	protected AbstractBindable(Bindable parent){
-		this._parent = parent;
+		this._parentNode = parent;
 	}
 	
 	@Override
@@ -233,10 +233,10 @@ public abstract class AbstractBindable implements Bindable, Tag{
     
     public Bindable parentNode{
 	    &{
-			return (Bindable)this._parent;
+			return (Bindable)this._parentNode;
 		}
 		+{
-			this._parent = value;
+			this._parentNode = value;
 		}
     }
     
@@ -1370,14 +1370,6 @@ public abstract class Template extends AbstractBindable{
 		options["dataItem"] = this;
 		addDataContext(new DataContext(options));
 	}
-	
-	public final void body(){
-		doBody();
-	}
-	
-	protected void doBody(){
-		
-	}
 
 	public void removeBody(Bindable parent) {
 		this._childs.forEach((Bindable node, int index, Array<Bindable> array)->{
@@ -1385,13 +1377,13 @@ public abstract class Template extends AbstractBindable{
 		});
 	}
 	
-	protected void before(){
-		
-	}
-	
-	protected Bindable after(Bindable node){
-		return node;
-	}
+//	protected void before(){
+//		
+//	}
+//	
+//	protected Bindable after(Bindable node){
+//		return node;
+//	}
 }
 
 public class Router implements MarkupExtension{
