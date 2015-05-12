@@ -1,12 +1,10 @@
 @java.lang.Module 
 package java.lang;
 
-import java.lang.Iterator.Item;
 import java.util.Collection;
 import java.util.ObservableCollection;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.event.Event;
 import org.w3c.event.EventHandler;
 import org.w3c.html.HTMLAnchorElement;
@@ -22,9 +20,7 @@ public interface Bindable{
 	public void addDataContext(DataContext context);
 	public void removeDataContext(String name);
 	public Bindable parentNode{+;&;}
-	public Bindable logicParent{
-		&;+;
-	}
+	public Bindable logicParent{&;+;}
    
 	public Bindable appendChild(Bindable child);
 	public void setAttribute(final String name, final Object value);
@@ -33,9 +29,9 @@ public interface Bindable{
 	public void reset();
 }
 
-public function void BodyHandler();
+public function void BodyHandler(Node parentNode, Bindable logicParent, Object context);
 public interface Tag {
-	public void body();
+	public void body(Object context);
 	
 	public BodyHandler bodyHandler{
 		&;
@@ -44,15 +40,15 @@ public interface Tag {
 }
 public abstract class AbstractBindable implements Bindable, Tag{
 	protected Bindable[] _childs;
-	protected Bindable _parentNode;
+	protected Node _parentNode;
 	
-	protected AbstractBindable(Bindable parent){
+	protected AbstractBindable(Node parent){
 		this._parentNode = parent;
 	}
 	
 	@Override
 	public Bindable appendChild(Bindable child) {
-		processChild(child);
+//		processChild(child);
 		return this.parentNode.appendChild(child);
 	}
 	
@@ -231,9 +227,9 @@ public abstract class AbstractBindable implements Bindable, Tag{
     	}
     }
     
-    public Bindable parentNode{
+    public Node parentNode{
 	    &{
-			return (Bindable)this._parentNode;
+			return (Node)this._parentNode;
 		}
 		+{
 			this._parentNode = value;
@@ -248,6 +244,17 @@ public abstract class AbstractBindable implements Bindable, Tag{
 	   		this["_logicParent"] = value;
 	   	}
     }
+    
+//    public Object getObjectContext(){
+//    	if((boolean)this["__isTemplate"]){
+//    		return this;
+//    	}
+//    	if(this.logicParent != null){
+//    		return this.logicParent.getObjectContext();
+//    	} else {
+//    		return this.parentNode.getObjectContext();
+//    	}
+//    }
     
     public void reset(){
     	if(this._childs != null){
@@ -270,12 +277,12 @@ public abstract class AbstractBindable implements Bindable, Tag{
 	}
     
     @Override
-    public void body(){
-    	doBody();
+    public void body(Object context){
+    	doBody(this.parentNode, this, context);
     }
     
-    protected void doBody(){
-    	this.bodyHandler();
+    protected void doBody(Node parentNode, Bindable logicParent, Object context){
+    	this.bodyHandler(this.parentNode, this, context);
     }
     
 	public BodyHandler bodyHandler{
@@ -841,20 +848,25 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 	private UpdateSourceCallback _updateSourceCallback;
 	private ConverterFunction _converteTo;
 	private ConverterFunction _converteFrom;
+	private boolean _attribute;
 
 	public Binding(Object options) {
 		if(options["property"] != undefined){
 			this._property = (String) options["property"];
 		}
 		
-		if(options["trace"] != undefined){
-			this._trace = (boolean) options["trace"];
+		if(options["attribute"] != undefined){
+			this._attribute = (boolean) options["attribute"];
 		}
 		
 		if(options["mode"] != undefined){
 			this._mode = (BindingMode) options["mode"];
 		} else {
 			this._mode = BindingMode.OneTime;
+		}
+		
+		if(options["trace"] != undefined){
+			this._trace = (boolean) options["trace"];
 		}
 		
 		if(options["context"] != undefined){
@@ -903,6 +915,15 @@ public final class Binding implements MarkupExtension, PropertyChangeListener {
 			_targetProperties = value;
 		} 
 	} 
+	
+	public boolean attribute {
+		& { 
+			return _attribute; 
+		} 
+		+ {
+			_attribute = value;
+		} 
+	}
 	 
 	public boolean trace {
 		& {
@@ -1362,8 +1383,10 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
  */
 public abstract class Template extends AbstractBindable{
 	
-	protected Template(Bindable parent){
+	protected Template(Node parent){
 		super(parent);
+		
+		this["__isTemplate"] = true;
 		
 		Object options = new Object();
 		options["name"] = "TEMPLATE";
@@ -1408,8 +1431,6 @@ public class Router implements MarkupExtension{
 	}
 }
 
-//public function void ItemHandler(Bindable parent, int index, Iterator.LoopStatus status);
-
 public class Iterator extends AbstractBindable{
 	private Object _items;
 	private Object[] _datas = new Array<Object>();
@@ -1421,7 +1442,7 @@ public class Iterator extends AbstractBindable{
 	private int _step;
 	private boolean _trace;  //trace ObjserableCollection
 	
-	public Iterator(Bindable parent){
+	public Iterator(Node parent){
 		super(parent);
 		
 		this._status = new LoopStatus();
@@ -1478,7 +1499,8 @@ public class Iterator extends AbstractBindable{
 	}
 	
 	@Override
-	public void doBody(){
+	public void doBody(Node parentNode, Bindable logicParent, Object context){
+		this["__ctx"] = context;
 		if(items != null){
 			if(items instanceof Collection){
 				int index = 0, size = ((Collection) items).size;
@@ -1504,7 +1526,7 @@ public class Iterator extends AbstractBindable{
 					if(index == end || index == size){
 						this._status._last = true;
 					}
-					this.bodyHandler.call(item);
+					this.bodyHandler(parentNode, item, context);
 					if(index == end){
 						break;
 					}
@@ -1531,7 +1553,7 @@ public class Iterator extends AbstractBindable{
 					this._status.last = false;
 				}
 				this._status.count ++ ;
-				this.bodyHandler.call(item);
+				this.bodyHandler(parentNode, item, context);
 			}
 		}
 	}
@@ -1551,7 +1573,7 @@ public class Iterator extends AbstractBindable{
 				this._status.count ++;
 				this._status.index ++;
 				this._status.current = obj;
-				this.bodyHandler.call(item);
+				this.bodyHandler(this.parentNode, item, this["__ctx"]);
 			} 
 			break;
 //		case Reset:
@@ -1671,7 +1693,7 @@ public class Iterator extends AbstractBindable{
 	}
 	
 	class Item extends AbstractBindable{
-		Item(Bindable parent){
+		Item(Node parent){
 			super(parent);
 		}
 	}
@@ -1681,7 +1703,7 @@ public class Choose extends AbstractBindable{
 	private Object _data;
 	private ConverterFunction _converter;
 	private boolean _otherwise = true;
-	public Choose(Bindable parent){
+	public Choose(Node parent){
 		super(parent);
 	}
 	
@@ -1727,7 +1749,7 @@ public function boolean TestCallback(Object data);
 public final class When extends AbstractBindable{
 	private Object _value;
 	
-	public When(Bindable parent){
+	public When(Node parent){
 		super(parent);
 	}
 	
@@ -1741,7 +1763,7 @@ public final class When extends AbstractBindable{
 	}
 	
 	@Override
-	protected void doBody(){
+	protected void doBody(Node parentNode, Bindable logicParent, Object context){
 		if(this._value == null ){
 			return;
 		} 
@@ -1752,25 +1774,25 @@ public final class When extends AbstractBindable{
 		
 		Choose choose = (Choose) this.logicParent;
 		if(choose.test(this.value)){
-			this.bodyHandler(parent);
+			this.bodyHandler(parentNode, this, context);
 		}
 	}
 }
 
 public final class Otherwise extends AbstractBindable{
-	public Otherwise(Bindable parent){
+	public Otherwise(Node parent){
 		super(parent);
 	}
 	
 	@Override
-	protected void doBody(){
+	protected void doBody(Node parentNode, Bindable logicParent, Object context){
 		if(!(this.logicParent instanceof Choose)){
 			return;
 		}
 		
 		Choose choose = (Choose) this.logicParent;
 		if((boolean)choose["_otherwise"]){
-			this.bodyHandler(parent);
+			this.bodyHandler(parentNode, this, context);
 		}
 	}
 }
@@ -1778,7 +1800,7 @@ public final class Otherwise extends AbstractBindable{
 public final class If extends AbstractBindable{
 	private Object _data;
 	private TestCallback _test;
-	public If(Bindable parent){
+	public If(Node parent){
 		super(parent);
 	}
 	public Object data{
@@ -1800,14 +1822,14 @@ public final class If extends AbstractBindable{
 	}
 	
 	@Override
-	protected void doBody(){
+	protected void doBody(Node parentNode, Bindable logicParent, Object context){
 		if(this._test == null ){
 			if((Boolean)this._data){
-				this.bodyHandler(parent);
+				this.bodyHandler(parentNode, this, context);
 			}
 		} else {
 			if(this._test()){
-				this.bodyHandler(parent);
+				this.bodyHandler(parentNode, this, context);
 			}
 		}
 	}

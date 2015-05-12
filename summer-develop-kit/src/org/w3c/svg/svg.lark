@@ -110,39 +110,39 @@ import org.w3c.event.UIEvent;
 */
 interface ElementTimeControl {
 
- /**
-  * Creates a begin instance time for the current time. The new instance
-  * time is added to the <a href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#Timing-BeginEnd-InstanceTimesLists"><em>begin instance times list</em></a>.
-  * The behavior of this method is equivalent to <code>beginElementAt(0)</code>.
-  */
- void beginElement();
+	/**
+	 * Creates a begin instance time for the current time. The new instance
+	 * time is added to the <a href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#Timing-BeginEnd-InstanceTimesLists"><em>begin instance times list</em></a>.
+	 * The behavior of this method is equivalent to <code>beginElementAt(0)</code>.
+	 */
+	void beginElement();
 
- /**
-  * Creates a begin instance time for the current time plus the specified
-  * offset. The new instance time is added to the
-  * <a href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#Timing-BeginEnd-InstanceTimesLists"><em>begin instance times list</em></a>.
-  *
-  * @param offset The offset from the current document time, in seconds, at
-  *   which to begin the element.
-  */
- void beginElementAt(final float offset);
+	/**
+	 * Creates a begin instance time for the current time plus the specified
+	 * offset. The new instance time is added to the
+	 * <a href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#Timing-BeginEnd-InstanceTimesLists"><em>begin instance times list</em></a>.
+	 *
+	 * @param offset The offset from the current document time, in seconds, at
+	 *   which to begin the element.
+	 */
+	void beginElementAt(final float offset);
 
- /**
-  * Creates an end instance time for the current time. The new instance time is added to the
-  * <a href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#Timing-BeginEnd-InstanceTimesLists"><em>end instance times list</em></a>.
-  * The behavior of this method is equivalent to <code>endElementAt(0)</code>.
-  */
- void endElement();
+	/**
+	 * Creates an end instance time for the current time. The new instance time is added to the
+	 * <a href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#Timing-BeginEnd-InstanceTimesLists"><em>end instance times list</em></a>.
+	 * The behavior of this method is equivalent to <code>endElementAt(0)</code>.
+	 */
+	void endElement();
 
- /**
-  * Creates a end instance time for the current time plus the specified
-  * offset. The new instance time is added to the
-  * <a href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#Timing-BeginEnd-InstanceTimesLists"><em>end instance times list</em></a>.
-  *
-  * @param offset offset from the current document time, in seconds, at
-  *   which to end the element.
-  */
- void endElementAt(final float offset);
+	/**
+	 * Creates a end instance time for the current time plus the specified
+ 	* offset. The new instance time is added to the
+ 	* <a href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#Timing-BeginEnd-InstanceTimesLists"><em>end instance times list</em></a>.
+ 	*
+ 	* @param offset offset from the current document time, in seconds, at
+ 	*   which to end the element.
+ 	*/
+	void endElementAt(final float offset);
 }
 
 ///**
@@ -5297,30 +5297,35 @@ public native interface SVGTextPositioningElement extends SVGTextContentElement 
   * Corresponds to attribute <span class='attr-name'>'x'</span> on the
   * given element.
   */
+	@Attribute
  /*readonly attribute*/ public native SVGAnimatedLengthList x{}
 
  /**
   * Corresponds to attribute <span class='attr-name'>'y'</span> on the
   * given element.
   */
+	@Attribute
  /*readonly attribute*/ public native SVGAnimatedLengthList y{}
 
  /**
   * Corresponds to attribute <span class='attr-name'>'dx'</span> on the
   * given element.
   */
+	@Attribute
  /*readonly attribute*/ public native SVGAnimatedLengthList dx{}
 
  /**
   * Corresponds to attribute <span class='attr-name'>'dy'</span> on the
   * given element.
   */
+	@Attribute
  /*readonly attribute*/ public native SVGAnimatedLengthList dy{}
 
  /**
   * Corresponds to attribute <span class='attr-name'>'rotate'</span> on the
   * given element.
   */
+	@Attribute
  /*readonly attribute*/ public native SVGAnimatedNumberList rotate{}
 }
 

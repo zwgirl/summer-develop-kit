@@ -255,6 +255,68 @@ public native interface Node extends EventTarget, Bindable{
 //		}
 //	}
 	
+//	public default void update(Binding binding){
+//		Object data = this.getDataContext(binding.context).dataItem;
+//		if(!String.isNullOrEmpty(binding.property)){
+//			data = data == null ? null : data[binding.property];
+//		}
+//
+//		Object tag = this;
+//		String[] properties = binding.targetProperties;
+//		int length = properties.length; 
+//		
+//		for(int i = 0 ; i < length - 1; i++){
+//			if(tag == null) return;
+//			tag = tag[properties[i]];
+//			
+//			if(tag == null && tag["getAttributeNS"] != null){
+//				tag = ((Element)tag).getAttribute(properties[i]);
+//			}
+//			
+//			if(tag == null && tag["getAttribute"] != null) {
+//				tag = ((Element)tag).getAttribute(properties[i]);
+//			} 
+//			
+//			if(tag == null && tag["getProperty"] != null){
+//				tag = ((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
+//			}
+//		}
+//			
+//		if(binding.converteTo != null){
+//			data = binding.converteTo(data);
+//		}
+//		
+//		Object oldValue = tag[properties[length-1]];
+//		if(oldValue === undefined){
+//			if(tag["getAttributeNS"] != null){
+//				oldValue = ((Element)tag).getAttribute(properties[length-1]);
+//			} else if(tag["getAttribute"] != null) {
+//				oldValue = ((Element)tag).getAttribute(properties[length-1]);
+//			} else if(tag["getProperty"] != null){
+//				oldValue = ((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
+//			}
+//		}
+//		
+//		if(data === oldValue){
+//			return;
+//		}
+//			
+//		if(binding.updateTargetCallback != null){
+//			binding.updateTargetCallback(this, properties, data);
+//		} else {
+////			if(tag["setAttributeNS"] != null){
+////				((Element)tag).setAttributeNS(null, properties[length-1], data);
+////			} else 
+////			if(tag["setAttribute"] != null) {
+////				((Element)tag).setAttribute(properties[length-1], data);
+////			} else if(tag["setProperty"] != null){
+////				((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
+////			} else {
+//				tag[properties[length-1]] = data;
+////			}
+//		}
+//	}
+	
 	public default void update(Binding binding){
 		Object data = this.getDataContext(binding.context).dataItem;
 		if(!String.isNullOrEmpty(binding.property)){
@@ -263,36 +325,24 @@ public native interface Node extends EventTarget, Bindable{
 
 		Object tag = this;
 		String[] properties = binding.targetProperties;
+		
+		
 		int length = properties.length; 
 		for(int i = 0 ; i < length - 1; i++){
-			if(tag == null) return;
-//			if(tag["getAttributeNS"] != null){
-//				tag = ((Element)tag).getAttribute(properties[i]);
-//			} else 
-				if(tag["setAttribute"] != null) {
+			if(binding.attribute){
 				tag = ((Element)tag).getAttribute(properties[i]);
-			} else if(tag["getProperty"] != null){
-				tag = ((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
 			} else {
 				tag = tag[properties[i]];
 			}
+			
+			if(tag == null) return;
 		}
 			
 		if(binding.converteTo != null){
 			data = binding.converteTo(data);
 		}
 		
-		Object oldValue = tag[properties[length-1]];
-		if(oldValue === undefined){
-//			if(tag["getAttributeNS"] != null){
-//				oldValue = ((Element)tag).getAttribute(properties[length-1]);
-//			} else 
-				if(tag["getAttribute"] != null) {
-				oldValue = ((Element)tag).getAttribute(properties[length-1]);
-			} else if(tag["getProperty"] != null){
-				oldValue = ((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
-			}
-		}
+		Object oldValue = binding.attribute ? ((Element)tag).getAttribute(properties[length -1]) :  tag[properties[length-1]];
 		
 		if(data === oldValue){
 			return;
@@ -301,13 +351,8 @@ public native interface Node extends EventTarget, Bindable{
 		if(binding.updateTargetCallback != null){
 			binding.updateTargetCallback(this, properties, data);
 		} else {
-//			if(tag["setAttributeNS"] != null){
-//				((Element)tag).setAttributeNS(null, properties[length-1], data);
-//			} else 
-				if(tag["setAttribute"] != null) {
+			if(binding.attribute){
 				((Element)tag).setAttribute(properties[length-1], data);
-			} else if(tag["setProperty"] != null){
-				((CSSStyleDeclaration)tag).getPropertyValue(properties[length-1]);
 			} else {
 				tag[properties[length-1]] = data;
 			}
@@ -436,7 +481,6 @@ public native interface Node extends EventTarget, Bindable{
 //        	}
 //    	}
     	while(this.firstChild != null){
-//    		this.removeChild(this.firstChild);
     		this.firstChild.reset(); 
     	}
     	
