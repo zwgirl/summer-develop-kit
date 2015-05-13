@@ -343,12 +343,14 @@ public native interface SVGElement extends Element {
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+ @Attribute 
  /*attribute*/public native  String xmlbase {} //setraises(DOMException);
 
  /**
   * The nearest ancestor <a>'svg'</a> element. Null if the given element is
   * the <a>outermost svg element</a>.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGSVGElement ownerSVGElement{}
 
  /**
@@ -356,6 +358,7 @@ public native interface SVGElement extends Element {
   * ancestor <a>'svg'</a> element. Null if the given element is the
   * <a>outermost svg element</a>.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGElement viewportElement{}
 }
 
@@ -370,6 +373,7 @@ public native interface SVGAnimatedBoolean {
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an
   *   attempt to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/public native  boolean baseVal {} //setraises(DOMException);
 
  /**
@@ -378,6 +382,7 @@ public native interface SVGAnimatedBoolean {
   * attribute or property is not currently being animated, contains the
   * same value as <a>baseVal</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native boolean animVal{}
 }
 
@@ -392,6 +397,7 @@ public native interface SVGAnimatedString {
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an
   *   attempt to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/public native  String baseVal {} //setraises(DOMException);
 
  /**
@@ -400,6 +406,7 @@ public native interface SVGAnimatedString {
   * attribute or property is not currently being animated, contains the
   * same value as <a>baseVal</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native String animVal{}
 }
 
@@ -415,6 +422,7 @@ public native interface SVGStringList {
  /**
   * The number of items in the list.
   */
+	@Attribute 
  /*readonly attribute*/ public native /*unsigned*/ long numberOfItems{}
 
  /**
@@ -515,6 +523,7 @@ public native interface SVGAnimatedEnumeration {
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an
   *   attempt to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
  /*attribute unsigned*/ public native short baseVal {} //setraises(DOMException);
 
  /**
@@ -523,6 +532,7 @@ public native interface SVGAnimatedEnumeration {
   * attribute or property is not currently being animated, contains the
   * same value as <a>baseVal</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native /*unsigned*/ short animVal{}
 }
 
@@ -539,6 +549,7 @@ public native interface SVGAnimatedInteger {
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an
   *   attempt to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
  /*attribute */  public native long baseVal {} //setraises(DOMException);
 
  /**
@@ -547,6 +558,7 @@ public native interface SVGAnimatedInteger {
   * attribute or property is not currently being animated, contains the
   * same value as <a>baseVal</a>.
   */
+	@Attribute 
  /*readonly  attribute */  public native long animVal{}
 }
 
@@ -562,6 +574,7 @@ public native interface SVGNumber {
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an
   *   attempt to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float value {} //setraises(DOMException);
 }
 
@@ -578,6 +591,7 @@ public native interface SVGAnimatedNumber {
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an
   *   attempt to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float baseVal {} //setraises(DOMException);
 
  /**
@@ -586,6 +600,7 @@ public native interface SVGAnimatedNumber {
   * attribute or property is not currently being animated, contains the
   * same value as <a>baseVal</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native float animVal{}
 }
 
@@ -605,6 +620,7 @@ public native interface SVGNumberList {
  /**
   * The number of items in the list.
   */
+	@Attribute 
  /*readonly attribute*/ public native /*unsigned*/ long numberOfItems{}
 
  /**
@@ -722,6 +738,7 @@ public native interface SVGAnimatedNumberList {
  /**
   * The base value of the given attribute before applying any animations.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGNumberList baseVal{}
  
  /**
@@ -732,6 +749,7 @@ public native interface SVGAnimatedNumberList {
   * be distinct from the one referenced by <a>baseVal</a>, even when
   * the attribute is not animated.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGNumberList animVal{}
 }
 
@@ -829,6 +847,7 @@ public native interface SVGLength {
   * The type of the value as specified by one of the SVG_LENGTHTYPE_*
   * constants defined on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native /*unsigned*/ short unitType{}
 
  /**
@@ -840,6 +859,7 @@ public native interface SVGLength {
   *   corresponds to a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a> or when the object itself is
   *   <a href="#ReadOnlyLength">read only</a>.
   */
+ @Attribute 
  /*attribute*/ public native float value {} //setraises(DOMException);
 
  /**
@@ -851,6 +871,7 @@ public native interface SVGLength {
   *   corresponds to a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a> or when the object itself is
   *   <a href="#ReadOnlyLength">read only</a>.
   */
+ @Attribute 
  /*attribute*/ public native float valueInSpecifiedUnits {} //setraises(DOMException);
 
  /**
@@ -866,6 +887,7 @@ public native interface SVGLength {
   * @setraises DOMException(SYNTAX_ERR) Raised if the assigned string cannot 
   *   be parsed as a valid <a>&lt;length&gt;</a>.
   */
+ @Attribute 
  /*attribute*/ public native String valueAsString {} //setraises(DOMException);
 
  /**
@@ -915,6 +937,7 @@ public native interface SVGAnimatedLength {
  /**
   * The base value of the given attribute before applying any animations.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGLength baseVal{}
 
  /**
@@ -925,6 +948,7 @@ public native interface SVGAnimatedLength {
   * be distinct from the one referenced by <a>baseVal</a>, even when
   * the attribute is not animated.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGLength animVal{}
 }
 
@@ -1141,6 +1165,7 @@ public native interface SVGAngle {
   *   corresponds to a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a> or when the object itself is
   *   <a href="#ReadOnlyAngle">read only</a>.
   */
+ @Attribute 
  /*attribute*/ public native float value {} //setraises(DOMException);
 
  /**
@@ -1152,6 +1177,7 @@ public native interface SVGAngle {
   *   corresponds to a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a> or when the object itself is
   *   <a href="#ReadOnlyAngle">read only</a>.
   */
+ @Attribute 
  /*attribute*/ public native float valueInSpecifiedUnits {} //setraises(DOMException);
 
  /**
@@ -1167,6 +1193,7 @@ public native interface SVGAngle {
   * @setraises DOMException(SYNTAX_ERR) Raised if the assigned string cannot 
   *   be parsed as a valid <a>&lt;angle&gt;</a>.
   */
+ @Attribute 
  /*attribute*/ public native String valueAsString {} //setraises(DOMException);
 
  /**
@@ -1381,6 +1408,7 @@ public native interface SVGRect {
   *   corresponds to a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a> or when the object itself is
   *   <a href="#ReadOnlyRect">read only</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float x {} //setraises(DOMException);
 
  /**
@@ -1390,6 +1418,7 @@ public native interface SVGRect {
   *   corresponds to a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a> or when the object itself is
   *   <a href="#ReadOnlyRect">read only</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float y {} //setraises(DOMException);
 
  /**
@@ -1399,6 +1428,7 @@ public native interface SVGRect {
   *   corresponds to a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a> or when the object itself is
   *   <a href="#ReadOnlyRect">read only</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float width {} //setraises(DOMException);
 
  /**
@@ -1408,6 +1438,7 @@ public native interface SVGRect {
   *   corresponds to a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a> or when the object itself is
   *   <a href="#ReadOnlyRect">read only</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float height {} //setraises(DOMException);
 }
 
@@ -1476,6 +1507,7 @@ public native interface SVGStylable {
  /**
   * Corresponds to attribute <a>'class'</a> on the given element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString className{}
 
  /**
@@ -1483,6 +1515,7 @@ public native interface SVGStylable {
   * user agent does not support <a href='styling.html#StylingWithCSS'>styling
   *   with CSS</a>, then this attribute must always have the value of null.
   */
+ @Attribute 
  /*readonly attribute*/ public native CSSStyleDeclaration style{}
 
  /**
@@ -1935,23 +1968,27 @@ public native interface SVGSVGElement extends
  /**
   * Corresponds to attribute <a>'x'</a> on the given <a>'svg'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'svg'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given <a>'svg'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given <a>'svg'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 
  /**
@@ -1961,6 +1998,7 @@ public native interface SVGSVGElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt to
   *   change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
  /*attribute*/ public native String contentScriptType {} //setraises(DOMException);
 
  /**
@@ -1970,6 +2008,7 @@ public native interface SVGSVGElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt to
   *   change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+ @Attribute 
  /*attribute*/ public native String contentStyleType {} //setraises(DOMException);
 
  /**
@@ -1990,6 +2029,7 @@ public native interface SVGSVGElement extends
   *
   * <p>The <a>SVGRect</a> object is <a href="types.html#ReadOnlyRect">read only</a>.</p>
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGRect viewport{}
 
  /**
@@ -2005,6 +2045,7 @@ public native interface SVGSVGElement extends
  /**
   * Corresponding size of a pixel unit along the y-axis of the viewport.
   */
+ @Attribute 
  /*readonly attribute*/ public native float pixelUnitToMillimeterY{}
 
  /**
@@ -2014,11 +2055,13 @@ public native interface SVGSVGElement extends
   * attribute will express that information; otherwise, user agents
   * will provide a suitable default value such as .28mm.
   */
+ @Attribute 
  /*readonly attribute*/ public native float screenPixelToMillimeterX{}
 
  /**
   * Corresponding size of a screen pixel along the y-axis of the viewport.
   */
+ @Attribute 
  /*readonly attribute*/ public native float screenPixelToMillimeterY{}
 
  /**
@@ -2032,6 +2075,7 @@ public native interface SVGSVGElement extends
   * "standard" view, then this attribute is false. If the initial
   * view is a "custom" view, then this attribute is true.
   */
+ @Attribute 
  /*readonly attribute*/ public native boolean useCurrentView{}
 
  /**
@@ -2104,6 +2148,7 @@ public native interface SVGSVGElement extends
   *
   * <p>The object itself and its contents are both read only.</p>
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGViewSpec currentView{}
 
  /**
@@ -2124,6 +2169,7 @@ public native interface SVGSVGElement extends
   * <a>outermost svg element</a>, it is undefined what behavior
   * this attribute has.</p>
   */
+ @Attribute 
  /*attribute*/ public native float currentScale{}
 
  /**
@@ -2133,6 +2179,7 @@ public native interface SVGSVGElement extends
   * <a>outermost svg element</a>, it is undefined what behavior
   * this attribute has.</p>
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGPoint currentTranslate{}
 
  /**
@@ -2472,29 +2519,34 @@ public native interface SVGUseElement extends
  /**
   * Corresponds to attribute <a>'x'</a> on the given <a>'use'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'use'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given <a>'use'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given <a>'use'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 
  /**
   * The root of the "instance tree".  See description of
   * <a>SVGElementInstance</a> for a discussion on the instance tree.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGElementInstance instanceRoot{}
 
  /**
@@ -2504,6 +2556,7 @@ public native interface SVGUseElement extends
   * <a>instanceRoot</a>.  See description of <a>SVGElementInstance</a>
   * for a discussion on the instance tree.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGElementInstance animatedInstanceRoot{}
 }
 
@@ -2651,26 +2704,31 @@ public native interface SVGImageElement extends
  /**
   * Corresponds to attribute <a>'x'</a> on the given <a>'image'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'image'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given <a>'image'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given <a>'image'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 
  /**
   * Corresponds to attribute <a>'preserveAspectRatio'</a> on the given <a>'image'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedPreserveAspectRatio preserveAspectRatio{}
 }
 
@@ -2733,6 +2791,7 @@ public native interface SVGStyleElement extends SVGElement,
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String type {} //setraises(DOMException);
 
  /**
@@ -2741,6 +2800,7 @@ public native interface SVGStyleElement extends SVGElement,
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String media {} //setraises(DOMException);
 
  /**
@@ -2749,6 +2809,7 @@ public native interface SVGStyleElement extends SVGElement,
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String title {} //setraises(DOMException);
 }
 
@@ -4852,6 +4913,7 @@ public native interface SVGPathElement extends
  
  
  //cym 2015-05-26
+ @Attribute 
  public native String d{}	// %PathData.datatype; #REQUIRED
 
 }
@@ -4871,31 +4933,37 @@ public native interface SVGRectElement extends
  /**
   * Corresponds to attribute <a>'x'</a> on the given <a>'rect'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'rect'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given <a>'rect'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given <a>'rect'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 
  /**
   * Corresponds to attribute <a>'rx'</a> on the given <a>'rect'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength rx{}
 
  /**
   * Corresponds to attribute <a>'ry'</a> on the given <a>'rect'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength ry{}
 }
 
@@ -4914,16 +4982,19 @@ public native interface SVGCircleElement extends
  /**
   * Corresponds to attribute <a>'cx'</a> on the given <a>'circle'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength cx{}
 
  /**
   * Corresponds to attribute <a>'cy'</a> on the given <a>'circle'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength cy{}
 
  /**
   * Corresponds to attribute <a>'r'</a> on the given <a>'circle'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength r{}
 }
 
@@ -4942,21 +5013,25 @@ public native interface SVGEllipseElement extends
  /**
   * Corresponds to attribute <a>'cx'</a> on the given <a>'ellipse'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength cx{}
 
  /**
   * Corresponds to attribute <a>'cy'</a> on the given <a>'ellipse'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength cy{}
 
  /**
   * Corresponds to attribute <a>'rx'</a> on the given <a>'ellipse'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength rx{}
 
  /**
   * Corresponds to attribute <a>'ry'</a> on the given <a>'ellipse'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength ry{}
 }
 
@@ -4975,21 +5050,25 @@ public native interface SVGLineElement extends
  /**
   * Corresponds to attribute <a>'x1'</a> on the given <a>'line'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x1{}
 
  /**
   * Corresponds to attribute <a>'y1'</a> on the given <a>'line'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y1{}
 
  /**
   * Corresponds to attribute <a>'x2'</a> on the given <a>'line'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x2{}
 
  /**
   * Corresponds to attribute <a>'y2'</a> on the given <a>'line'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y2{}
 }
 
@@ -5297,7 +5376,7 @@ public native interface SVGTextPositioningElement extends SVGTextContentElement 
   * Corresponds to attribute <span class='attr-name'>'x'</span> on the
   * given element.
   */
-	@Attribute
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLengthList x{}
 
  /**
@@ -5439,6 +5518,7 @@ public native interface SVGAltGlyphElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String glyphRef {} //setraises(DOMException);
 
  /**
@@ -5447,6 +5527,7 @@ public native interface SVGAltGlyphElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String format {} //setraises(DOMException);
 }
 
@@ -5478,6 +5559,7 @@ public native interface SVGGlyphRefElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String glyphRef {} //setraises(DOMException);
 
  /**
@@ -5486,6 +5568,7 @@ public native interface SVGGlyphRefElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String format {} //setraises(DOMException);
 
  /**
@@ -5494,6 +5577,7 @@ public native interface SVGGlyphRefElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float x {} //setraises(DOMException);
 
  /**
@@ -5502,6 +5586,7 @@ public native interface SVGGlyphRefElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float y {} //setraises(DOMException);
 
  /**
@@ -5510,6 +5595,7 @@ public native interface SVGGlyphRefElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float dx {} //setraises(DOMException);
 
  /**
@@ -5518,6 +5604,7 @@ public native interface SVGGlyphRefElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native float dy {} //setraises(DOMException);
 }
 
@@ -5795,6 +5882,7 @@ public native interface SVGColorProfileElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String local{}
 
  /**
@@ -5803,6 +5891,7 @@ public native interface SVGColorProfileElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String name{}
 
  /**
@@ -5814,6 +5903,7 @@ public native interface SVGColorProfileElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
  /*attribute unsigned*/public native  short renderingIntent{}
 }
 
@@ -5836,6 +5926,7 @@ public native interface SVGColorProfileRule extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String src {} //setraises(DOMException);
 
  /**
@@ -5845,6 +5936,7 @@ public native interface SVGColorProfileRule extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
 	/*attribute*/ public native String name {} //setraises(DOMException);
 
  /**
@@ -5903,12 +5995,14 @@ public native interface SVGGradientElement extends
   * on the given element.  Takes one of the constants defined in
   * <a>SVGUnitTypes</a>.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration gradientUnits{}
 
  /**
   * Corresponds to attribute <span class='attr-name'>'gradientTransform'</span>
   * on the given element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedTransformList gradientTransform{}
 
  /**
@@ -5916,6 +6010,7 @@ public native interface SVGGradientElement extends
   * on the given element.  One of the Spread Method Types defined on
   * this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration spreadMethod{}
 }
 
@@ -5929,24 +6024,28 @@ public native interface SVGLinearGradientElement extends SVGGradientElement {
   * Corresponds to attribute <a>'x1'</a> on the given
   * <a>'linearGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x1{}
 
  /**
   * Corresponds to attribute <a>'y1'</a> on the given
   * <a>'linearGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y1{}
 
  /**
   * Corresponds to attribute <a>'x2'</a> on the given
   * <a>'linearGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x2{}
 
  /**
   * Corresponds to attribute <a>'y2'</a> on the given
   * <a>'linearGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y2{}
 }
 
@@ -5960,30 +6059,35 @@ public native interface SVGRadialGradientElement extends SVGGradientElement {
   * Corresponds to attribute <a>'cx'</a> on the given
   * <a>'radialGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength cx{}
 
  /**
   * Corresponds to attribute <a>'cy'</a> on the given
   * <a>'radialGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength cy{}
 
  /**
   * Corresponds to attribute <a>'r'</a> on the given
   * <a>'radialGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength r{}
 
  /**
   * Corresponds to attribute <a>'fx'</a> on the given
   * <a>'radialGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength fx{}
 
  /**
   * Corresponds to attribute <a>'fy'</a> on the given
   * <a>'radialGradient'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength fy{}
 }
 
@@ -6021,6 +6125,7 @@ public native interface SVGPatternElement extends
   * <a>'pattern'</a> element. Takes one of the constants defined in
   * <a>SVGUnitTypes</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration patternUnits{}
 
  /**
@@ -6028,36 +6133,42 @@ public native interface SVGPatternElement extends
   * <a>'pattern'</a> element. Takes one of the constants defined in
   * <a>SVGUnitTypes</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration patternContentUnits{}
 
  /**
   * Corresponds to attribute <a>'patternTransform'</a> on the given
   * <a>'pattern'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedTransformList patternTransform{}
 
  /**
   * Corresponds to attribute <a>'x'</a> on the given <a>'pattern'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'pattern'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given <a>'pattern'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given <a>'pattern'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 }
 
@@ -6079,6 +6190,7 @@ public native interface SVGClipPathElement extends
   * <a>'clipPath'</a> element.  Takes one of the constants defined in
   * <a>SVGUnitTypes</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration clipPathUnits{}
 }
 
@@ -6100,6 +6212,7 @@ public native interface SVGMaskElement extends
   * <a>'mask element'</a> element.  Takes one of the constants defined in
   * <a>SVGUnitTypes</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration maskUnits{}
 
  /**
@@ -6107,30 +6220,35 @@ public native interface SVGMaskElement extends
   * <a>'mask element'</a> element.  Takes one of the constants defined in
   * <a>SVGUnitTypes</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration maskContentUnits{}
 
  /**
   * Corresponds to attribute <a>'x'</a> on the given <a>'mask element'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'mask element'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given
   * <a>'mask element'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given
   * <a>'mask element'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 }
 
@@ -6150,38 +6268,45 @@ public native interface SVGFilterElement extends
   * Corresponds to attribute <a>'filterUnits'</a> on the given <a>'filter element'</a>
   * element. Takes one of the constants defined in <a>SVGUnitTypes</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration filterUnits{}
 
  /**
   * Corresponds to attribute <a>'primitiveUnits'</a> on the given <a>'filter element'</a>
   * element. Takes one of the constants defined in <a>SVGUnitTypes</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration primitiveUnits{}
 
  /**
   * Corresponds to attribute <a>'x'</a> on the given <a>'filter element'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'filter element'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given <a>'filter element'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given <a>'filter element'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 
  /**
   * Corresponds to attribute <a>'filterRes'</a> on the given <a>'filter element'</a>
   * element.  Contains the X component of attribute <a>'filterRes'</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedInteger filterResX{}
 
  /**
@@ -6189,6 +6314,7 @@ public native interface SVGFilterElement extends
   * element.  Contains the Y component (possibly computed automatically) of
   * attribute <a>'filterRes'</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedInteger filterResY{}
 
  /**
@@ -6211,26 +6337,31 @@ public native interface SVGFilterPrimitiveStandardAttributes extends SVGStylable
  /**
   * Corresponds to attribute <a>'x'</a> on the given element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 
  /**
   * Corresponds to attribute <a>'result'</a> on the given element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString result{}
 }
 
@@ -6290,12 +6421,14 @@ public native interface SVGFEBlendElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feBlend'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
   * Corresponds to attribute <a>'in2'</a> on the given <a>'feBlend'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in2{}
 
  /**
@@ -6303,6 +6436,7 @@ public native interface SVGFEBlendElement extends
   * element.  Takes one of the SVG_FEBLEND_MODE_* constants defined on
   * this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration mode{}
 }
 
@@ -6355,6 +6489,7 @@ public native interface SVGFEColorMatrixElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feColorMatrix'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
@@ -6362,12 +6497,14 @@ public native interface SVGFEColorMatrixElement extends
   * element.  Takes one of the SVG_FECOLORMATRIX_TYPE_* constants defined
   * on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration type{}
 
  /**
   * Corresponds to attribute <a>'values'</a> on the given <a>'feColorMatrix'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumberList values{}
 }
 
@@ -6383,6 +6520,7 @@ public native interface SVGFEComponentTransferElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feComponentTransfer'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 }
 
@@ -6441,36 +6579,43 @@ public native interface SVGComponentTransferFunctionElement extends SVGElement {
   * element.  Takes one of the SVG_FECOMPONENTTRANSFER_TYPE_* constants defined
   * on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration type{}
 
  /**
   * Corresponds to attribute <a>'tableValues'</a> on the given element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumberList  tableValues{}
 
  /**
   * Corresponds to attribute <a>'slope'</a> on the given element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber slope{}
 
  /**
   * Corresponds to attribute <a>'intercept'</a> on the given element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber intercept{}
 
  /**
   * Corresponds to attribute <a>'amplitude'</a> on the given element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber amplitude{}
 
  /**
   * Corresponds to attribute <a>'exponent'</a> on the given element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber exponent{}
 
  /**
   * Corresponds to attribute <a>'offset'</a> on the given element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber offset{}
 }
 
@@ -6561,12 +6706,14 @@ public native interface SVGFECompositeElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feComposite'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
   * Corresponds to attribute <a>'in2'</a> on the given <a>'feComposite'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in2{}
 
  /**
@@ -6574,30 +6721,35 @@ public native interface SVGFECompositeElement extends
   * element.  Takes one of the SVG_FECOMPOSITE_OPERATOR_* constants defined
   * on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration operator{}
 
  /**
   * Corresponds to attribute <a>'k1'</a> on the given <a>'feComposite'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber k1{}
 
  /**
   * Corresponds to attribute <a>'k2'</a> on the given <a>'feComposite'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber k2{}
 
  /**
   * Corresponds to attribute <a>'k3'</a> on the given <a>'feComposite'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber k3{}
 
  /**
   * Corresponds to attribute <a>'k4'</a> on the given <a>'feComposite'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber k4{}
 }
 
@@ -6643,48 +6795,56 @@ public native interface SVGFEConvolveMatrixElement extends
   * Corresponds to attribute <a>'in'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
   * Corresponds to attribute <a>'order'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedInteger orderX{}
 
  /**
   * Corresponds to attribute <a>'order'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedInteger orderY{}
 
  /**
   * Corresponds to attribute <a>'kernelMatrix'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumberList kernelMatrix{}
 
  /**
   * Corresponds to attribute <a>'divisor'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber divisor{}
 
  /**
   * Corresponds to attribute <a>'bias'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber bias{}
 
  /**
   * Corresponds to attribute <a>'targetX'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedInteger targetX{}
 
  /**
   * Corresponds to attribute <a>'targetY'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedInteger targetY{}
 
  /**
@@ -6692,24 +6852,28 @@ public native interface SVGFEConvolveMatrixElement extends
   * <a>'feConvolveMatrix'</a> element.  Takes one of the SVG_EDGEMODE_*
   * constants defined on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration edgeMode{}
 
  /**
   * Corresponds to attribute <a>'kernelUnitLength'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber kernelUnitLengthX{}
 
  /**
   * Corresponds to attribute <a>'kernelUnitLength'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber kernelUnitLengthY{}
 
  /**
   * Corresponds to attribute <a>'preserveAlpha'</a> on the given
   * <a>'feConvolveMatrix'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedBoolean preserveAlpha{}
 }
 
@@ -6725,30 +6889,35 @@ public native interface SVGFEDiffuseLightingElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feDiffuseLighting'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
   * Corresponds to attribute <a>'surfaceScale'</a> on the given
   * <a>'feDiffuseLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber surfaceScale{}
 
  /**
   * Corresponds to attribute <a>'diffuseConstant'</a> on the given
   * <a>'feDiffuseLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber diffuseConstant{}
 
  /**
   * Corresponds to attribute <a>'kernelUnitLength'</a> on the given
   * <a>'feDiffuseLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber kernelUnitLengthX{}
 
  /**
   * Corresponds to attribute <a>'kernelUnitLength'</a> on the given
   * <a>'feDiffuseLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber kernelUnitLengthY{}
 }
 
@@ -6762,12 +6931,14 @@ public native interface SVGFEDistantLightElement extends SVGElement {
   * Corresponds to attribute <a>'azimuth'</a> on the given
   * <a>'feDistantLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber azimuth{}
 
  /**
   * Corresponds to attribute <a>'elevation'</a> on the given
   * <a>'feDistantLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber elevation{}
 }
 
@@ -6781,18 +6952,21 @@ public native interface SVGFEPointLightElement extends SVGElement {
   * Corresponds to attribute <a>'x'</a> on the given
   * <a>'fePointLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given
   * <a>'fePointLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber y{}
 
  /**
   * Corresponds to attribute <a>'z'</a> on the given
   * <a>'fePointLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber z{}
 }
 
@@ -6806,48 +6980,56 @@ public native interface SVGFESpotLightElement extends SVGElement {
   * Corresponds to attribute <a>'x'</a> on the given
   * <a>'feSpotLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given
   * <a>'feSpotLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber y{}
 
  /**
   * Corresponds to attribute <a>'z'</a> on the given
   * <a>'feSpotLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber z{}
 
  /**
   * Corresponds to attribute <a>'pointsAtX'</a> on the given
   * <a>'feSpotLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber pointsAtX{}
 
  /**
   * Corresponds to attribute <a>'pointsAtY'</a> on the given
   * <a>'feSpotLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber pointsAtY{}
 
  /**
   * Corresponds to attribute <a>'pointsAtZ'</a> on the given
   * <a>'feSpotLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber pointsAtZ{}
 
  /**
   * Corresponds to attribute <a>'specularExponent'</a> on the given
   * <a>'feSpotLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber specularExponent{}
 
  /**
   * Corresponds to attribute <a>'limitingConeAngle'</a> on the given
   * <a>'feSpotLight'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber limitingConeAngle{}
 }
 
@@ -6900,18 +7082,21 @@ public native interface SVGFEDisplacementMapElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feDisplacementMap'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
   * Corresponds to attribute <a>'in2'</a> on the given <a>'feDisplacementMap'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in2{}
 
  /**
   * Corresponds to attribute <a>'scale'</a> on the given <a>'feDisplacementMap'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber scale{}
 
  /**
@@ -6919,6 +7104,7 @@ public native interface SVGFEDisplacementMapElement extends
   * <a>'feDisplacementMap'</a> element.  Takes one of the SVG_CHANNEL_*
   * constants defined on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration xChannelSelector{}
 
  /**
@@ -6926,6 +7112,7 @@ public native interface SVGFEDisplacementMapElement extends
   * <a>'feDisplacementMap'</a> element.  Takes one of the SVG_CHANNEL_*
   * constants defined on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration yChannelSelector{}
 }
 
@@ -6950,6 +7137,7 @@ public native interface SVGFEGaussianBlurElement extends
   * Corresponds to attribute <a>'in'</a> on the given
   * <a>'feGaussianBlur'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
@@ -6957,6 +7145,7 @@ public native interface SVGFEGaussianBlurElement extends
   * <a>'feGaussianBlur'</a> element.  Contains the X component
   * of attribute <a>'stdDeviation'</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber stdDeviationX{}
 
  /**
@@ -6964,6 +7153,7 @@ public native interface SVGFEGaussianBlurElement extends
   * <a>'feGaussianBlur'</a> element.  Contains the Y component
   * (possibly computed automatically) of attribute <a>'stdDeviation'</a>.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber stdDeviationY{}
 
  /**
@@ -6992,6 +7182,7 @@ public native interface SVGFEImageElement extends
   * Corresponds to attribute <a>'preserveAspectRatio'</a> on the given
   * <a>'feImage'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedPreserveAspectRatio preserveAspectRatio{}
 }
 
@@ -7013,6 +7204,7 @@ public native interface SVGFEMergeNodeElement extends SVGElement {
   * Corresponds to attribute <a>'in'</a> on the given <a>'feMergeNode'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 }
 
@@ -7051,6 +7243,7 @@ public native interface SVGFEMorphologyElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feMorphology'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
@@ -7058,18 +7251,21 @@ public native interface SVGFEMorphologyElement extends
   * element.  Takes one of the SVG_MORPHOLOGY_OPERATOR_* constants
   * defined on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration operator{}
 
  /**
   * Corresponds to attribute <a>'radius'</a> on the given <a>'feMorphology'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber radiusX{}
 
  /**
   * Corresponds to attribute <a>'radius'</a> on the given <a>'feMorphology'</a>
   * element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber radiusY{}
 }
 
@@ -7085,18 +7281,21 @@ public native interface SVGFEOffsetElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feOffset'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
   * Corresponds to attribute <a>'dx'</a> on the given <a>'feOffset'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber dx{}
 
  /**
   * Corresponds to attribute <a>'dy'</a> on the given <a>'feOffset'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber dy{}
 }
 
@@ -7112,36 +7311,42 @@ public native interface SVGFESpecularLightingElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feSpecularLighting'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 
  /**
   * Corresponds to attribute <a>'surfaceScale'</a> on the given
   * <a>'feSpecularLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber surfaceScale{}
 
  /**
   * Corresponds to attribute <a>'specularConstant'</a> on the given
   * <a>'feSpecularLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber specularConstant{}
 
  /**
   * Corresponds to attribute <a>'specularExponent'</a> on the given
   * <a>'feSpecularLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber specularExponent{}
 
  /**
   * Corresponds to attribute <a>'kernelUnitLength'</a> on the given
   * <a>'feSpecularLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber kernelUnitLengthX{}
 
  /**
   * Corresponds to attribute <a>'kernelUnitLength'</a> on the given
   * <a>'feSpecularLighting'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber kernelUnitLengthY{}
 }
 
@@ -7157,6 +7362,7 @@ public native interface SVGFETileElement extends
   * Corresponds to attribute <a>'in'</a> on the given <a>'feTile'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString in1{}
 }
 
@@ -7219,6 +7425,7 @@ public native interface SVGFETurbulenceElement extends
   * <a>'feTurbulence'</a> element.  Contains the X component of the
   * <a>'baseFrequency'</a> attribute.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber baseFrequencyX{}
 
  /**
@@ -7226,18 +7433,21 @@ public native interface SVGFETurbulenceElement extends
   * <a>'feTurbulence'</a> element.  Contains the Y component of the
   * (possibly computed automatically) <a>'baseFrequency'</a> attribute.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber baseFrequencyY{}
 
  /**
   * Corresponds to attribute <a>'numOctaves'</a> on the given
   * <a>'feTurbulence'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedInteger numOctaves{}
 
  /**
   * Corresponds to attribute <a>'seed'</a> on the given
   * <a>'feTurbulence'</a> element.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedNumber seed{}
 
  /**
@@ -7245,6 +7455,7 @@ public native interface SVGFETurbulenceElement extends
   * <a>'feTurbulence'</a> element.  Takes one of the SVG_STITCHTYPE_*
   * constants defined on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration stitchTiles{}
 
  /**
@@ -7252,6 +7463,7 @@ public native interface SVGFETurbulenceElement extends
   * <a>'feTurbulence'</a> element.  Takes one of the SVG_TURBULENCE_TYPE_*
   * constants defined on this interface.
   */
+ @Attribute 
  /*readonly attribute*/ public native SVGAnimatedEnumeration type{}
 }
 
@@ -7269,12 +7481,14 @@ public native interface SVGCursorElement extends
   * Corresponds to attribute <a>'x'</a> on the given <a>'cursor element'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'cursor element'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 }
 
@@ -7293,6 +7507,7 @@ public native interface SVGAElement extends
  /**
   * Corresponds to attribute <a>'target'</a> on the given <a>'a'</a> element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedString target{}
 }
 
@@ -7312,6 +7527,7 @@ public native interface SVGViewElement extends
   * associated with the corresponding element using the getElementById()
   * method call.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGStringList viewTarget{}
 }
 
@@ -7331,6 +7547,7 @@ public native interface SVGScriptElement extends
   * @setraises DOMException(NO_MODIFICATION_ALLOWED_ERR) Raised on an attempt
   *   to change the value of a <a href="svgdom.html#ReadOnlyNodes">read only attribute</a>.
   */
+	@Attribute 
  /*attribute*/ public native String type {} //setraises(DOMException);
 }
 
@@ -7696,23 +7913,27 @@ public native interface SVGForeignObjectElement extends
   * Corresponds to attribute <a>'x'</a> on the given <a>'foreignObject'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength x{}
 
  /**
   * Corresponds to attribute <a>'y'</a> on the given <a>'foreignObject'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength y{}
 
  /**
   * Corresponds to attribute <a>'width'</a> on the given <a>'foreignObject'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength width{}
 
  /**
   * Corresponds to attribute <a>'height'</a> on the given <a>'foreignObject'</a>
   * element.
   */
+	@Attribute 
  /*readonly attribute*/ public native SVGAnimatedLength height{}
 }

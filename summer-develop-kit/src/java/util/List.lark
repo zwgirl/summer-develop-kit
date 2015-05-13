@@ -106,6 +106,7 @@ package java.util;
  * @since 1.2
  */
 
+@RemotingBean
 public interface List<E> extends Collection<E> {
     /**
      * Inserts all of the elements in the specified collection into this

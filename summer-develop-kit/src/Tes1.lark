@@ -15,5 +15,8 @@ class FF  implements Tes1{
 		Tes1 t = new FF();
 		t.p = null;
 	}
+	
+	String p{};
+	String p{};
 }
 

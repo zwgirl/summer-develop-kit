@@ -114,6 +114,7 @@ package java.util;
  * @see Set
  * @since 1.2
  */
+@RemotingBean
 public interface Map<K,V> {
     // Query Operations
 

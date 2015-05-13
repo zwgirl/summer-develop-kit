@@ -81,7 +81,7 @@ package java.util;
  * @see Collections#EMPTY_SET
  * @since 1.2
  */
-
+@RemotingBean
 public interface Set<E> extends Collection<E> {
     // Query Operations
 

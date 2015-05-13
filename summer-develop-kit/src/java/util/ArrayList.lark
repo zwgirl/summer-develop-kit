@@ -98,7 +98,7 @@ package java.util;
  * @see     Vector
  * @since   1.2
  */
-
+@RemotingBean
 public class ArrayList<E> extends AbstractList<E> 
         implements List<E>, Cloneable
 {
@@ -108,14 +108,23 @@ public class ArrayList<E> extends AbstractList<E>
      * empty ArrayList with elementData == EMPTY_ELEMENTDATA will be expanded to
      * DEFAULT_CAPACITY when the first element is added.
      */
-    transient E[] elementData; // non-private to simplify nested class access
+    /*transient*/ E[] elementData; // non-private to simplify nested class access
 
     /**
-     * The size of the ArrayList (the number of elements it contains).
-     *
-     * @serial
+     * Constructs an empty list with an initial capacity of ten.
      */
-    private int _size;
+    @Overload("0")
+    public ArrayList() { 
+        super();
+        this.elementData = new Array<E>();
+    }
+    
+//    /**
+//     * The size of the ArrayList (the number of elements it contains).
+//     *
+//     * @serial
+//     */
+//    private transient int _size;
 
     /**
      * Constructs an empty list with the specified initial capacity.
@@ -133,15 +142,6 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Constructs an empty list with an initial capacity of ten.
-     */
-    @Overload("2")
-    public ArrayList() { 
-        super();
-        this.elementData = new Array<E>();
-    }
-
-    /**
      * Constructs a list containing the elements of the specified
      * collection, in the order they are returned by the collection's
      * iterator.
@@ -149,12 +149,26 @@ public class ArrayList<E> extends AbstractList<E>
      * @param c the collection whose elements are to be placed into this list
      * @throws NullPointerException if the specified collection is null
      */
-    @Overload("3")
+    @Overload("2")
     public ArrayList(Collection<? extends E> c) {
         elementData = (Array<E>) c.toArray();
-        _size = elementData.length;
+//        _size = elementData.length;
     }
 
+//    /**
+//     * Returns the number of elements in this list.
+//     *
+//     * @return the number of elements in this list
+//     */
+//    public int size {
+//    	&{
+//            return _size;
+//    	}
+//    	+{
+//    		this._size = value;
+//    	}
+//    }
+    
     /**
      * Returns the number of elements in this list.
      *
@@ -162,10 +176,7 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public int size {
     	&{
-            return _size;
-    	}
-    	+{
-    		this._size = value;
+            return elementData.length;
     	}
     }
 
@@ -175,7 +186,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @return <tt>true</tt> if this list contains no elements
      */
     public boolean isEmpty() {
-        return _size == 0;
+        return elementData.length == 0;
     }
 
     /**
@@ -200,11 +211,11 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public int indexOf(Object o) {
         if (o == null) {
-            for (int i = 0; i < _size; i++)
+            for (int i = 0; i < elementData.length; i++)
                 if (elementData[i]==null)
                     return i;
         } else {
-            for (int i = 0; i < _size; i++)
+            for (int i = 0; i < elementData.length; i++)
                 if (o === elementData[i])
                     return i;
         }
@@ -220,11 +231,11 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public int lastIndexOf(Object o) {
         if (o == null) {
-            for (int i = _size-1; i >= 0; i--)
+            for (int i = elementData.length-1; i >= 0; i--)
                 if (elementData[i]==null)
                     return i;
         } else {
-            for (int i = _size-1; i >= 0; i--)
+            for (int i = elementData.length-1; i >= 0; i--)
                 if (o === elementData[i])  
                     return i;
         }  
@@ -305,7 +316,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @return <tt>true</tt> (as specified by {@link Collection#add})
      */
     public boolean add(E e) {
-        elementData[_size++] = e;
+        elementData[elementData.length++] = e;
         return true;
     }
 
@@ -321,7 +332,7 @@ public class ArrayList<E> extends AbstractList<E>
     public void addAt(int index, E element) {
         rangeCheckForAdd(index);
         elementData.splice(index, 0, element);
-        size++;
+//        elementData.length++;
     }
 
     /**
@@ -338,7 +349,7 @@ public class ArrayList<E> extends AbstractList<E>
 
         E oldValue = (E) elementData[index];
         elementData.splice(index, 1);
-        _size--;
+//        _size--;
 
         return oldValue;
     }
@@ -358,13 +369,13 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public boolean remove(Object o) {
         if (o == null) {
-            for (int index = 0; index < _size; index++)
+            for (int index = 0; index < elementData.length; index++)
                 if (elementData[index] == null) {
                     fastRemove(index);
                     return true;
                 }
         } else {
-            for (int index = 0; index < _size; index++)
+            for (int index = 0; index < elementData.length; index++)
                 if (o === elementData[index]) {
                     fastRemove(index);
                     return true;
@@ -378,7 +389,7 @@ public class ArrayList<E> extends AbstractList<E>
      * return the value removed.
      */
     private void fastRemove(int index) {
-        _size--;
+//        _size--;
         elementData.splice(index, 1);
     }
 
@@ -388,7 +399,7 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public void clear() {
         elementData.length = 0;
-        _size = 0;
+//        _size = 0;
     }
 
     /**
@@ -432,7 +443,7 @@ public class ArrayList<E> extends AbstractList<E>
     	E[] t1 = this.elementData.slice(0, index), t2 = this.elementData.slice(index);
     	this.elementData = t1.concat((Array<E>)a).concat(t2);		
       
-    	_size += a.length;
+//    	_size += a.length;
     	return a.length != 0;
     }
 
@@ -452,7 +463,7 @@ public class ArrayList<E> extends AbstractList<E>
      */
     protected void removeRange(int fromIndex, int toIndex) {
         this.elementData.splice(fromIndex, toIndex-fromIndex);
-        _size -= toIndex-fromIndex;
+//        _size -= toIndex-fromIndex;
     }
 
     /**
@@ -462,7 +473,7 @@ public class ArrayList<E> extends AbstractList<E>
      * which throws an ArrayIndexOutOfBoundsException if index is negative.
      */
     private void rangeCheck(int index) {
-        if (index >= _size)
+        if (index >= elementData.length)
         	throw new Error(0, "Index out of boundsException! " + outOfBoundsMsg(index));
     }
 
@@ -470,7 +481,7 @@ public class ArrayList<E> extends AbstractList<E>
      * A version of rangeCheck used by add and addAll.
      */
     private void rangeCheckForAdd(int index) {
-        if (index > _size || index < 0)
+        if (index > elementData.length || index < 0)
         	throw new Error(0, "Index out of boundsException! " + outOfBoundsMsg(index));
     }
 
@@ -480,7 +491,7 @@ public class ArrayList<E> extends AbstractList<E>
      * this "outlining" performs best with both server and client VMs.
      */
     private String outOfBoundsMsg(int index) {
-        return "Index: "+index+", Size: "+_size;
+        return "Index: "+index+", Size: "+elementData.length;
     }
 
     /**
@@ -529,21 +540,21 @@ public class ArrayList<E> extends AbstractList<E>
         int r = 0, w = 0;
         boolean modified = false;
         try {
-            for (; r < _size; r++)
+            for (; r < elementData.length; r++)
                 if (c.contains(elementData[r]) == complement)
                     elementData[w++] = elementData[r];
         } finally {
             // Preserve behavioral compatibility with AbstractCollection,
             // even if c.contains() throws.
-            if (r != _size) {
-            	elementData.concat(elementData.slice(r, _size));
-                w += _size - r;
+            if (r != elementData.length) {
+            	elementData.concat(elementData.slice(r, elementData.length));
+                w += elementData.length - r;
             }
-            if (w != _size) {
+            if (w != elementData.length) {
                 // clear to let GC do its work
-                for (int i = w; i < _size; i++)
+                for (int i = w; i < elementData.length; i++)
                     elementData[i] = null;
-                _size = w;
+//                _size = w;
                 modified = true;
             }
         }
@@ -564,7 +575,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public ListIterator<E> listIteratorAt(int index) {
-        if (index < 0 || index > _size)
+        if (index < 0 || index > elementData.length)
         	throw new Error(0, "Index out of boundsException! " + outOfBoundsMsg(index));
         return new ListItr(index);
     }
@@ -600,12 +611,12 @@ public class ArrayList<E> extends AbstractList<E>
         int lastRet = -1; // index of last element returned; -1 if no such
 
         public boolean hasNext() {
-            return cursor != _size;  
+            return cursor != elementData.length;  
         }
 
         public E next() {
             int i = cursor;
-            if (i >= _size)
+            if (i >= elementData.length)
                 throw new NoSuchElementException();
             E[] elementData = ArrayList.this.elementData;
             cursor = i + 1;
@@ -624,7 +635,7 @@ public class ArrayList<E> extends AbstractList<E>
         @Override
         public void forEachRemaining(Consumer<? super E> consumer) {
             if(consumer == null) throw new Error(1, "consumer may not be null!");
-            final int size = ArrayList.this._size;
+            final int size = ArrayList.this.elementData.length;
             int i = cursor;
             if (i >= size) {
                 return;
@@ -715,7 +726,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws IllegalArgumentException {@inheritDoc}
      */
     public List<E> subList(int fromIndex, int toIndex) {
-        subListRangeCheck(fromIndex, toIndex, _size);
+        subListRangeCheck(fromIndex, toIndex, elementData.length);
         return new SubList(this, 0, fromIndex, toIndex);
     }
 
@@ -904,7 +915,7 @@ public class ArrayList<E> extends AbstractList<E>
 
     @Override
     public void forEach(Consumer<? super E> action) {
-        final int size = this._size;
+        final int size = this.elementData.length;
         for (int i=0; i < size; i++) {
             action(elementData[i]);
         }
@@ -917,7 +928,7 @@ public class ArrayList<E> extends AbstractList<E>
         // will leave the collection unmodified
         int removeCount = 0;
         final BitSet removeSet = new BitSet(size);
-        final int size = this._size;
+        final int size = this.elementData.length;
         for (int i=0; i < size; i++) {
             final E element = (E) elementData[i];
             if (filter(element)) { 
@@ -937,7 +948,7 @@ public class ArrayList<E> extends AbstractList<E>
             for (int k=newSize; k < size; k++) {
                 elementData[k] = null;  // Let gc do its work
             }
-            this.size = newSize;
+//            this.size = newSize;
         }
 
         return anyToRemove;
@@ -945,7 +956,7 @@ public class ArrayList<E> extends AbstractList<E>
 
     @Override
     public void replaceAll(Operator<? super E, E> operator) { 
-        final int size = this._size;
+        final int size = this.elementData.length;
         for (int i=0; i < size; i++) {
             elementData[i] = operator(elementData[i]);
         }

@@ -57,7 +57,7 @@ package java.util;
  * @see Collection
  * @since 1.2
  */
-
+@RemotingBean
 public abstract class AbstractCollection<E> implements Collection<E> {
     /**
      * Sole constructor.  (For invocation by subclass constructors, typically

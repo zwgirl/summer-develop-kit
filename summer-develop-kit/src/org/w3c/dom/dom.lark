@@ -358,6 +358,15 @@ public native interface Node extends EventTarget, Bindable{
 			}
 		}
 	}
+	
+	public DataContext dataContext{
+		&{
+			return (DataContext)this["__context"];
+		}+{
+			this["__context"] = value;
+			addDataContext(value);
+		}
+	}
 	    
 	default public DataContext getDataContext(String name){
     	if(String.isNullOrEmpty(name)){

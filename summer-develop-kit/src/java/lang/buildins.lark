@@ -158,7 +158,7 @@ public final class Class<T> {
   	}-*/;
 	
 	public String toURL() {
-		return this._name.split(".").join("/").concat(".html");
+		return "/lark/" + this._name.split(".").join("/").concat(".html");
 	}
 }
 
@@ -1257,6 +1257,8 @@ public function void SetCallback<T>(T value, int index, Array<T> array1);
  * @since 1.5
  * @jls 14.14.2 The enhanced for statement
  */
+
+@RemotingBean
 public interface Iterable<T> {
     /**
      * Returns an iterator over elements of type {@code T}.

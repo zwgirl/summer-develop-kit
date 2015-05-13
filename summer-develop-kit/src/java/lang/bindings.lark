@@ -21,6 +21,7 @@ public interface Bindable{
 	public void removeDataContext(String name);
 	public Bindable parentNode{+;&;}
 	public Bindable logicParent{&;+;}
+	public DataContext dataContext{&;+;}
    
 	public Bindable appendChild(Bindable child);
 	public void setAttribute(final String name, final Object value);
@@ -137,6 +138,15 @@ public abstract class AbstractBindable implements Bindable, Tag{
 			binding.updateTargetCallback(this, properties, data);
 		} else {
 			tag[properties[length-1]] = data;
+		}
+	}
+	
+	public DataContext dataContext{
+		&{
+			return (DataContext)this["__context"];
+		}+{
+			this["__context"] = value;
+			addDataContext(value);
 		}
 	}
     
@@ -833,7 +843,7 @@ public enum BindingMode {
     OneTime;
 } 
 
-public function void UpdateTargetCallback(Object target, String[] property, Object value);
+public function void UpdateTargetCallback(Object target, Array<String> property, Object value);
 public function void UpdateSourceCallback(Object source, String property, Object value);
 
 public final class Binding implements MarkupExtension, PropertyChangeListener {
@@ -1835,118 +1845,130 @@ public final class If extends AbstractBindable{
 	}
 }
 
-public class ParameterBinding implements MarkupExtension{
-	private String _context;
-	private String _property;
+public final class ParameterUtils{
 	
-	public String context{
-		&{
-			return this._context;
-		}
-		+{
-			this._context = value;
-		}
-	}
-	
-	public String property{
-		&{
-			return this._property;
-		}
-		+{
-			this._property = value;
-		}
-	}
-	@Override
-	public void inject(Bindable target, Array<String> properties) {
-		// TODO Auto-generated method stub
-	}
-	
-}
-
-public interface Parameters /*extends MarkupExtension*/{
-	default String URL(){
-		return "";}
-	default void inject(HTMLAnchorElement a, String property, ParameterBinding[] bindings){
-		
-	}
-}
-
-public class ProxyPrrameter implements Parameters{
-	private Class<Page> _page;
-	private HTMLAnchorElement _target;
-	private Map<String, String> _parameters = new Map<String, String>();
-	public ProxyPrrameter(ParameterBinding[] bindings){
-		if(bindings != null){
-			bindings.forEach((ParameterBinding value, int index, Array<ParameterBinding> array)->{
-				
-			});
-		}
-	}
-
-	@Override
-	public String URL() {
+	public static String encodeRequest(Map<String, String> parameters){
 		String r = "";
 		boolean and = false;
-		_parameters.forEach((String value, String key, Map<String,String> _this)->{
+		parameters.forEach((String value, String key, Map<String,String> map)->{
 			if(and){
-				key += '&';
+				r += '&';
 			}
-			key = key + '=' + encodeURIComponent(value);
+			r += key + '=' + encodeURIComponent(value);
 			and = true;
 		});
 		return r;
 	}
 	
+	public static Map<String, String> getRequestParameter(String search){
+		Map<String, String> result = new Map<String, String>();
 
-	@Override
-	public void inject(HTMLAnchorElement a, String prop, Array<ParameterBinding> bindings) {
-		this._target = a;
-		if(bindings != null){
-			bindings.forEach((ParameterBinding binding, int index, Array<ParameterBinding> array)->{
-				update(binding);
-			});
-//			this._target.href = _page.toURL() + "?" + URL(); //TODO
-		}
+		String[] parts = search.split("&");
+		parts.forEach((String value, int index, String[] _this)->{
+			String[] assign = value.split("=");
+			result.set(decodeURIComponent(assign[0]), decodeURIComponent(assign[1]));
+		});
+		return result;
+	}
+}
+
+//public interface NavigateExtension{
+//	public void inject(ProxyParameters target, String[] properties);
+//}
+//
+//public class ParameterBinding implements MarkupExtension{
+//	private ProxyParameters _target;
+//	private String _context;
+//	private String _property;
+//	private boolean _trace;
+//	
+//	public String context{
+//		&{
+//			return this._context;
+//		}
+//		+{
+//			this._context = value;
+//		}
+//	}
+//	
+//	public String property{
+//		&{
+//			return this._property;
+//		}
+//		+{
+//			this._property = value;
+//		}
+//	}
+//	
+//	public boolean trace{
+//		&{
+//			return this._trace;
+//		}
+//		+{
+//			this._trace = value;
+//		}
+//	}
+//	
+//	PropertyChange propertyChange = (Object source, PropertyChangeEvent evt)->{
+//		_target.updateProperty(this);
+//	};
+//
+//	@Override
+//	public void inject(Bindable target, String[] properties) {
+//		if(this._trace){
+//			((ProxyParameters)target).addParameter(properties[0], this);
+//		}
+//		((ProxyParameters)target).updateProperty(this);
+//	}
+//}
+
+public final class ProxyPage extends AbstractBindable{
+	private Class<Page> _page;
+	private HTMLAnchorElement _target;
+	private Map<String, String> _propValues = new Map<String, String>();
+
+	public ProxyPage(Class<Page> page, Bindable target){
+		super(null);
+		this._page = page;
+		this._target = (HTMLAnchorElement) target;
 	}
 
-	private void update(ParameterBinding binding) {
+	public String URL() {
+		return _page.toURL();
+	}
+	
+	public void set(String name, String value){
+		_propValues.set(name, value);
+	}
+
+	public void update(Binding binding) {
 		DataContext context = this._target.getDataContext(binding.context);
-		_parameters.set(binding.context,(String)context[binding.property]);
+		if(context != null){
+			Object dataItem = context.dataItem;
+			_propValues.set(binding.property,dataItem == null ? null : (String)dataItem[binding.property]);
+		} else {
+			_propValues.set(binding.property, null);
+		}
+		
+		update();
+	}
+	
+	public void inject(Bindable target, String[] properties) {
+//		this._target = (HTMLAnchorElement) target;
+		update();
+	}
+	
+	private void update() {
+		_target.href = URL() + "?" + ParameterUtils.encodeRequest(_propValues);
 	}
 }
 
 /**
  * a html page
  */
-public interface Page extends Parameters{
-	default String encodeRequest(Map<String, String> parameters){
-		String r = "";
-		boolean and = false;
-		parameters.forEach((String value, String key, Map<String,String> _this)->{
-			if(and){
-				key += '&';
-			}
-			key = key + '=' + encodeURIComponent(value);
-			and = true;
-		});
-		return r;
+public interface Page extends MarkupExtension{
+	default void inject(Bindable a, String[] properties){
 		
-	}
-	default Map<String, String> getRequestParameter(String search){
-		Map<String, String> result = new Map<String, String>();
-		if(String.isNullOrEmpty(location.search)){
-			return null;
-		}
-		String[] parts = search.split("&");
-		parts.forEach((String value, int index, String[] _this)->{
-			String[] assign = value.split("=");
-			result.set(assign[0], assign[1]);
-		});
-		return result;
-	}
-	
-	default String toURL(){
-		return this.getClass().toURL();
 	}
 }
 
