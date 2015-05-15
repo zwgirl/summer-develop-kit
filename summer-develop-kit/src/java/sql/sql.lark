@@ -1,7 +1,7 @@
 @Module
 package java.sql;
 
-public class Date extends java.util.Date {
+public class Date extends java.lang.Date {
 	private transient long fastTime;
 
 	public Date() {
@@ -13,7 +13,7 @@ public class Date extends java.util.Date {
 
 }
 
-public class Time extends java.util.Date {
+public class Time extends java.lang.Date {
 	private transient long fastTime;
 	/**
 	 * @serial
@@ -28,7 +28,7 @@ public class Time extends java.util.Date {
 	}
 }
 
-public class Timestamp extends java.util.Date {
+public class Timestamp extends java.lang.Date {
 	private transient long fastTime;
 
 	public Timestamp() {

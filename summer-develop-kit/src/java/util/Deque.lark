@@ -403,7 +403,7 @@ public interface Deque<E> extends Queue<E> {
      * @throws IllegalArgumentException if some property of the specified
      *         element prevents it from being added to this deque
      */
-    boolean add(E e);
+    void add(E e);
 
     /**
      * Inserts the specified element into the queue represented by this deque
@@ -426,7 +426,7 @@ public interface Deque<E> extends Queue<E> {
      * @throws IllegalArgumentException if some property of the specified
      *         element prevents it from being added to this deque
      */
-    boolean offer(E e);
+    void offer(E e);
 
     /**
      * Retrieves and removes the head of the queue represented by this deque

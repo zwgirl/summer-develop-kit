@@ -65,14 +65,11 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
 		return false;
     }
     
-    public boolean add(T t){
-    	if(super.add(t)){
-    		int i = this.size;  
-    		notifyChanged(SIZE);
-            onCollectionChanged3(CollectionChangedAction.Add, t, -1);
-    		return true;
-    	}
-		return false;
+    public void add(T t){
+    	super.add(t);
+		int i = this.size;  
+		notifyChanged(SIZE);
+        onCollectionChanged3(CollectionChangedAction.Add, t, -1);
     }
 
     // Called by base class Collection&lt;T&gt; when an item is added to list;
@@ -85,22 +82,20 @@ public class ObservableCollection<T> extends ArrayList<T> implements INotifyColl
     } 
     
     @Override
-    public boolean addAll(Collection<? extends T> c) {
-    	return this.addAllAt(0, c);
+    public void addAll(Collection<? extends T> c) {
+    	this.addAllAt(0, c);
     }
     
     @Override
-    public boolean addAllAt(int index, Collection<? extends T> c) {
-    	boolean result = super.addAllAt(index, c);
+    public void addAllAt(int index, Collection<? extends T> c) {
+    	super.addAllAt(index, c);
     	onCollectionChanged(new CollectionChangedEvent(CollectionChangedAction.Add, c.toArray(), index)); 
-    	return result;
     }
     
 	@Override
-    public boolean removeAll(Collection<?> c) {
-    	boolean result = super.removeAll(c);
+    public void removeAll(Collection<?> c) {
+    	super.removeAll(c);
     	onCollectionChanged(new CollectionChangedEvent(CollectionChangedAction.Remove, c.toArray(), 0)); 
-    	return result;
     }
 
     // Called by base class Collection&lt;T&gt; when an item is set in list;

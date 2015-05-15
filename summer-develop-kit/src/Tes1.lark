@@ -1,22 +1,18 @@
 
-public interface Tes1 {
-	Tes1 p{
-//		+;
-//		&;
-	}
-	
-//	default void tt(){
-//		p = null;
-//	}
-}
 
-class FF  implements Tes1{
-	void dd(){
-		Tes1 t = new FF();
-		t.p = null;
+class FF {
+	FF(){
+		
 	}
 	
-	String p{};
-	String p{};
+	FF(int d){
+		this();
+	}
+}
+ 
+class DD extends FF{
+	DD(){
+		
+	}
 }
 

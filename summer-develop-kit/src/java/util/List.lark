@@ -135,7 +135,7 @@ public interface List<E> extends Collection<E> {
      * @throws IndexOutOfBoundsException if the index is out of range
      *         (<tt>index &lt; 0 || index &gt; size()</tt>)
      */
-    boolean addAllAt(int index, Collection<? extends E> c);
+    void addAllAt(int index, Collection<? extends E> c);
 
     /**
      * Replaces each element of this list with the result of applying the

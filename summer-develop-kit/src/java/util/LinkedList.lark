@@ -332,9 +332,8 @@ public class LinkedList<E>
      * @param e element to be appended to this list
      * @return {@code true} (as specified by {@link Collection#add})
      */
-    public boolean add(E e) {
+    public void add(E e) {
         linkLast(e);
-        return true;
     }
 
     /**
@@ -381,8 +380,8 @@ public class LinkedList<E>
      * @return {@code true} if this list changed as a result of the call
      * @throws NullPointerException if the specified collection is null
      */
-    public boolean addAll(Collection<? extends E> c) {
-        return addAllAt(size, c);
+    public void addAll(Collection<? extends E> c) {
+        addAllAt(size, c);
     }
 
     /**
@@ -400,13 +399,11 @@ public class LinkedList<E>
      * @throws IndexOutOfBoundsException {@inheritDoc}
      * @throws NullPointerException if the specified collection is null
      */
-    public boolean addAllAt(int index, Collection<? extends E> c) {
+    public void addAllAt(int index, Collection<? extends E> c) {
         checkPositionIndex(index);
 
         E[] a = (E[])c.toArray();
         int numNew = a.length;
-        if (numNew == 0)
-            return false;
 
         Node<E> pred, succ;
         if (index == size) {
@@ -435,7 +432,6 @@ public class LinkedList<E>
         }
 
         _size += numNew;
-        return true;
     }
 
     /**
@@ -688,8 +684,8 @@ public class LinkedList<E>
      * @return {@code true} (as specified by {@link Queue#offer})
      * @since 1.5
      */
-    public boolean offer(E e) {
-        return add(e);
+    public void offer(E e) {
+        add(e);
     }
 
     // Deque operations

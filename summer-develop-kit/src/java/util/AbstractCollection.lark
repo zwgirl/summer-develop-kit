@@ -152,7 +152,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IllegalStateException         {@inheritDoc}
      */
-    public boolean add(E e) {
+    public void add(E e) {
         throw new UnsupportedOperationException();
     }
 
@@ -232,12 +232,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *
      * @see #add(Object)
      */
-    public boolean addAll(Collection<? extends E> c) {
-        boolean modified = false;
+    public void addAll(Collection<? extends E> c) {
         for (E e : c)
-            if (add(e))
-                modified = true;
-        return modified;
+            add(e);
     }
 
     /**
@@ -261,17 +258,14 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #remove(Object)
      * @see #contains(Object)
      */
-    public boolean removeAll(Collection<?> c) {
+    public void removeAll(Collection<?> c) {
         Objects.requireNonNull(c);
-        boolean modified = false;
         Iterator<?> it = iterator();
         while (it.hasNext()) {
             if (c.contains(it.next())) {
                 it.remove();
-                modified = true;
             }
         }
-        return modified;
     }
 
     /**

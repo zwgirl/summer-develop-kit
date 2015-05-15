@@ -315,9 +315,8 @@ public class ArrayList<E> extends AbstractList<E>
      * @param e element to be appended to this list
      * @return <tt>true</tt> (as specified by {@link Collection#add})
      */
-    public boolean add(E e) {
+    public void add(E e) {
         elementData[elementData.length++] = e;
-        return true;
     }
 
     /**
@@ -415,8 +414,8 @@ public class ArrayList<E> extends AbstractList<E>
      * @return <tt>true</tt> if this list changed as a result of the call
      * @throws NullPointerException if the specified collection is null
      */
-    public boolean addAll(Collection<? extends E> c) {
-        return internalAddAllAt(0, c.toArray());
+    public void addAll(Collection<? extends E> c) {
+        internalAddAllAt(0, c.toArray());
     }
 
     /**
@@ -434,9 +433,9 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws IndexOutOfBoundsException {@inheritDoc}
      * @throws NullPointerException if the specified collection is null
      */
-    public boolean addAllAt(int index, Collection<? extends E> c) {
+    public void addAllAt(int index, Collection<? extends E> c) {
         rangeCheckForAdd(index);
-        return internalAddAllAt(index, c.toArray());
+        internalAddAllAt(index, c.toArray());
     }
     
     private boolean internalAddAllAt<E1>(int index, Array<E1> a){
@@ -509,9 +508,9 @@ public class ArrayList<E> extends AbstractList<E>
      *         or if the specified collection is null
      * @see Collection#contains(Object)
      */
-    public boolean removeAll(Collection<?> c) {
+    public void removeAll(Collection<?> c) {
         if(c == null) throw new Error(0, "c may not be null!");
-        return batchRemove(c, false);
+        batchRemove(c, false);
     }
 
     /**
@@ -791,19 +790,13 @@ public class ArrayList<E> extends AbstractList<E>
             this._size -= toIndex - fromIndex;
         }
 
-        public boolean addAll(Collection<? extends E> c) {
-            return addAllAt(this.size, c);
+        public void addAll(Collection<? extends E> c) {
+            addAllAt(this.size, c);
         }
 
-        public boolean addAllAt(int index, Collection<? extends E> c) {
+        public void addAllAt(int index, Collection<? extends E> c) {
             rangeCheckForAdd(index);
-            int cSize = c.size;
-            if (cSize==0)
-                return false;
-
             parent.addAllAt(parentOffset + index, c);
-            this._size += cSize;
-            return true;
         }
 
         public Iterator<E> iterator() {

@@ -209,16 +209,13 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
-    public boolean addAllAt(int index, Collection<? extends E> c) {
+    public void addAllAt(int index, Collection<? extends E> c) {
         try {
-            boolean modified = false;
             ListIterator<E> e1 = listIteratorAt(index);
             Iterator<? extends E> e2 = c.iterator();
             while (e2.hasNext()) {
                 e1.add(e2.next());
-                modified = true;
             }
-            return modified;
         } catch (NoSuchElementException exc) {
             throw new Error(0, "index out of bound !");
         }

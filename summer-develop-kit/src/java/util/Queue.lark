@@ -160,7 +160,7 @@ public interface Queue<E> extends Collection<E> {
      * @throws IllegalArgumentException if some property of this element
      *         prevents it from being added to this queue
      */
-    boolean add(E e);
+    void add(E e);
 
     /**
      * Inserts the specified element into this queue if it is possible to do
@@ -179,7 +179,7 @@ public interface Queue<E> extends Collection<E> {
      * @throws IllegalArgumentException if some property of this element
      *         prevents it from being added to this queue
      */
-    boolean offer(E e);
+    void offer(E e);
 
     /**
      * Retrieves and removes the head of this queue.  This method differs

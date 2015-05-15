@@ -105,9 +105,8 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      * @throws IllegalArgumentException if some property of this element
      *         prevents it from being added to this list
      */
-    public boolean add(E e) {
+    public void add(E e) {
         addAt(this.size, e);
-        return true;
     }
     
     /**
@@ -253,14 +252,11 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      * @throws IllegalArgumentException      {@inheritDoc}
      * @throws IndexOutOfBoundsException     {@inheritDoc}
      */
-    public boolean addAllAt(int index, Collection<? extends E> c) {
+    public void addAllAt(int index, Collection<? extends E> c) {
         rangeCheckForAdd(index);
-        boolean modified = false;
         for (E e : c) {
             addAt(index++, e);
-            modified = true;
         }
-        return modified;
     }
 
 
@@ -632,19 +628,14 @@ class SubList<E> extends AbstractList<E> {
         _size -= (toIndex-fromIndex);
     }
 
-    public boolean addAll(Collection<? extends E> c) {
-        return addAllAt(_size, c);
+    public void addAll(Collection<? extends E> c) {
+        addAllAt(_size, c);
     }
-
-    public boolean addAllAt(int index, Collection<? extends E> c) {
+ 
+    public void addAllAt(int index, Collection<? extends E> c) {
         rangeCheckForAdd(index);
-        int cSize = c.size;
-        if (cSize==0)
-            return false;
 
         l.addAllAt(offset+index, c);
-        _size += cSize;
-        return true;
     }
 
     public Iterator<E> iterator() {
