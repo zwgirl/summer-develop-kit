@@ -84,16 +84,15 @@ package java.util;
  * @since   1.2
  */
 @RemotingBean
-public class HashSet<E>  implements Set<E> 
-{
-    private java.lang.Set<E> map;
+public class HashSet<E>  implements Set<E> {
+    private java.lang.Set<E> _set;
 
     /**
      * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has
      * default initial capacity (16) and load factor (0.75).
      */
     public HashSet() {
-        map = new java.lang.Set<>();
+        _set = new java.lang.Set<>();
     }
 
     /**
@@ -103,7 +102,7 @@ public class HashSet<E>  implements Set<E>
      */
     public int size {
     	&{
-    		return map.size;
+    		return _set.size;
     	}
     }
 
@@ -113,7 +112,7 @@ public class HashSet<E>  implements Set<E>
      * @return <tt>true</tt> if this set contains no elements
      */
     public boolean isEmpty() {
-        return map.size == 0;
+        return _set.size == 0;
     }
 
     /**
@@ -126,7 +125,7 @@ public class HashSet<E>  implements Set<E>
      * @return <tt>true</tt> if this set contains the specified element
      */
     public boolean contains(Object o) {
-        return map.has((E)o);
+        return _set.has((E)o);
     }
 
     /**
@@ -142,7 +141,7 @@ public class HashSet<E>  implements Set<E>
      * element
      */
     public void add(E e) { 
-        map.add(e);
+        _set.add(e);
     }
 
     /**
@@ -158,7 +157,7 @@ public class HashSet<E>  implements Set<E>
      * @return <tt>true</tt> if the set contained the specified element
      */
     public boolean remove(Object o) {
-        return map.delete((E)o);
+        return _set.delete((E)o);
     }
 
     /**
@@ -166,7 +165,7 @@ public class HashSet<E>  implements Set<E>
      * The set will be empty after this call returns.
      */
     public void clear() {
-        map.clear();
+        _set.clear();
     }
 
 	@Override
