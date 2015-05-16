@@ -218,4 +218,61 @@ public class HashMap<K,V> implements Map<K,V> {
     	_map.clear();
     }
 
+	@Override 
+	public Iterator<Map.Entry<K, V>> iterator(){
+		return new Itr();
+	}
+	
+	   /**
+     * An optimized version of AbstractList.Itr
+     */
+    private class Itr implements Iterator<Map.Entry<K,V>> {
+        private Array<Map.Entry<K,V>> entries = new Array<Map.Entry<K,V>>();
+        int cursor;       // index of next element to return
+        int lastRet = -1; // index of last element returned; -1 if no such
+        public Itr(){
+        	HashMap.this._map.forEach((V value, K key, java.lang.Map<K,V> map)->{
+        		entries.push(new Map.Entry(key, value));
+        	});
+        }
+        public boolean hasNext() {
+            return cursor != entries.length;  
+        }
+
+        public Map.Entry<K,V> next() {
+            int i = cursor;
+            if (i >= entries.length)
+                throw new NoSuchElementException();
+            cursor = i + 1;
+            return entries[lastRet = i];
+        }
+
+        public void remove() {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+
+                ArrayList.this.remove(lastRet);
+                cursor = lastRet;
+                lastRet = -1;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super E> consumer) {
+            if(consumer == null) throw new Error(1, "consumer may not be null!");
+            final int size = ArrayList.this.elements.length;
+            int i = cursor;
+            if (i >= size) {
+                return;
+            }
+            final E[] elements = ArrayList.this.elements;
+            while (i != size) {
+                consumer(elements[i++]);
+            }
+            // update once at end of iteration to reduce heap write traffic
+            cursor = i;
+            lastRet = i - 1;
+        }
+    }
+
+
 }

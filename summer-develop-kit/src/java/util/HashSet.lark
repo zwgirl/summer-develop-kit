@@ -170,8 +170,12 @@ public class HashSet<E>  implements Set<E> {
 
 	@Override
 	public Array<E> toArray() {
-		// TODO Auto-generated method stub
-		return null;
+		Array<E> array = new Array<E>();
+		_set.forEach((item, sameItem, s) ->{
+			array.push(item);
+		});
+		
+		return array;
 	}
 
 	@Override
@@ -182,7 +186,7 @@ public class HashSet<E>  implements Set<E> {
 
 	@Override
 	public void addAll(Collection<? extends E> c) {
-		// TODO Auto-generated method stub
+		//TODO
 	}
 
 	@Override

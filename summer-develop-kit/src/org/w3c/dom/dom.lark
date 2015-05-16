@@ -151,7 +151,7 @@ public native interface Node extends EventTarget, Bindable{
  	// Introduced in DOM Level 2:
  	public native boolean hasAttributes();
  	
- 	public default Binding getBinding(String[] properties){ 
+ 	public default Binding getBinding(String[] properties){
     	Map<String, Binding> bindings = (Map<String, Binding>) this["__bindings"];
     	if(bindings == null){
     		return null;
@@ -318,7 +318,13 @@ public native interface Node extends EventTarget, Bindable{
 //	}
 	
 	public default void update(Binding binding){
-		Object data = this.getDataContext(binding.context).dataItem;
+		DataContext dc = this.getDataContext(binding.context);
+		if(dc == null){
+			console.log("the binding context[" + binding.context + "]" + "does not exists");
+			return;
+		}
+		Object data = dc.dataItem;
+//		Object data = this.getDataContext(binding.context).dataItem;
 		if(!String.isNullOrEmpty(binding.property)){
 			data = data == null ? null : data[binding.property];
 		}
@@ -395,14 +401,14 @@ public native interface Node extends EventTarget, Bindable{
     		this["__contexts"] = contexts = new Map<String, DataContext>();
     	}
     	
-    	DataContext old = contexts.get(name);
+    	DataContext old = contexts.get(context.name);
     	if(old != null){
     		old.moveDependentTo(context);
     	}
     	
     	contexts.set(context.name, context);
    	
-    	if(context.name == "ROOT" || context.name == "TEMPLATE"){
+    	if(context.name == "ROOT" || context.name == "TEMPLATE" || context.ancestor == null){
     		return;
     	}
     	
@@ -411,14 +417,16 @@ public native interface Node extends EventTarget, Bindable{
         	if(parent != null){
         		parent.addDependent(context);
         	} else {
-        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        		console.log("the ancestor DataContext with [" + 
+        				context.ancestor + "] in DataContext[" + context.name + "] does not exists!");
         	}
     	} else if(this.parentNode != null){
         	DataContext parent = this.parentNode.getDataContext(context.ancestor);
         	if(parent != null){
         		parent.addDependent(context);
         	} else {
-        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        		console.log("the ancestor DataContext with [" + 
+        				context.ancestor + "] in DataContext[" + context.name + "] does not exists!");
         	}
     	}
     }
@@ -521,14 +529,14 @@ public native interface Node extends EventTarget, Bindable{
 	public native String textContent{&{}+;}
 }
 
-public interface NodeList {
+public native interface NodeList {
 //	Node item(final /*unsigned */long index);
-	public native Node this[long index];
+	public native Node this[long index]; 
 	// readonly attribute /*unsigned */
 	public native long length{}
 }
 
-public interface NamedNodeMap {
+public native interface NamedNodeMap {
 	public native Node getNamedItem(final String name);
 	public native Node setNamedItem(final Node arg) throws DOMException;
 	Node removeNamedItem(final String name) throws DOMException;

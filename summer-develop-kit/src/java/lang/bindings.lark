@@ -111,7 +111,12 @@ public abstract class AbstractBindable implements Bindable, Tag{
 	public void detach(Binding binding){}
 	
 	public void update(Binding binding){
-		Object data = this.getDataContext(binding.context).dataItem;
+		DataContext dc = this.getDataContext(binding.context);
+		if(dc == null){
+			console.log("the context[" + binding.context + "] does not exists!");
+		}
+		
+		Object data = dc.dataItem;
 		if(!String.isNullOrEmpty(binding.property)){
 			
 			data = data == null ? null : data[binding.property];
@@ -184,7 +189,7 @@ public abstract class AbstractBindable implements Bindable, Tag{
     	
     	contexts.set(context.name, context);
    	
-    	if(context.name == "ROOT" || context.name == "TEMPLATE"){
+    	if(context.name == "ROOT" || context.name == "TEMPLATE" || context.ancestor == null){
     		return;
     	}
     	
@@ -193,14 +198,16 @@ public abstract class AbstractBindable implements Bindable, Tag{
         	if(parent != null){
         		parent.addDependent(context);
         	} else {
-        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        		console.log("the " + context.ancestor + 
+        				" ancestor DataContext of DataContext[" + context.name + "] does not exists!");
         	}
     	} else if(this.parentNode != null){
         	DataContext parent = this.parentNode.getDataContext(context.ancestor);
         	if(parent != null){
         		parent.addDependent(context);
         	} else {
-        		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+        		console.log("the " + context.ancestor + 
+        				" ancestor DataContext of DataContext[" + context.name + "] does not exists!");
         	}
     	}
     }
@@ -223,14 +230,14 @@ public abstract class AbstractBindable implements Bindable, Tag{
             	if(parent != null){
             		parent.addDependent(context);
             	} else {
-            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+            		console.log("the ancestor DataContext with name " + context.ancestor + " in DataContext[" + context.name + "] does not exists!");
             	}
     		} else if(this.parentNode != null){
             	DataContext parent = this.parentNode.getDataContext(context.ancestor);
             	if(parent != null){
             		parent.addDependent(context);
             	} else {
-            		console.log("ancestor of DataContext[" + context.ancestor + "] does not exists!");
+            		console.log("the ancestor DataContext with name " + context.ancestor + " in DataContext[" + context.name + "] does not exists!");
             	}
         	}
         	contexts.delete(name);
@@ -843,7 +850,7 @@ public enum BindingMode {
     OneTime;
 } 
 
-public function void UpdateTargetCallback(Object target, Array<String> property, Object value);
+public function void UpdateTargetCallback(Object target, Array<String> property, Object value); 
 public function void UpdateSourceCallback(Object source, String property, Object value);
 
 public final class Binding implements MarkupExtension, PropertyChangeListener {
@@ -1186,19 +1193,19 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	
 	public String property{
 		&{
-			return this._ancestor; 
+			return this._property; 
 		}
 		+{
-			this._ancestor = value;
+			this._property = value;
 		}
 	}
 	
 	public String ancestor{
 		&{
-			return this._property; 
+			return this._ancestor; 
 		}
 		+{
-			this._property = value;
+			this._ancestor = value;
 		}
 	}
 	

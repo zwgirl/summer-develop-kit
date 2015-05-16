@@ -108,7 +108,7 @@ public class ArrayList<E> extends AbstractList<E>
      * empty ArrayList with elementData == EMPTY_ELEMENTDATA will be expanded to
      * DEFAULT_CAPACITY when the first element is added.
      */
-    /*transient*/ E[] elementData; // non-private to simplify nested class access
+    E[] elements; // non-private to simplify nested class access
 
     /**
      * Constructs an empty list with an initial capacity of ten.
@@ -116,29 +116,7 @@ public class ArrayList<E> extends AbstractList<E>
     @Overload("0")
     public ArrayList() { 
         super();
-        this.elementData = new Array<E>();
-    }
-    
-//    /**
-//     * The size of the ArrayList (the number of elements it contains).
-//     *
-//     * @serial
-//     */
-//    private transient int _size;
-
-    /**
-     * Constructs an empty list with the specified initial capacity.
-     *
-     * @param  initialCapacity  the initial capacity of the list
-     * @throws IllegalArgumentException if the specified initial capacity
-     *         is negative
-     */
-    @Overload("1")
-    public ArrayList(int initialCapacity) {
-        super();
-        if (initialCapacity < 0)
-            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
-        this.elementData = new Array<E>();
+        this.elements = new Array<E>();
     }
 
     /**
@@ -151,23 +129,8 @@ public class ArrayList<E> extends AbstractList<E>
      */
     @Overload("2")
     public ArrayList(Collection<? extends E> c) {
-        elementData = (Array<E>) c.toArray();
-//        _size = elementData.length;
+    	elements = (Array<E>) c.toArray();
     }
-
-//    /**
-//     * Returns the number of elements in this list.
-//     *
-//     * @return the number of elements in this list
-//     */
-//    public int size {
-//    	&{
-//            return _size;
-//    	}
-//    	+{
-//    		this._size = value;
-//    	}
-//    }
     
     /**
      * Returns the number of elements in this list.
@@ -176,7 +139,7 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public int size {
     	&{
-            return elementData.length;
+            return elements.length;
     	}
     }
 
@@ -186,7 +149,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @return <tt>true</tt> if this list contains no elements
      */
     public boolean isEmpty() {
-        return elementData.length == 0;
+        return elements.length == 0;
     }
 
     /**
@@ -211,12 +174,12 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public int indexOf(Object o) {
         if (o == null) {
-            for (int i = 0; i < elementData.length; i++)
-                if (elementData[i]==null)
+            for (int i = 0; i < elements.length; i++)
+                if (elements[i]==null)
                     return i;
         } else {
-            for (int i = 0; i < elementData.length; i++)
-                if (o === elementData[i])
+            for (int i = 0; i < elements.length; i++)
+                if (o === elements[i])
                     return i;
         }
         return -1;
@@ -231,12 +194,12 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public int lastIndexOf(Object o) {
         if (o == null) {
-            for (int i = elementData.length-1; i >= 0; i--)
-                if (elementData[i]==null)
+            for (int i = elements.length-1; i >= 0; i--)
+                if (elements[i]==null)
                     return i;
         } else {
-            for (int i = elementData.length-1; i >= 0; i--)
-                if (o === elementData[i])  
+            for (int i = elements.length-1; i >= 0; i--)
+                if (o === elements[i])  
                     return i;
         }  
         return -1; 
@@ -276,7 +239,7 @@ public class ArrayList<E> extends AbstractList<E>
      *         proper sequence
      */
     public E[] toArray() {
-    	return elementData.slice();
+    	return elements.slice();
     }
 
     /**
@@ -289,7 +252,7 @@ public class ArrayList<E> extends AbstractList<E>
     public E get(int index) {
         rangeCheck(index);
 
-        return (E) elementData[index];
+        return (E) elements[index];
     }
 
     /**
@@ -304,8 +267,8 @@ public class ArrayList<E> extends AbstractList<E>
     public E set(int index, E element) {
         rangeCheck(index);
 
-        E oldValue = (E) elementData[index];
-        elementData[index] = element;
+        E oldValue = (E) elements[index];
+        elements[index] = element;
         return oldValue;
     }
 
@@ -316,7 +279,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @return <tt>true</tt> (as specified by {@link Collection#add})
      */
     public void add(E e) {
-        elementData[elementData.length++] = e;
+    	elements[elements.length++] = e;
     }
 
     /**
@@ -330,8 +293,7 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public void addAt(int index, E element) {
         rangeCheckForAdd(index);
-        elementData.splice(index, 0, element);
-//        elementData.length++;
+        elements.splice(index, 0, element);
     }
 
     /**
@@ -346,9 +308,8 @@ public class ArrayList<E> extends AbstractList<E>
     public E removeAt(int index) {
         rangeCheck(index);
 
-        E oldValue = (E) elementData[index];
-        elementData.splice(index, 1);
-//        _size--;
+        E oldValue = (E) elements[index];
+        elements.splice(index, 1);
 
         return oldValue;
     }
@@ -368,14 +329,14 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public boolean remove(Object o) {
         if (o == null) {
-            for (int index = 0; index < elementData.length; index++)
-                if (elementData[index] == null) {
+            for (int index = 0; index < elements.length; index++)
+                if (elements[index] == null) {
                     fastRemove(index);
                     return true;
                 }
         } else {
-            for (int index = 0; index < elementData.length; index++)
-                if (o === elementData[index]) {
+            for (int index = 0; index < elements.length; index++)
+                if (o === elements[index]) {
                     fastRemove(index);
                     return true;
                 }
@@ -388,8 +349,7 @@ public class ArrayList<E> extends AbstractList<E>
      * return the value removed.
      */
     private void fastRemove(int index) {
-//        _size--;
-        elementData.splice(index, 1);
+    	elements.splice(index, 1);
     }
 
     /**
@@ -397,8 +357,7 @@ public class ArrayList<E> extends AbstractList<E>
      * be empty after this call returns.
      */
     public void clear() {
-        elementData.length = 0;
-//        _size = 0;
+    	elements.length = 0;
     }
 
     /**
@@ -439,10 +398,9 @@ public class ArrayList<E> extends AbstractList<E>
     }
     
     private boolean internalAddAllAt<E1>(int index, Array<E1> a){
-    	E[] t1 = this.elementData.slice(0, index), t2 = this.elementData.slice(index);
-    	this.elementData = t1.concat((Array<E>)a).concat(t2);		
+    	E[] t1 = this.elements.slice(0, index), t2 = this.elements.slice(index);
+    	this.elements = t1.concat((Array<E>)a).concat(t2);		
       
-//    	_size += a.length;
     	return a.length != 0;
     }
 
@@ -461,8 +419,7 @@ public class ArrayList<E> extends AbstractList<E>
      *          toIndex < fromIndex})
      */
     protected void removeRange(int fromIndex, int toIndex) {
-        this.elementData.splice(fromIndex, toIndex-fromIndex);
-//        _size -= toIndex-fromIndex;
+        this.elements.splice(fromIndex, toIndex-fromIndex);
     }
 
     /**
@@ -472,7 +429,7 @@ public class ArrayList<E> extends AbstractList<E>
      * which throws an ArrayIndexOutOfBoundsException if index is negative.
      */
     private void rangeCheck(int index) {
-        if (index >= elementData.length)
+        if (index >= elements.length)
         	throw new Error(0, "Index out of boundsException! " + outOfBoundsMsg(index));
     }
 
@@ -480,7 +437,7 @@ public class ArrayList<E> extends AbstractList<E>
      * A version of rangeCheck used by add and addAll.
      */
     private void rangeCheckForAdd(int index) {
-        if (index > elementData.length || index < 0)
+        if (index > elements.length || index < 0)
         	throw new Error(0, "Index out of boundsException! " + outOfBoundsMsg(index));
     }
 
@@ -490,7 +447,7 @@ public class ArrayList<E> extends AbstractList<E>
      * this "outlining" performs best with both server and client VMs.
      */
     private String outOfBoundsMsg(int index) {
-        return "Index: "+index+", Size: "+elementData.length;
+        return "Index: "+index+", Size: "+elements.length;
     }
 
     /**
@@ -535,7 +492,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     private boolean batchRemove(Collection<?> c, boolean complement) {
-        final E[] elementData = this.elementData;
+        final E[] elementData = this.elements;
         int r = 0, w = 0;
         boolean modified = false;
         try {
@@ -553,7 +510,6 @@ public class ArrayList<E> extends AbstractList<E>
                 // clear to let GC do its work
                 for (int i = w; i < elementData.length; i++)
                     elementData[i] = null;
-//                _size = w;
                 modified = true;
             }
         }
@@ -574,7 +530,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     public ListIterator<E> listIteratorAt(int index) {
-        if (index < 0 || index > elementData.length)
+        if (index < 0 || index > elements.length)
         	throw new Error(0, "Index out of boundsException! " + outOfBoundsMsg(index));
         return new ListItr(index);
     }
@@ -610,16 +566,16 @@ public class ArrayList<E> extends AbstractList<E>
         int lastRet = -1; // index of last element returned; -1 if no such
 
         public boolean hasNext() {
-            return cursor != elementData.length;  
+            return cursor != elements.length;  
         }
 
         public E next() {
             int i = cursor;
-            if (i >= elementData.length)
+            if (i >= elements.length)
                 throw new NoSuchElementException();
-            E[] elementData = ArrayList.this.elementData;
+            E[] elements = ArrayList.this.elements;
             cursor = i + 1;
-            return (E) elementData[lastRet = i];
+            return (E) elements[lastRet = i];
         }
 
         public void remove() {
@@ -634,14 +590,14 @@ public class ArrayList<E> extends AbstractList<E>
         @Override
         public void forEachRemaining(Consumer<? super E> consumer) {
             if(consumer == null) throw new Error(1, "consumer may not be null!");
-            final int size = ArrayList.this.elementData.length;
+            final int size = ArrayList.this.elements.length;
             int i = cursor;
             if (i >= size) {
                 return;
             }
-            final E[] elementData = ArrayList.this.elementData;
+            final E[] elements = ArrayList.this.elements;
             while (i != size) {
-                consumer(elementData[i++]);
+                consumer(elements[i++]);
             }
             // update once at end of iteration to reduce heap write traffic
             cursor = i;
@@ -674,7 +630,7 @@ public class ArrayList<E> extends AbstractList<E>
             int i = cursor - 1;
             if (i < 0)
                 throw new NoSuchElementException();
-            E[] elementData = ArrayList.this.elementData;   
+            E[] elementData = ArrayList.this.elements;   
             cursor = i;
             return (E) elementData[lastRet = i];
         }
@@ -725,7 +681,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws IllegalArgumentException {@inheritDoc}
      */
     public List<E> subList(int fromIndex, int toIndex) {
-        subListRangeCheck(fromIndex, toIndex, elementData.length);
+        subListRangeCheck(fromIndex, toIndex, elements.length);
         return new SubList(this, 0, fromIndex, toIndex);
     }
 
@@ -755,14 +711,14 @@ public class ArrayList<E> extends AbstractList<E>
 
         public E set(int index, E e) {
             rangeCheck(index);
-            E oldValue = (E) ArrayList.this.elementData[offset + index]; 
-            ArrayList.this.elementData[offset + index] = e;
+            E oldValue = (E) ArrayList.this.elements[offset + index]; 
+            ArrayList.this.elements[offset + index] = e;
             return oldValue;
         }
 
         public E get(int index) {
             rangeCheck(index);
-            return (E) ArrayList.this.elementData[offset + index];
+            return (E) ArrayList.this.elements[offset + index];
         }
 
         public int size {
@@ -819,7 +775,7 @@ public class ArrayList<E> extends AbstractList<E>
                     int i = cursor;
                     if (i >= SubList.this.size)
                         throw new NoSuchElementException();
-                    E[] elementData = ArrayList.this.elementData;
+                    E[] elementData = ArrayList.this.elements;
                     cursor = i + 1;
                     return (E) elementData[offset + (lastRet = i)];
                 }
@@ -832,7 +788,7 @@ public class ArrayList<E> extends AbstractList<E>
                     int i = cursor - 1;
                     if (i < 0)
                         throw new NoSuchElementException();
-                    E[] elementData = ArrayList.this.elementData;
+                    E[] elementData = ArrayList.this.elements;
                     cursor = i;
                     return (E) elementData[offset + (lastRet = i)];
                 }
@@ -844,7 +800,7 @@ public class ArrayList<E> extends AbstractList<E>
                     if (i >= size) {
                         return;
                     }
-                    final E[] elementData = ArrayList.this.elementData;
+                    final E[] elementData = ArrayList.this.elements;
                     while (i != size) {
                         consumer((E) elementData[offset + (i++)]);
                     }
@@ -908,9 +864,9 @@ public class ArrayList<E> extends AbstractList<E>
 
     @Override
     public void forEach(Consumer<? super E> action) {
-        final int size = this.elementData.length;
+        final int size = this.elements.length;
         for (int i=0; i < size; i++) {
-            action(elementData[i]);
+            action(elements[i]);
         }
     }
 
@@ -921,9 +877,9 @@ public class ArrayList<E> extends AbstractList<E>
         // will leave the collection unmodified
         int removeCount = 0;
         final BitSet removeSet = new BitSet(size);
-        final int size = this.elementData.length;
+        final int size = this.elements.length;
         for (int i=0; i < size; i++) {
-            final E element = (E) elementData[i];
+            final E element = (E) elements[i];
             if (filter(element)) { 
                 removeSet.set(i);
                 removeCount++;
@@ -936,12 +892,11 @@ public class ArrayList<E> extends AbstractList<E>
             final int newSize = size - removeCount;
             for (int i=0, j=0; (i < size) && (j < newSize); i++, j++) {
                 i = removeSet.nextClearBit(i);
-                elementData[j] = elementData[i];
+                elements[j] = elements[i];
             }
             for (int k=newSize; k < size; k++) {
-                elementData[k] = null;  // Let gc do its work
+            	elements[k] = null;  // Let gc do its work
             }
-//            this.size = newSize;
         }
 
         return anyToRemove;
@@ -949,14 +904,14 @@ public class ArrayList<E> extends AbstractList<E>
 
     @Override
     public void replaceAll(Operator<? super E, E> operator) { 
-        final int size = this.elementData.length;
+        final int size = this.elements.length;
         for (int i=0; i < size; i++) {
-            elementData[i] = operator(elementData[i]);
+        	elements[i] = operator(elements[i]);
         }
     }
 
     @Override
     public void sort(Comparator<? super E> c) {
-        this.elementData.sort((Comparator<E>) c);
+        this.elements.sort((Comparator<E>) c);
     }
 }

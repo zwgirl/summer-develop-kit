@@ -1240,9 +1240,14 @@ public native class Map<K, V> {
 
 }
 
-public function void MapCallback<K, V>(V value, K key, Map<K, V> mapObj);
+public function void MapCallback<K, V>(V value, K key, Map<K, V> map);
 
-public function void SetCallback<T>(T value, int index, Array<T> array1); 
+/**
+ * value:A value contained in the set.
+ * key:A value contained in the set. A set has no keys, so this value is the same as value.
+ * set:The Set object to traverse.
+ */
+public function void SetCallback<T>(T value, T key, Set<T> set); 
 
 
 /**

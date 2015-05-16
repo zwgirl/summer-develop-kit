@@ -115,9 +115,7 @@ package java.util;
  * @since 1.2
  */
 @RemotingBean
-public interface Map<K,V> {
-    // Query Operations
-
+public interface Map<K,V> extends Iterable<Map.Entry<K,V>>{
     /**
      * Returns the number of key-value mappings in this map.  If the
      * map contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
@@ -248,19 +246,41 @@ public interface Map<K,V> {
      * @return <tt>true</tt> if the specified object is equal to this map
      */
     boolean equals(Object o);
-
-    /**
-     * Returns the hash code value for this map.  The hash code of a map is
-     * defined to be the sum of the hash codes of each entry in the map's
-     * <tt>entrySet()</tt> view.  This ensures that <tt>m1.equals(m2)</tt>
-     * implies that <tt>m1.hashCode()==m2.hashCode()</tt> for any two maps
-     * <tt>m1</tt> and <tt>m2</tt>, as required by the general contract of
-     * {@link Object#hashCode}.
-     *
-     * @return the hash code value for this map
-     * @see Map.Entry#hashCode()
-     * @see Object#equals(Object)
-     * @see #equals(Object)
-     */
-    int hashCode();
+//
+//    /**
+//     * Returns the hash code value for this map.  The hash code of a map is
+//     * defined to be the sum of the hash codes of each entry in the map's
+//     * <tt>entrySet()</tt> view.  This ensures that <tt>m1.equals(m2)</tt>
+//     * implies that <tt>m1.hashCode()==m2.hashCode()</tt> for any two maps
+//     * <tt>m1</tt> and <tt>m2</tt>, as required by the general contract of
+//     * {@link Object#hashCode}.
+//     *
+//     * @return the hash code value for this map
+//     * @see Map.Entry#hashCode()
+//     * @see Object#equals(Object)
+//     * @see #equals(Object)
+//     */
+//    int hashCode();
+    
+    public class Entry<K,V>{
+    	public Entry(K key, V value){
+    		this._key = key;
+    		this._value = value;
+    	}
+    	
+    	private K _key;
+    	public K key{
+    		&{
+    			return this._key;
+    		}
+    	}
+    	
+    	private V _value;
+    	public V value{
+    		&{
+    			return this._value;
+    		}
+    	}
+    }
 }
+
