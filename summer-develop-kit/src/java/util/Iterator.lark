@@ -110,7 +110,7 @@ public interface Iterator<E> {
      * @since 1.8
      */
     default void forEachRemaining(Consumer<? super E> action) {
-        Objects.requireNonNull(action);
+//        Objects.requireNonNull(action);
         while (hasNext())
             action(next());
     }

@@ -583,18 +583,18 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 //	  	readonly attribute unsigned 
 		public native long length{}
 //	  	getter Plugin? item(unsigned long index);
-		public native Plugin this[long index]{}
+		public native Plugin this[long index];
 //	  	getter Plugin? namedItem(String name);
-		public native Plugin this[String nam]{}
+		public native Plugin this[String nam];
 	}
 
 	public native interface MimeTypeArray {
 //	  readonly attribute unsigned 
 		public native long length{}
 //	  getter MimeType? item(unsigned long index);
-		public native MimeType this[long index]{}
+		public native MimeType this[long index];
 //	  getter MimeType? namedItem(String name);
-	    public native MimeType this[String nam]{}
+	    public native MimeType this[String nam];
 	}
 
 	public native interface Plugin {
@@ -607,7 +607,7 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 //	  	readonly attribute unsigned 
 		public native long length{}
 //	 	 getter 
-		public native MimeType this[long index]{}
+		public native MimeType this[long index];
 //	  	getter MimeType? namedItem(String name);
 		public native MimeType this[String name];
 	}

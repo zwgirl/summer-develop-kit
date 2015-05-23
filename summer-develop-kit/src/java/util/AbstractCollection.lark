@@ -259,7 +259,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @see #contains(Object)
      */
     public void removeAll(Collection<?> c) {
-        Objects.requireNonNull(c);
+//        Objects.requireNonNull(c);
         Iterator<?> it = iterator();
         while (it.hasNext()) {
             if (c.contains(it.next())) {

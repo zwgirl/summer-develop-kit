@@ -140,7 +140,7 @@ public abstract class AbstractBindable implements Bindable, Tag{
 		}
 		
 		if(binding.updateTargetCallback != null){
-			binding.updateTargetCallback(this, properties, data);
+			binding.updateTargetCallback(this, properties[0], properties[1], data);
 		} else {
 			tag[properties[length-1]] = data;
 		}
@@ -189,7 +189,11 @@ public abstract class AbstractBindable implements Bindable, Tag{
     	
     	contexts.set(context.name, context);
    	
-    	if(context.name == "ROOT" || context.name == "TEMPLATE" || context.ancestor == null){
+//    	if(context.name == "ROOT" || context.name == "TEMPLATE" || context.ancestor == null){
+//    		return;
+//    	}
+    	
+    	if((boolean)context["_standalone"]){
     		return;
     	}
     	
@@ -225,21 +229,24 @@ public abstract class AbstractBindable implements Bindable, Tag{
     	if(context != null){
     		context.clearDependents();
     		
-    		if(logicParent != null){
-    			DataContext parent = this.logicParent.getDataContext(context.ancestor);
-            	if(parent != null){
-            		parent.addDependent(context);
-            	} else {
-            		console.log("the ancestor DataContext with name " + context.ancestor + " in DataContext[" + context.name + "] does not exists!");
-            	}
-    		} else if(this.parentNode != null){
-            	DataContext parent = this.parentNode.getDataContext(context.ancestor);
-            	if(parent != null){
-            		parent.addDependent(context);
-            	} else {
-            		console.log("the ancestor DataContext with name " + context.ancestor + " in DataContext[" + context.name + "] does not exists!");
+        	if(!(boolean)context["_standalone"]){
+        		if(logicParent != null){
+        			DataContext parent = this.logicParent.getDataContext(context.ancestor);
+                	if(parent != null){
+                		parent.addDependent(context);
+                	} else {
+                		console.log("the ancestor DataContext with name " + context.ancestor + " in DataContext[" + context.name + "] does not exists!");
+                	}
+        		} else if(this.parentNode != null){
+                	DataContext parent = this.parentNode.getDataContext(context.ancestor);
+                	if(parent != null){
+                		parent.addDependent(context);
+                	} else {
+                		console.log("the ancestor DataContext with name " + context.ancestor + " in DataContext[" + context.name + "] does not exists!");
+                	}
             	}
         	}
+
         	contexts.delete(name);
     	}
     }
@@ -850,7 +857,8 @@ public enum BindingMode {
     OneTime;
 } 
 
-public function void UpdateTargetCallback(Object target, Array<String> property, Object value); 
+//public function void UpdateTargetCallback(Object target, Array<String> property, Object value); 
+public function void UpdateTargetCallback(Object target, String property1, String property2, Object value); 
 public function void UpdateSourceCallback(Object source, String property, Object value);
 
 public final class Binding implements MarkupExtension, PropertyChangeListener {
@@ -1152,6 +1160,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	private String _name;
 	private String _property;
 	private String _ancestor;
+	private boolean _standalone = false;
 	private Binding[] _bindings = {};
 	private Array<DataContext> _dependents = new Array<DataContext>();
 	private Object _dataItem;
@@ -1176,6 +1185,10 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 		} else {
 			if(this._name != "ROOT")
 				this._ancestor = "ROOT";
+		}
+		
+		if(options["standalone"] != undefined){
+			this._standalone = (boolean) options["standalone"];
 		}
 	}
 	
@@ -1266,7 +1279,7 @@ public final class DataContext implements PropertyChangeListener, INotifyPropert
 	public void addDependent(DataContext dependent){ 
 		_dependents.push(dependent);
 		
-		if(this._dataItem != null){
+		if(this._dataItem != null && dependent.property != null){
 			dependent.dataItem = this.dataItem[dependent.property];
 		} else {
 			dependent.dataItem = null;
@@ -1408,6 +1421,7 @@ public abstract class Template extends AbstractBindable{
 		Object options = new Object();
 		options["name"] = "TEMPLATE";
 		options["dataItem"] = this;
+		options["standalone"] = true;
 		addDataContext(new DataContext(options));
 	}
 
@@ -1424,28 +1438,6 @@ public abstract class Template extends AbstractBindable{
 //	protected Bindable after(Bindable node){
 //		return node;
 //	}
-}
-
-public class Router implements MarkupExtension{
-	private Class<Page> _page;
-	public Router(Object options){
-		if(options["page"] != undefined){
-			this._page = (Class<Page>) options["page"];
-		}
-	}
-	
-	public Class<Page> page{
-		&{
-			return this._page;
-		}
-		+{
-			this._page = value;
-		}
-	}
-	@Override
-	public  void inject(Bindable target, String[] properties) {
-//		((HTMLAnchorElement)target).route = this;
-	}
 }
 
 public class Iterator extends AbstractBindable{
@@ -1511,6 +1503,8 @@ public class Iterator extends AbstractBindable{
 		Object options = new Object();
 		options["name"] = "current";
 		options["dataItem"] = data;
+		options["standalone"] = true;
+		
 		item.addDataContext(new DataContext(options));
 		return item;
 	}

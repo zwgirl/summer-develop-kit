@@ -1,12 +1,8 @@
 @Module 
 package java.lang; 
  
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
-
-import org.w3c.dom.Node;
-import org.w3c.html.HTMLElement;
+import java.util.List;
  
 public final class Class<T> {
   
@@ -1290,7 +1286,7 @@ public interface Iterable<T> {
      * @since 1.8
      */
     default void forEach(Consumer<? super T> action) {
-        Objects.requireNonNull(action);
+//        Objects.requireNonNull(action);
         for (T t : this) {
             action(t);
         }

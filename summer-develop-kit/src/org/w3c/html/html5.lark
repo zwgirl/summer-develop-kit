@@ -67,7 +67,7 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLCollection {
 //    readonly attribute unsigned 
-	  long length{}
+	  long length{&;}
 //    getter Element item(final unsigned long index);
 //    caller getter Element namedItem(in String name);
 	  Element this[long index];
@@ -76,7 +76,7 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLFormControlsCollection {
 //    readonly attribute unsigned 
-	  long length{}
+	  long length{&;}
 //    getter HTMLElement item(in unsigned long index);
 //    caller getter object namedItem(in String name);
 	  native Element this[long index];
@@ -85,7 +85,7 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLOptionsCollection {
 //             attribute unsigned 
-	  native long length{}
+	  native long length{&;}
 //    getter HTMLOptionElement item(in unsigned long index);
 //    caller getter object namedItem(in String name);
 	  HTMLOptionElement this[long index];
@@ -118,56 +118,56 @@ public native interface HTMLHtmlElement extends HTMLElement {}
   public native interface HTMLDocument extends Document{
     // resource metadata management
 //    [PutForwards=href] readonly attribute 
-	  native Location location{}
+	  native Location location{&;}
 //    readonly attribute 
-	  native String URL{}
+	  native String URL{&;}
 //             attribute 
-	  native String domain{}
+	  native String domain{&;+;}
 //    readonly attribute 
-	  native String referrer{}
+	  native String referrer{&;}
 //             attribute 
-	  native String cookie{}
+	  native String cookie{&;+;}
 //    readonly attribute 
-	  native String lastModified{}
+	  native String lastModified{&;}
 //    readonly attribute 
-	  native String compatMode{}
+	  native String compatMode{&;}
 //             attribute 
-	  native String charset{}
+	  native String charset{&;+;}
 //    readonly attribute 
-	  native String characterSet{}
+	  native String characterSet{&;}
 //    readonly attribute 
-	  native String defaultCharset{}
+	  native String defaultCharset{&;}
 //    readonly attribute 
-	  native String readyState{}
+	  native String readyState{&;}
 	  
 //             attribute 
-	  native String title{}
+	  native String title{&;+;}
 //             attribute 
-	  native String dir{}
+	  native String dir{&;+;}
 //             attribute 
-	  native HTMLElement body{}
+	  native HTMLElement body{&;+;}
 //	  readonly attribute 
-	  native HTMLHeadElement head{}
+	  native HTMLHeadElement head{&;}
 //    readonly attribute 
-	  native HTMLCollection images{}
+	  native HTMLCollection images{&;}
 //    readonly attribute 
-	  native HTMLCollection embeds{}
+	  native HTMLCollection embeds{&;}
 //    readonly attribute 
-	  native HTMLCollection plugins{}
+	  native HTMLCollection plugins{&;}
 //    readonly attribute
-	  native HTMLCollection links{}
+	  native HTMLCollection links{&;}
 //    readonly attribute 
-	  native HTMLCollection forms{}
+	  native HTMLCollection forms{&;}
 //    readonly attribute  
-	  native HTMLCollection anchors{}
+	  native HTMLCollection anchors{&;}
 //    readonly attribute 
-	  native HTMLCollection scripts{}
+	  native HTMLCollection scripts{&;}
 	  NodeList getElementsByName(final String elementName);
 	  NodeList getElementsByClassName(final String classNames);
 	  
 	  // dynamic markup insertion
 //             attribute 
-	  native String innerHTML{}
+	  native String innerHTML{&;+;}
 	  native HTMLDocument open();
 	  native HTMLDocument open(final String type);
 	  native HTMLDocument open(final String type, final String replace);
@@ -182,10 +182,10 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 	  // user interaction
 	  native Selection getSelection();
 //	  readonly attribute 
-	  native Element activeElement{}
+	  native Element activeElement{&;}
 	  boolean hasFocus();
 //      attribute 
-	  native String designMode{}
+	  native String designMode{&;+;}
 	  
       boolean execCommand(final String commandId);
       boolean execCommand(final String commandId, final boolean showUI);
@@ -196,63 +196,63 @@ public native interface HTMLHtmlElement extends HTMLElement {}
       boolean queryCommandSupported(final String commandId);
       String queryCommandValue(final String commandId);
 //      readonly attribute 
-      native HTMLCollection commands{}
+      native HTMLCollection commands{&;}
       
    // event handler IDL attributes
-      native EventHandler  onabort{}
-      native EventHandler  onblur{}
-      native EventHandler  oncanplay{}
-      native EventHandler  oncanplaythrough{}
-      native EventHandler  onchange{}
-      native MouseEventHandler  onclick{}
-      native EventHandler  oncontextmenu{}
-      native EventHandler  oncuechange{}
-      native EventHandler  ondblclick{}
-      native DragEventHandler  ondrag{}
-      native DragEventHandler  ondragend{}
-      native DragEventHandler  ondragenter{}
-      native DragEventHandler  ondragleave{}
-      native DragEventHandler  ondragover{}
-      native DragEventHandler  ondragstart{}
-      native DragEventHandler  ondrop{}
-      native EventHandler  ondurationchange{}
-      native EventHandler  onemptied{}
-      native EventHandler  onended{}
-      native EventHandler  onerror{}
-      native EventHandler  onfocus{}
-      native EventHandler  oninput{}
-      native EventHandler  oninvalid{}
-      native KeyboardEventHandler  onkeydown{}
-      native KeyboardEventHandler  onkeypress{}
-      native KeyboardEventHandler  onkeyup{}
-      native EventHandler  onload{}
-      native EventHandler  onloadeddata{}
-      native EventHandler  onloadedmetadata{}
-      native EventHandler  onloadstart{}
-      native MouseEventHandler  onmousedown{}
-      native MouseEventHandler  onmousemove{}
-      native MouseEventHandler  onmouseout{}
-      native MouseEventHandler  onmouseover{}
-      native MouseEventHandler  onmouseup{}
-      native EventHandler  onmousewheel{}
-      native EventHandler  onpause{}
-      native EventHandler  onplay{}
-      native EventHandler  onplaying{}
-      native EventHandler  onprogress{}
-      native EventHandler  onratechange{}
-      native EventHandler  onreadystatechange{}
-      native EventHandler  onreset{}
-      native EventHandler  onscroll{}
-      native EventHandler  onseeked{}
-      native EventHandler  onseeking{}
-      native EventHandler  onselect{}
-      native EventHandler  onshow{}
-      native EventHandler  onstalled{}
-      native EventHandler  onsubmit{}
-      native EventHandler  onsuspend{}
-      native EventHandler  ontimeupdate{}
-      native EventHandler  onvolumechange{}
-      native EventHandler  onwaiting{}
+      native EventHandler  onabort{&;+;}
+      native EventHandler  onblur{&;+;}
+      native EventHandler  oncanplay{&;+;}
+      native EventHandler  oncanplaythrough{&;+;}
+      native EventHandler  onchange{&;+;}
+      native MouseEventHandler  onclick{&;+;}
+      native EventHandler  oncontextmenu{&;+;}
+      native EventHandler  oncuechange{&;+;}
+      native EventHandler  ondblclick{&;+;}
+      native DragEventHandler  ondrag{&;+;}
+      native DragEventHandler  ondragend{&;+;}
+      native DragEventHandler  ondragenter{&;+;}
+      native DragEventHandler  ondragleave{&;+;}
+      native DragEventHandler  ondragover{&;+;}
+      native DragEventHandler  ondragstart{&;+;}
+      native DragEventHandler  ondrop{&;+;}
+      native EventHandler  ondurationchange{&;+;}
+      native EventHandler  onemptied{&;+;}
+      native EventHandler  onended{&;+;}
+      native EventHandler  onerror{&;+;}
+      native EventHandler  onfocus{&;+;}
+      native EventHandler  oninput{&;+;}
+      native EventHandler  oninvalid{&;+;}
+      native KeyboardEventHandler  onkeydown{&;+;}
+      native KeyboardEventHandler  onkeypress{&;+;}
+      native KeyboardEventHandler  onkeyup{&;+;}
+      native EventHandler  onload{&;+;}
+      native EventHandler  onloadeddata{&;+;}
+      native EventHandler  onloadedmetadata{&;+;}
+      native EventHandler  onloadstart{&;+;}
+      native MouseEventHandler  onmousedown{&;+;}
+      native MouseEventHandler  onmousemove{&;+;}
+      native MouseEventHandler  onmouseout{&;+;}
+      native MouseEventHandler  onmouseover{&;+;}
+      native MouseEventHandler  onmouseup{&;+;}
+      native EventHandler  onmousewheel{&;+;}
+      native EventHandler  onpause{&;+;}
+      native EventHandler  onplay{&;+;}
+      native EventHandler  onplaying{&;+;}
+      native EventHandler  onprogress{&;+;}
+      native EventHandler  onratechange{&;+;}
+      native EventHandler  onreadystatechange{&;+;}
+      native EventHandler  onreset{&;+;}
+      native EventHandler  onscroll{&;+;}
+      native EventHandler  onseeked{&;+;}
+      native EventHandler  onseeking{&;+;}
+      native EventHandler  onselect{&;+;}
+      native EventHandler  onshow{&;+;}
+      native EventHandler  onstalled{&;+;}
+      native EventHandler  onsubmit{&;+;}
+      native EventHandler  onsuspend{&;+;}
+      native EventHandler  ontimeupdate{&;+;}
+      native EventHandler  onvolumechange{&;+;}
+      native EventHandler  onwaiting{&;+;}
       
       public native HTMLElement getElementById(final String elementId);
       
@@ -265,16 +265,16 @@ public native interface HTMLHtmlElement extends HTMLElement {}
       
 //    Fullscreen API
 //	  readonly attribute 
-      native boolean fullscreenEnabled{}
+      native boolean fullscreenEnabled{&;}
 //	  readonly attribute 
-      native HTMLElement fullscreenElement{}
+      native HTMLElement fullscreenElement{&;}
 
 	  native void exitFullscreen();
 
 //	  attribute 
-	  native EventHandler onfullscreenchange{}
+	  native EventHandler onfullscreenchange{&;+;}
 //	  attribute 
-	  native EventHandler onfullscreenerror{}
+	  native EventHandler onfullscreenerror{&;+;}
   }
   
 //  partial interface Document {
@@ -312,30 +312,30 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
 	  // dynamic markup insertion
 	  //             attribute 
-	  native String innerHTML{}
+	  native String innerHTML{&;+;}
 	  //             attribute 
-	  public native String outerHTML{}
+	  public native String outerHTML{&;+;}
 	  public native void insertAdjacentHTML(final String position, final String text);
 
     // metadata attributes
 //             attribute 
-	  public native String id{}
+	  public native String id{&;+;}
 //             attribute 
-	  public native String title{}
+	  public native String title{&;+;}
 //             attribute 
-	  public native String lang{}
+	  public native String lang{&;+;}
 //             attribute 
-	  public native String dir{}
+	  public native String dir{&;+;}
 //             attribute 
-	  public native String className{}
+	  public native String className{&;+;}
 //    readonly attribute 
-	  public native DOMTokenList classList{}
+	  public native DOMTokenList classList{&;}
 //    readonly attribute 
-	  public native DOMStringMap dataset{}
+	  public native DOMStringMap dataset{&;}
 
     // user interaction
 //             attribute
-	  public native boolean hidden{}
+	  public native boolean hidden{&;+;}
 	  public void click(); 
 	  public void scrollIntoView();
 	  public void scrollIntoView(final boolean top);
@@ -344,82 +344,82 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 	  public void focus();
 	  public  void blur();
 //             attribute 
-	  public native boolean draggable{}
+	  public native boolean draggable{&;+;}
 //             attribute 
-	  public native String contentEditable{}
+	  public native String contentEditable{&;+;}
 //    readonly attribute 
-	  public native boolean isContentEditable{}
+	  public native boolean isContentEditable{&;}
 //             attribute 
-	  public native HTMLMenuElement contextMenu{}
+	  public native HTMLMenuElement contextMenu{&;+;}
 //             attribute 
-	  public native boolean spellcheck{}
+	  public native boolean spellcheck{&;+;}
 
     // styling
 //    readonly attribute 
 	  public native CSSStyleDeclaration style{}
 
 	// event handler IDL attributes
-      public native EventHandler onabort{}
-      public native EventHandler onblur{}
-      public native EventHandler oncanplay{}
-      public native EventHandler oncanplaythrough{}
-      public native EventHandler onchange{}
-      public native MouseEventHandler onclick{}
-      public native EventHandler oncontextmenu{}
-      public native EventHandler oncuechange{}
-      public native MouseEventHandler ondblclick{}
-      public native EventHandler ondrag{}
-      public native EventHandler ondragend{}
-      public native EventHandler ondragenter{}
-      public native EventHandler ondragleave{}
-      public native EventHandler ondragover{}
-      public native EventHandler ondragstart{}
-      public native EventHandler ondrop{}
-      public native EventHandler ondurationchange{}
-      public native EventHandler onemptied{}
-      public native EventHandler onended{}
-      public native EventHandler onerror{}
-      public native EventHandler onfocus{}
-      public native EventHandler oninput{}
-      public native EventHandler oninvalid{}
-      public native KeyboardEventHandler onkeydown{}
-      public native KeyboardEventHandler onkeypress{}
-      public native KeyboardEventHandler onkeyup{}
-      public native EventHandler onload{}
-      public native EventHandler onloadeddata{}
-      public native EventHandler onloadedmetadata{}
-      public native EventHandler onloadstart{}
-      public native MouseEventHandler onmousedown{}
-      public native MouseEventHandler onmousemove{}
-      public native MouseEventHandler onmouseout{}
-      public native MouseEventHandler onmouseover{}
-      public native MouseEventHandler onmouseup{}
-      public native MouseWheelEventHandler onmousewheel{}
-      public native EventHandler onpause{}
-      public native EventHandler onplay{}
-      public native EventHandler onplaying{}
-      public native EventHandler onprogress{}
-      public native EventHandler onratechange{}
-      public native EventHandler onreadystatechange{}
-      public native EventHandler onreset{}
-      public native EventHandler onscroll{}
-      public native EventHandler onseeked{}
-      public native EventHandler onseeking{}
-      public native EventHandler onselect{}
-      public native EventHandler onshow{}
-      public native EventHandler onstalled{}
-      public native EventHandler onsubmit{}
-      public native EventHandler onsuspend{}
-      public native EventHandler ontimeupdate{}
-      public native EventHandler onvolumechange{}
-      public native EventHandler onwaiting{}
+      public native EventHandler onabort{&;+;}
+      public native EventHandler onblur{&;+;}
+      public native EventHandler oncanplay{&;+;}
+      public native EventHandler oncanplaythrough{&;+;}
+      public native EventHandler onchange{&;+;}
+      public native MouseEventHandler onclick{&;+;}
+      public native EventHandler oncontextmenu{&;+;}
+      public native EventHandler oncuechange{&;+;}
+      public native MouseEventHandler ondblclick{&;+;}
+      public native EventHandler ondrag{&;+;}
+      public native EventHandler ondragend{&;+;}
+      public native EventHandler ondragenter{&;+;}
+      public native EventHandler ondragleave{&;+;}
+      public native EventHandler ondragover{&;+;}
+      public native EventHandler ondragstart{&;+;}
+      public native EventHandler ondrop{&;+;}
+      public native EventHandler ondurationchange{&;+;}
+      public native EventHandler onemptied{&;+;}
+      public native EventHandler onended{&;+;}
+      public native EventHandler onerror{&;+;}
+      public native EventHandler onfocus{&;+;}
+      public native EventHandler oninput{&;+;}
+      public native EventHandler oninvalid{&;+;}
+      public native KeyboardEventHandler onkeydown{&;+;}
+      public native KeyboardEventHandler onkeypress{&;+;}
+      public native KeyboardEventHandler onkeyup{&;+;}
+      public native EventHandler onload{&;+;}
+      public native EventHandler onloadeddata{&;+;}
+      public native EventHandler onloadedmetadata{&;+;}
+      public native EventHandler onloadstart{&;+;}
+      public native MouseEventHandler onmousedown{&;+;}
+      public native MouseEventHandler onmousemove{&;+;}
+      public native MouseEventHandler onmouseout{&;+;}
+      public native MouseEventHandler onmouseover{&;+;}
+      public native MouseEventHandler onmouseup{&;+;}
+      public native MouseWheelEventHandler onmousewheel{&;+;}
+      public native EventHandler onpause{&;+;}
+      public native EventHandler onplay{&;+;}
+      public native EventHandler onplaying{&;+;}
+      public native EventHandler onprogress{&;+;}
+      public native EventHandler onratechange{&;+;}
+      public native EventHandler onreadystatechange{&;+;}
+      public native EventHandler onreset{&;+;}
+      public native EventHandler onscroll{&;+;}
+      public native EventHandler onseeked{&;+;}
+      public native EventHandler onseeking{&;+;}
+      public native EventHandler onselect{&;+;}
+      public native EventHandler onshow{&;+;}
+      public native EventHandler onstalled{&;+;}
+      public native EventHandler onsubmit{&;+;}
+      public native EventHandler onsuspend{&;+;}
+      public native EventHandler ontimeupdate{&;+;}
+      public native EventHandler onvolumechange{&;+;}
+      public native EventHandler onwaiting{&;+;}
     
-	  public native EventHandler oncancel{}
+	  public native EventHandler oncancel{&;+;}
 	  //[LenientThis] 
-	  public native MouseEventHandler onmouseenter{}
+	  public native MouseEventHandler onmouseenter{&;+;}
 	  //[LenientThis] 
-	  public native MouseEventHandler onmouseleave{}
-	  public native EventHandler onresize{}
+	  public native MouseEventHandler onmouseleave{&;+;}
+	  public native EventHandler onresize{&;+;}
 	  
 	  //Selector API
 	  public native  HTMLElement querySelector(String selectors);
@@ -428,40 +428,40 @@ public native interface HTMLHtmlElement extends HTMLElement {}
       //Fullscreen API
       public native void requestFullscreen();
       
-      public native String role{}
+      public native String role{&;+;}
       
       
 //    TextRectangleList getClientRects();
 //    TextRectangle getBoundingClientRect();
   
 //    readonly attribute 
-      public native Element offsetParent{}
+      public native Element offsetParent{&;}
 //    readonly attribute 
-      public native float offsetTop{}
+      public native float offsetTop{&;}
 //    readonly attribute 
-      public native float offsetLeft{}
+      public native float offsetLeft{&;}
 //    readonly attribute 
-      public native float offsetWidth{}
+      public native float offsetWidth{&;}
 //    readonly attribute 
-      public native float offsetHeight{}
+      public native float offsetHeight{&;}
   
 //             attribute 
-      public native float scrollTop{}   // scroll on setting
+      public native float scrollTop{&;+;}   // scroll on setting
 //             attribute 
-      public native float scrollLeft{}  // scroll on setting
+      public native float scrollLeft{&;+;}  // scroll on setting
 //    readonly attribute 
-      public native float scrollWidth{}
+      public native float scrollWidth{&;}
 //    readonly attribute 
-      public native float scrollHeight{}
+      public native float scrollHeight{&;}
   
 //    readonly attribute 
-      public native float clientTop{}
+      public native float clientTop{&;}
 //    readonly attribute 
-      public native float clientLeft{}
+      public native float clientLeft{&;}
 //    readonly attribute 
-      public native float clientWidth{}
+      public native float clientWidth{&;}
 //    readonly attribute 
-      public native float clientHeight{}
+      public native float clientHeight{&;}
   }
   
 //	interface ElementView {
@@ -487,98 +487,98 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLBaseElement extends HTMLElement {
 //             attribute 
-	  native String href{}
+	  native String href{&;+;}
 //             attribute 
-	  native String target{}
+	  native String target{&;+;}
   }
   
   public native interface HTMLLinkElement extends HTMLElement {
 //             attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //             attribute 
-	  native String href{}
+	  native String href{&;+;}
 //             attribute 
-	  native String rel{}
+	  native String rel{&;+;}
 //    readonly attribute 
-	  native DOMTokenList relList{}
+	  native DOMTokenList relList{&;+;}
 //             attribute 
-	  native String media{}
+	  native String media{&;+;}
 //             attribute 
-	  native String hreflang{}
+	  native String hreflang{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native String sizes{}
+	  native String sizes{&;+;}
   }
 
   public native interface HTMLMetaElement extends HTMLElement {
 //             attribute 
-	  native String content{}
+	  native String content{&;+;}
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native String httpEquiv{}
+	  native String httpEquiv{&;+;}
   }
 
   public native interface HTMLStyleElement extends HTMLElement {
 //             attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //             attribute 
-	  native String media{}
+	  native String media{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native boolean scoped{}
+	  native boolean scoped{&;+;}
   }
 
   public native interface HTMLScriptElement extends HTMLElement {
 //             attribute
-	  native String src{}
+	  native String src{&;+;}
 //             attribute 
-	  native boolean async{}
+	  native boolean async{&;+;}
 //             attribute 
-	  native boolean defer{}
+	  native boolean defer{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native String charset{}
+	  native String charset{&;+;}
 //             attribute 
-	  native String text{}
+	  native String text{&;+;}
   }
 
   public native interface HTMLBodyElement extends HTMLElement {
 //    attribute 
-	  native EventHandler onbeforeunload{}
+	  native EventHandler onbeforeunload{&;+;}
 //      attribute 
-	  native EventHandler onerror{}     // XXX defined in HTMLDocument
+	  native EventHandler onerror{&;+;}     // XXX defined in HTMLDocument
 //     attribute 
-	  native EventHandler onhashchange{}
+	  native EventHandler onhashchange{&;+;}
 //    attribute 
-	  native EventHandler onload{}      // XXX defined in HTMLDocument
+	  native EventHandler onload{&;+;}      // XXX defined in HTMLDocument
 //             attribute 
-	  native EventHandler onmessage{}
+	  native EventHandler onmessage{&;+;}
 //             attribute
-	  native EventHandler onoffline{}
+	  native EventHandler onoffline{&;+;}
 //     attribute 
-	  native EventHandler ononline{}
+	  native EventHandler ononline{&;+;}
 //     attribute 
-	  native EventHandler onpopstate{}
+	  native EventHandler onpopstate{&;+;}
 //      attribute 
-	  native EventHandler onresize{}
+	  native EventHandler onresize{&;+;}
 //      attribute 
-	  native EventHandler onstorage{}
+	  native EventHandler onstorage{&;+;}
 //      attribute 
-	  native EventHandler onunload{}
+	  native EventHandler onunload{&;+;}
 	  
-	  native EventHandler onafterprint{}
-	  native EventHandler onbeforeprint{}
-	  native EventHandler onblur{}
-	  native EventHandler onfocus{}
-	  native EventHandler onpagehide{}
-	  native EventHandler onpageshow{}
-	  native EventHandler onredo{}
-	  native EventHandler onscroll{}
-	  native EventHandler onundo{}
+	  native EventHandler onafterprint{&;+;}
+	  native EventHandler onbeforeprint{&;+;}
+	  native EventHandler onblur{&;+;}
+	  native EventHandler onfocus{&;+;}
+	  native EventHandler onpagehide{&;+;}
+	  native EventHandler onpageshow{&;+;}
+	  native EventHandler onredo{&;+;}
+	  native EventHandler onscroll{&;+;}
+	  native EventHandler onundo{&;+;}
   }
   
   public native interface HTMLHeadElement extends HTMLElement {}
@@ -609,78 +609,69 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 //	  stringifier attribute 
 	  public native String href{&;+;}
 //    attribute 
-	  native String target{}
+	  native String target{&;+;}
 //    attribute 
-	  native String ping{}
+	  native String ping{&;+;}
 //    attribute 
-	  native String rel{}
+	  native String rel{&;+;}
 //    readonly attribute 
-	  native DOMTokenList relList{}
+	  native DOMTokenList relList{&;}
 //    attribute 
-	  native String media{}
+	  native String media{&;+;}
 //    attribute 
-	  native String hreflang{}
+	  native String hreflang{&;+;}
 //    attribute 
-	  native String type{}
-	  
-	  public Router route{
-		  &{
-			  return (Router)this["__route"];
-		  }
-		  +{
-			  this["__route"] = value;
-		  }
-	  }
+	  native String type{&;+;}
   }
 
   public native interface HTMLTimeElement extends HTMLElement {
 //    attribute 
-	  native String dateTime{}
+	  native String dateTime{&;+;}
 //    readonly attribute 
 	  /*Date*/
-	  native long date{}
+	  native long date{&;+;}
 //    readonly attribute 
 	  /*Date*/
-	  native long time{}
+	  native long time{&;+;}
 //    readonly attribute 
 	  /*Date*/
-	  native long timezone{}
+	  native long timezone{&;+;}
   }
 
   public native interface HTMLProgressElement extends HTMLElement {
 //   	attribute
-	  native float value{}
+	  native float value{&;+;}
 //    	attribute 
-	  native float max{}
+	  native float max{&;+;}
 //    readonly attribute 
-	  native float position{}
+	  native float position{&;}
 	  
 //	  readonly attribute 
-	  native NodeList labels{}
+	  native NodeList labels{&;}
   }
 
   public native interface HTMLMeterElement extends HTMLElement {
 //  	attribute
-	  native float value{}
+	  native float value{&;+;}
 //	attribute
-	  native float min{}
+	  native float min{&;+;}
 //    attribute 
-	  native float max{}
+	  native float max{&;+;}
 //    attribute 
-	  native float low{}
+	  native float low{&;+;}
 //    attribute 
-	  native float high{}
+	  native float high{&;+;}
 //    attribute 
-	  native float optimum{}
+	  native float optimum{&;+;}
 //	  readonly attribute
-	  native NodeList labels{}
+	  native NodeList labels{&;}
   }
 
   public native interface HTMLModElement extends HTMLElement {
 //             attribute 
-	  native String cite{}
+	  native String cite{&;+;}
 //             attribute 
-	  native String dateTime{}
+	  native String dateTime{&;+;}
   }
 
 //  [NamedConstructor=Image(),
@@ -688,123 +679,123 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 //   NamedConstructor=Image(final unsigned long width, final unsigned long height)]
   public native interface HTMLImageElement extends HTMLElement {
 //             attribute 
-	  native String alt{}
+	  native String alt{&;+;}
 //             attribute 
-	  native String src{}
+	  native String src{&;+;}
 //             attribute 
-	  native String useMap{}
+	  native String useMap{&;+;}
 //             attribute 
-	  native boolean isMap{}
+	  native boolean isMap{&;+;}
 //             attribute unsigned 
-	  native long width{}
+	  native long width{&;+;}
 //             attribute unsigned 
-	  native long height{}
+	  native long height{&;+;}
 //    readonly attribute
-	  native boolean complete{}
+	  native boolean complete{&;}
 	  
 //      attribute 
-	  native String crossOrigin{}
+	  native String crossOrigin{&;+;}
 //readonly attribute unsigned 
-	  native long naturalWidth{}
+	  native long naturalWidth{&;}
 //readonly attribute unsigned 
-	  native long naturalHeight{}
+	  native long naturalHeight{&;}
   }
 
   public native interface HTMLIFrameElement extends HTMLElement {
 //             attribute 
-	  native String src{}
+	  native String src{&;+;}
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native String sandbox{}
+	  native String sandbox{&;+;}
 //             attribute 
-	  native boolean seamless{}
+	  native boolean seamless{&;+;}
 //             attribute 
-	  native String width{}
+	  native String width{&;+;}
 //             attribute
-	  native String height{}
+	  native String height{&;+;}
 	  
 //      attribute 
-	  native String srcdoc{}
+	  native String srcdoc{&;+;}
 //      [PutForwards=value] readonly attribute 
 //      DOMSettableTokenList sandbox{}
 //readonly attribute 
-	  native Document contentDocument{}
+	  native Document contentDocument{&;}
 //readonly attribute 
-	  native Window contentWindow{}
+	  native Window contentWindow{&;}
   }
 
   public native interface HTMLEmbedElement extends HTMLElement {
 //             attribute 
-	  native String src{}
+	  native String src{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native String width{}
+	  native String width{&;+;}
 //             attribute
-	  native String height{}
+	  native String height{&;+;}
   }
 
   public native interface HTMLObjectElement extends HTMLElement {
 //             attribute 
-	  native String data{}
+	  native String data{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native String useMap{}
+	  native String useMap{&;+;}
 //    readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
 //             attribute 
-	  native String width{}
+	  native String width{&;+;}
 //             attribute
-	  native String height{}
+	  native String height{&;+;}
 	  
 //      attribute 
-	  native boolean typeMustMatch{}
+	  native boolean typeMustMatch{&;+;}
 //readonly attribute 
-	  native Document/*?*/ contentDocument{}
+	  native Document/*?*/ contentDocument{&;}
 //	  readonly attribute 
-	  native Window/*?*/ contentWindow{}
+	  native Window/*?*/ contentWindow{&;}
 
 //	  readonly attribute 
-	  native boolean willValidate{}
+	  native boolean willValidate{&;}
 //	  readonly attribute 
-	  native ValidityState validity{}
+	  native ValidityState validity{&;}
 //	  readonly attribute 
-	  String validationMessage{}
+	  String validationMessage{&;}
 	  boolean checkValidity();
 	  void setCustomValidity(String error);
   }
 
   public native interface HTMLParamElement extends HTMLElement {
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native String value{}
+	  native String value{&;+;}
   }
 
   public native interface HTMLSourceElement extends HTMLElement {
 //             attribute
-	  native String src{}
+	  native String src{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute
-	  native String media{}
+	  native String media{&;+;}
   }
 
   public native interface HTMLMediaElement extends HTMLElement {
 
     // error state
 //    readonly attribute 
-	  native MediaError error{}
+	  native MediaError error{&;}
 
     // network state
 //             attribute 
-	  native String src{}
+	  native String src{&;}
 //    readonly attribute 
-	  native String currentSrc{}
+	  native String currentSrc{&;}
 //    const unsigned 
 	  static final short NETWORK_EMPTY = 0;
 //    const unsigned 
@@ -816,12 +807,12 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 //    const unsigned 
 	  static final short NETWORK_NO_SOURCE = 4;
 //    readonly attribute unsigned 
-	  native short networkState{}
+	  native short networkState{&;}
 //             attribute
-	  native boolean autobuffer{}
+	  native boolean autobuffer{&;}
 
 //    readonly attribute 
-	  native TimeRanges buffered{}
+	  native TimeRanges buffered{&;}
 	  void load();
 	  String canPlayType(final String type);
 
@@ -837,31 +828,31 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 //    const unsigned 
 	  static final short HAVE_ENOUGH_DATA = 4;
 //    readonly attribute unsigned 
-	  native short readyState{}
+	  native short readyState{&;}
 //    readonly attribute 
-	  native boolean seeking{}
+	  native boolean seeking{&;}
 
     // playback state
 //             attribute 
-	  native float currentTime{}
+	  native float currentTime{&;+;}
 //    readonly attribute
-	  native float duration{}
+	  native float duration{&;}
 //    readonly attribute 
-	  native boolean paused{}
+	  native boolean paused{&;}
 //             attribute
-	  native float defaultPlaybackRate{}
+	  native float defaultPlaybackRate{&;+;}
 //             attribute 
-	  native float playbackRate{}
+	  native float playbackRate{&;+;}
 //    readonly attribute 
-	  native TimeRanges played{}
+	  native TimeRanges played{&;}
 //    readonly attribute 
-	  native TimeRanges seekable{}
+	  native TimeRanges seekable{&;}
 //    readonly attribute
-	  native boolean ended{}
+	  native boolean ended{&;}
 //             attribute 
-	  native boolean autoplay{}
+	  native boolean autoplay{&;+;}
 //             attribute 
-	  native boolean loop{}
+	  native boolean loop{&;+;}
 	  void play();
 	  void pause();
 
@@ -871,24 +862,24 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
 	  // controls
 //             attribute 
-	  native boolean controls{}
+	  native boolean controls{&;+;}
 //             attribute 
-	  native float volume{}
+	  native float volume{&;+;}
 //             attribute 
-	  native boolean muted{}
+	  native boolean muted{&;+;}
   }
 
   public native interface HTMLVideoElement extends HTMLMediaElement {
 //             attribute 
-	  native String width{}
+	  native String width{&;+;}
 //             attribute 
-	  native String height{}
+	  native String height{&;+;}
 //    readonly attribute unsigned
-	  native long videoWidth{}
+	  native long videoWidth{&;}
 //    readonly attribute unsigned
-	  native long videoHeight{}
+	  native long videoHeight{&;}
 //             attribute 
-	  native String poster{}
+	  native String poster{&;+;}
   }
 
 //  [NamedConstructor=Audio(),
@@ -924,9 +915,9 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLCanvasElement extends HTMLElement {
 //             attribute unsigned 
-	  native long width{}
+	  native long width{&;+;}
 //             attribute unsigned 
-	  native long height{}
+	  native long height{&;+;}
 
 	  String toDataURL(final Object... args);
 	  String toDataURL(final String type, final Object... args);
@@ -976,23 +967,23 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
     // line caps/joins
 //             attribute 
-    native float lineWidth{} // (default 1)
+    native float lineWidth{&;+;} // (default 1)
 //             attribute 
-    native String lineCap{} // "butt", "round", "square" (default "butt")
+    native String lineCap{&;+;} // "butt", "round", "square" (default "butt")
 //             attribute 
-    native String lineJoin{} // "round", "bevel", "miter" (default "miter")
+    native String lineJoin{&;+;} // "round", "bevel", "miter" (default "miter")
 //             attribute 
-    native float miterLimit{} // (default 10)
+    native float miterLimit{&;+;} // (default 10)
 
     // shadows
 //             attribute 
-    native float shadowOffsetX{} // (default 0)
+    native float shadowOffsetX{&;+;} // (default 0)
 //             attribute
-    native float shadowOffsetY{} // (default 0)
+    native float shadowOffsetY{&;+;} // (default 0)
 //             attribute 
-    native float shadowBlur{} // (default 0)
+    native float shadowBlur{&;+;} // (default 0)
 //             attribute 
-    native String shadowColor{} // (default transparent black)
+    native String shadowColor{&;+;} // (default transparent black)
 
     // rects
     void clearRect(final float x, final float y, final float w, final float h);
@@ -1061,52 +1052,52 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface ImageData {
 //    readonly attribute unsigned 
-	  native long width{}
+	  native long width{&;+;}
 //    readonly attribute unsigned 
-	  native long height{}
+	  native long height{&;+;}
 //    readonly attribute 
-	  native CanvasPixelArray data{}
+	  native CanvasPixelArray data{&;+;}
   }
 
 //  [IndexGetter, IndexSetter]
   public native interface CanvasPixelArray {
 //    readonly attribute unsigned 
-	  native long length{}
+	  native long length{&;+;}
   }
 
   public native interface HTMLMapElement extends HTMLElement {
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 //    readonly attribute 
-	  native HTMLCollection areas{}
+	  native HTMLCollection areas{&;+;}
 //    readonly attribute 
-	  native HTMLCollection images{}
+	  native HTMLCollection images{&;+;}
   }
 
   public native interface HTMLAreaElement extends HTMLElement {
 //    attribute 
-	  native String alt{}
+	  native String alt{&;+;}
 //     attribute 
-	  native String coords{}
+	  native String coords{&;+;}
 //     attribute 
-	  native String shape{}
+	  native String shape{&;+;}
 //     attribute 
-	  native String href{}
+	  native String href{&;+;}
 //     attribute 
-	  native String target{}
+	  native String target{&;+;}
 //     attribute 
-	  native String ping{}
+	  native String ping{&;+;}
 //     attribute 
 //	  
-	  native String rel{}
+	  native String rel{&;+;}
 //    readonly attribute 
-	  DOMTokenList relList{}
+	  DOMTokenList relList{&;}
 //             attribute 
-	  native String media{}
+	  native String media{&;+;}
 //             attribute 
-	  native String hreflang{}
+	  native String hreflang{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
   }
 
   public native interface HTMLTableElement extends HTMLElement {
@@ -1131,23 +1122,23 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 	  HTMLElement insertRow(final /*optional*/ long index);
 	  void deleteRow(final long index);
 	  
-	  native String border{}
-	  native boolean sortable{} // - Enables a sorting interface for the table
+	  native String border{&;+;}
+	  native boolean sortable{&;+;} // - Enables a sorting interface for the table
   }
 
   public native interface HTMLTableCaptionElement extends HTMLElement {
 //             attribute
-	  native String align{}
+	  native String align{&;+;}
   }
 
   public native interface HTMLTableColElement extends HTMLElement {
 //             attribute unsigned
-	  native long span{}
+	  native long span{&;+;}
   }
 
   public native interface HTMLTableSectionElement extends HTMLElement {
 //    readonly attribute 
-	  native HTMLCollection rows{}
+	  native HTMLCollection rows{&;}
 	  HTMLElement insertRow();
 	  HTMLElement insertRow(final /*optional*/ long index);
 	  void deleteRow(final long index);
@@ -1155,11 +1146,11 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLTableRowElement extends HTMLElement {
 //    readonly attribute 
-	  native long rowIndex{}
+	  native long rowIndex{&;}
 //    readonly attribute 
-	  native long sectionRowIndex{}
+	  native long sectionRowIndex{&;}
 //    readonly attribute 
-	  native HTMLCollection cells{}
+	  native HTMLCollection cells{&;}
 	  HTMLElement insertCell();
 	  HTMLElement insertCell(final long index);
 	  void deleteCell(final long index);
@@ -1167,44 +1158,44 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLTableCellElement extends HTMLElement {
 //             attribute 
-	  native long colSpan{}
+	  native long colSpan{&;+;}
 //             attribute 
-	  native long rowSpan{}
+	  native long rowSpan{&;+;}
 //             attribute 
-	  native String headers{}
+	  native String headers{&;+;}
 //    readonly attribute 
-	  native long cellIndex{}
+	  native long cellIndex{&;}
   }
 
   public native interface HTMLTableDataCellElement extends HTMLTableCellElement {};
 
   public native interface HTMLTableHeaderCellElement extends HTMLTableCellElement {
 //             attribute 
-	  native String scope{}
+	  native String scope{&;+;}
   }
 
   public native interface HTMLFormElement extends HTMLElement {
 //             attribute 
-	  native String acceptCharset{}
+	  native String acceptCharset{&;+;}
 //             attribute
-	  native String action{}
+	  native String action{&;+;}
 //             attribute
-	  native boolean autocomplete{}
+	  native boolean autocomplete{&;+;}
 //             attribute 
-	  native String enctype{}
+	  native String enctype{&;+;}
 //             attribute 
-	  native String method{}
+	  native String method{&;+;}
 //             attribute
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native boolean novalidate{}
+	  native boolean novalidate{&;+;}
 //             attribute 
-	  native String target{}
+	  native String target{&;+;}
 
 //    readonly attribute 
-	  native HTMLFormControlsCollection elements{}
+	  native HTMLFormControlsCollection elements{&;}
 //    readonly attribute 
-	  native long length{}
+	  native long length{&;}
 //	  getter any item(final unsigned long index);
 //	  [OverrideBuiltins] caller getter any namedItem(final String name);
 	  Object this[long index];
@@ -1219,130 +1210,130 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLFieldSetElement extends HTMLElement {
 //             attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //    readonly attribute 
-	  HTMLFormElement form{}
+	  HTMLFormElement form{&;}
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 
 //    readonly attribute 
-	  native String type{}
+	  native String type{&;}
 
 //    readonly attribute 
-	  native HTMLFormControlsCollection elements{}
+	  native HTMLFormControlsCollection elements{&;}
 
 //    readonly attribute 
-	  native boolean willValidate{}
+	  native boolean willValidate{&;}
 //    readonly attribute 
-	  native ValidityState validity{}
+	  native ValidityState validity{&;}
 //    readonly attribute 
-	  native String validationMessage{}
+	  native String validationMessage{&;}
 	  boolean checkValidity();
 	  void setCustomValidity(final String error);
   }
 
   public native interface HTMLLabelElement extends HTMLElement {
 //    readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
 //             attribute 
-	  native String htmlFor{}
+	  native String htmlFor{&;+;}
 //    readonly attribute
-	  native HTMLElement control{}
+	  native HTMLElement control{&;}
   }
 
   public native interface HTMLInputElement extends HTMLElement {
 //             attribute
-	  native String accept{}
+	  native String accept{&;+;}
 //             attribute 
-	  native String alt{}
+	  native String alt{&;+;}
 //             attribute 
-	  native boolean autocomplete{}
+	  native boolean autocomplete{&;+;}
 //             attribute 
-	  native boolean autofocus{}
+	  native boolean autofocus{&;+;}
 //             attribute 
-	  native boolean defaultChecked{}
+	  native boolean defaultChecked{&;+;}
 //             attribute 
-	  native boolean checked{}
+	  native boolean checked{&;+;}
 //             attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //    readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
 //             attribute 
-	  native String formAction{}
+	  native String formAction{&;+;}
 //             attribute 
-	  native String formEnctype{}
+	  native String formEnctype{&;+;}
 //             attribute 
-	  native String formMethod{}
+	  native String formMethod{&;+;}
 //             attribute 
-	  native boolean formNoValidate{}
+	  native boolean formNoValidate{&;+;}
 //             attribute 
-	  native String formTarget{}
+	  native String formTarget{&;+;}
 //             attribute 
-	  native String height{}
+	  native String height{&;+;}
 //             attribute 
-	  native boolean indeterminate{}
+	  native boolean indeterminate{&;+;}
 //    readonly attribute 
-	  native HTMLElement list{}
+	  native HTMLElement list{&;}
 //             attribute 
-	  native String max{}
+	  native String max{&;+;}
 //             attribute 
-	  native long maxLength{}
+	  native long maxLength{&;+;}
 //             attribute 
-	  native String min{}
+	  native String min{&;+;}
 //             attribute 
-	  native boolean multiple{}
+	  native boolean multiple{&;+;}
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native String pattern{}
+	  native String pattern{&;+;}
 //             attribute 
-	  native String placeholder{}
+	  native String placeholder{&;}
 //             attribute 
-	  native boolean readOnly{}
+	  native boolean readOnly{&;+;}
 //             attribute 
-	  native boolean required{}
+	  native boolean required{&;+;}
 //             attribute unsigned 
-	  native long size{}
+	  native long size{&;+;}
 //             attribute 
-	  native String src{}
+	  native String src{&;+;}
 //             attribute 
-	  native String step{}
+	  native String step{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native String defaultValue{}
+	  native String defaultValue{&;+;}
 //             attribute 
-	  native String value{}
+	  native String value{&;+;}
 //             attribute 
       /*Date*/
-	  native long valueAsDate{}
+	  native long valueAsDate{&;+;}
 //             attribute
-	  native float valueAsNumber{}
+	  native float valueAsNumber{&;+;}
 //    readonly attribute 
-	  native HTMLOptionElement selectedOption{}
+	  native HTMLOptionElement selectedOption{&;}
 //             attribute 
-      native String width{}
+      native String width{&;+;}
 
       void stepUp(final long n);
       void stepDown(final long n);
 
 //    readonly attribute 
-      native boolean willValidate{}
+      native boolean willValidate{&;}
 //    readonly attribute 
-      native ValidityState validity{}
+      native ValidityState validity{&;}
 //    readonly attribute 
-      native String validationMessage{}
+      native String validationMessage{&;}
       boolean checkValidity();
       void setCustomValidity(final String error);
 
 //      readonly attribute
-      native NodeList labels{}
+      native NodeList labels{&;}
 
       void select();
 //             attribute unsigned 
-      native long selectionStart{}
+      native long selectionStart{&;+;}
 //             attribute unsigned 
-      native long selectionEnd{}
+      native long selectionEnd{&;+;}
       void setSelectionRange(final /*unsigned*/ long start, final /*unsigned*/ long end);
       
       //cym add for FileAPI
@@ -1351,62 +1342,62 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 
   public native interface HTMLButtonElement extends HTMLElement {
 //             attribute 
-	  native boolean autofocus{}
+	  native boolean autofocus{&;+;}
 //             attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //    readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
 //             attribute 
-	  native String formaction{}
+	  native String formaction{&;+;}
 //             attribute 
-	  native String formenctype{}
+	  native String formenctype{&;+;}
 //             attribute 
-	  native String formmethod{}
+	  native String formmethod{&;+;}
 //             attribute 
-	  native String formnoValidate{}
+	  native String formnoValidate{&;+;}
 //             attribute 
-	  native String formtarget{}
+	  native String formtarget{&;+;}
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native String value{}
+	  native String value{&;+;}
 
 //    readonly attribute 
-	  native boolean willValidate{}
+	  native boolean willValidate{&;}
 //    readonly attribute 
-	  native ValidityState validity{}
+	  native ValidityState validity{&;}
 //    readonly attribute 
-	  native String validationMessage{}
+	  native String validationMessage{&;}
 	  boolean checkValidity();
 	  void setCustomValidity(final String error);
 
 //	  readonly attribute 
-	  native NodeList labels{}
+	  native NodeList labels{&;}
   }
 
   public native interface HTMLSelectElement extends HTMLElement {
 //             attribute 
-	  native boolean autofocus{}
+	  native boolean autofocus{&;+;}
 //             attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //    readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
 //             attribute 
-	  native boolean multiple{}
+	  native boolean multiple{&;+;}
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native boolean size{}
+	  native boolean size{&;+;}
 
 //    readonly attribute 
-	  native String type{}
+	  native String type{&;}
 
 //    readonly attribute 
-	  native HTMLOptionsCollection options{}
+	  native HTMLOptionsCollection options{&;}
 //             attribute unsigned 
-	  native long length{}
+	  native long length{&;+;}
 //	  getter any item(final unsigned long index);
 //	  caller getter any namedItem(final String name);
 	  Object this[long index];
@@ -1417,35 +1408,35 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 	  void remove(final long index);
 
 //	  readonly attribute 
-	  native HTMLCollection selectedOptions{}
+	  native HTMLCollection selectedOptions{&;}
 //             attribute 
-	  native long selectedIndex{}
+	  native long selectedIndex{&;}
 //             attribute 
-	  native String value{}
+	  native String value{&;}
 
 //             readonly attribute 
-	  native boolean willValidate{}
+	  native boolean willValidate{&;}
 //    readonly attribute 
-	  native ValidityState validity{}
+	  native ValidityState validity{&;}
 //    readonly attribute 
-	  native String validationMessage{}
+	  native String validationMessage{&;}
       boolean checkValidity();
       void setCustomValidity(final String error);
 
 //      readonly attribute 
-      native NodeList labels{}
+      native NodeList labels{&;}
   }
 
   public native interface HTMLDataListElement extends HTMLElement {
 //    readonly attribute 
-	  native HTMLCollection options{}
+	  native HTMLCollection options{&;}
   }
 
   public native interface HTMLOptGroupElement extends HTMLElement {
 //             attribute
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //             attribute 
-	  native String label{}
+	  native String label{&;+;}
   }
 
 //  [NamedConstructor=Option(),
@@ -1455,189 +1446,189 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 //   NamedConstructor=Option(final String text, final String value, final boolean defaultSelected, final boolean selected)]
   public native interface HTMLOptionElement extends HTMLElement {
 //             attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //    readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
 //             attribute 
-	  native String label{}
+	  native String label{&;+;}
 //             attribute 
-	  native boolean defaultSelected{}
+	  native boolean defaultSelected{&;+;}
 //             attribute 
-	  native boolean selected{}
+	  native boolean selected{&;+;}
 //             attribute 
-	  native String value{}
+	  native String value{&;+;}
 
 //    readonly attribute 
-	  native String text{}
+	  native String text{&;}
 //    readonly attribute 
-	  native long index{}
+	  native long index{&;}
   }
 
   public native interface HTMLTextAreaElement extends HTMLElement {
 //             attribute 
-	  native boolean autofocus{}
+	  native boolean autofocus{&;+;}
 //             attribute unsigned 
-	  native long cols{}
+	  native long cols{&;+;}
 //             attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //    readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
 //             attribute
-	  native long maxLength{}
+	  native long maxLength{&;+;}
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 //             attribute 
-	  native String placeholder{}
+	  native String placeholder{&;+;}
 //             attribute 
-	  native boolean readOnly{}
+	  native boolean readOnly{&;+;}
 //             attribute 
-	  native boolean required{}
+	  native boolean required{&;+;}
 //             attribute unsigned 
-	  native long rows{}
+	  native long rows{&;+;}
 //             attribute 
-	  native String wrap{}
+	  native String wrap{&;+;}
 
 //    readonly attribute 
-	  native String type{}
+	  native String type{&;}
 //             attribute 
-	  native String defaultValue{}
+	  native String defaultValue{&;+;}
 //             attribute 
-	  native String value{}
+	  native String value{&;+;}
 
 //    readonly attribute 
-	  native boolean willValidate{}
+	  native boolean willValidate{&;}
 //    readonly attribute 
-	  native ValidityState validity{}
+	  native ValidityState validity{&;}
 //    readonly attribute 
-	  native String validationMessage{}
+	  native String validationMessage{&;}
 	  boolean checkValidity();
 	  void setCustomValidity(final String error);
 
 //	  readonly attribute 
-	  native NodeList labels{}
+	  native NodeList labels{&;}
 
 	  void select();
 //             attribute unsigned 
-	  native long selectionStart{}
+	  native long selectionStart{&;+;}
 //             attribute unsigned 
-	  native long selectionEnd{}
+	  native long selectionEnd{&;+;}
 	  void setSelectionRange(final /*unsigned*/ long start, final /*unsigned*/ long end);
   }
 
   public native interface HTMLOutputElement extends HTMLElement {
 //             attribute 
-	  native String htmlFor{}
+	  native String htmlFor{&;+;}
 //    readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
 //             attribute 
-	  native String name{}
+	  native String name{&;+;}
 
 //    readonly attribute
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native String defaultValue{}
+	  native String defaultValue{&;+;}
 //             attribute 
-	  native String value{}
+	  native String value{&;+;}
 
 //    readonly attribute 
-	  native boolean willValidate{}
+	  native boolean willValidate{&;}
 //    readonly attribute 
-	  native ValidityState validity{}
+	  native ValidityState validity{&;}
 //    readonly attribute 
-	  native String validationMessage{}
+	  native String validationMessage{&;}
 	  boolean checkValidity();
 	  void setCustomValidity(final String error);
   }
 
   public native interface ValidityState {
 //    readonly attribute 
-	  native boolean valueMissing{}
+	  native boolean valueMissing{&;}
 //    readonly attribute 
-	  native boolean typeMismatch{}
+	  native boolean typeMismatch{&;}
 //    readonly attribute 
-	  native boolean patternMismatch{}
+	  native boolean patternMismatch{&;}
 //    readonly attribute 
-	  native boolean tooLong{}
+	  native boolean tooLong{&;}
 //    readonly attribute 
-	  native boolean rangeUnderflow{}
+	  native boolean rangeUnderflow{&;}
 //    readonly attribute 
-	  native boolean rangeOverflow{}
+	  native boolean rangeOverflow{&;}
 //    readonly attribute 
-	  native boolean stepMismatch{}
+	  native boolean stepMismatch{&;}
 //    readonly attribute 
-	  native boolean customError{}
+	  native boolean customError{&;}
 //    readonly attribute 
-	  native boolean valid{}
+	  native boolean valid{&;}
   }
 
   public native interface HTMLDetailsElement extends HTMLElement {
 //             attribute 
-	  native boolean open{}
+	  native boolean open{&;+;}
   }
 
   public native interface HTMLCommandElement extends HTMLElement {
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native String label{}
+	  native String label{&;+;}
 //             attribute 
-	  native String icon{}
+	  native String icon{&;+;}
 //             attribute
-	  native boolean disabled{}
+	  native boolean disabled{&;+;}
 //             attribute 
-	  native boolean checked{}
+	  native boolean checked{&;+;}
 //             attribute 
-	  native String radiogroup{}
+	  native String radiogroup{&;+;}
 //             attribute 
-	  native boolean defaultValue{}  // XXX default
+	  native boolean defaultValue{&;+;}  // XXX default
     // XXX void click(); // shadows HTMLElement.click()
   }
 
   public native interface HTMLMenuElement extends HTMLElement {
 //             attribute 
-	  native String type{}
+	  native String type{&;+;}
 //             attribute 
-	  native String label{}
+	  native String label{&;+;}
   }
 
 //  [NoInterfaceObject] 
   public native interface Command {
 //	  readonly attribute 
-	  native String commandType{}
+	  native String commandType{&;}
 //	  readonly attribute 
-	  native String id{}
+	  native String id{&;}
 //	  readonly attribute 
-	  native String label{}
+	  native String label{&;}
 //	  readonly attribute 
-	  native String title{}
+	  native String title{&;}
 //	  readonly attribute 
-	  native String icon{}
+	  native String icon{&;}
 //	  readonly attribute 
-	  native boolean hidden{}
+	  native boolean hidden{&;}
 //	  readonly attribute 
-	  native boolean disabled{}
+	  native boolean disabled{&;}
 //	  readonly attribute
-	  native boolean checked{}
+	  native boolean checked{&;}
 	  void click();
   }
 
   public native interface HTMLLegendElement extends HTMLElement {
 //	  readonly attribute 
-	  native HTMLFormElement form{}
+	  native HTMLFormElement form{&;}
   }
 
   public native interface BarProp {
 //             attribute 
-	  boolean visible{}
+	  boolean visible{+;&;}
   }
 
 //  Window implements WindowModal;
 //  [NoInterfaceObject,  XXX] 
   public interface WindowModal {
 //    readonly attribute 
-	  native Object dialogArguments{}
+	  native Object dialogArguments{+;}
 //             attribute 
-	  native String returnValue{}
+	  native String returnValue{+;&;}
   }
 
   public native interface Navigator {
@@ -1648,20 +1639,20 @@ public native interface HTMLHtmlElement extends HTMLElement {}
 //  [NoInterfaceObject] 
   public native interface NavigatorID {
 //    readonly attribute 
-	  native String appName{}
+	  native String appName{&;}
 //    readonly attribute 
-	  native String appVersion{}
+	  native String appVersion{&;}
 //    readonly attribute 
-	  native String platform{}
+	  native String platform{&;}
 //    readonly attribute 
-	  native String userAgent{}
+	  native String userAgent{&;}
   }
 
 //  Navigator implements NavigatorOnLine;
 //  [NoInterfaceObject] 
 public native interface NavigatorOnLine {
 //    readonly attribute 
-	native boolean onLine{}
+	native boolean onLine{&;}
 }
 
 //  Navigator implements NavigatorAbilities;
@@ -1697,21 +1688,21 @@ public native interface NavigatorAbilities {
 
     // events
 //             attribute 
-	  native EventHandler onchecking{}
+	  native EventHandler onchecking{+;&;}
 //             attribute 
-	  native EventHandler onerror{}
+	  native EventHandler onerror{+;&;}
 //             attribute 
-	  native EventHandler onnoupdate{}
+	  native EventHandler onnoupdate{+;&;}
 //             attribute
-	  native EventHandler ondownloading{}
+	  native EventHandler ondownloading{+;&;}
 //             attribute 
-	  native EventHandler onprogress{}
+	  native EventHandler onprogress{+;&;}
 //             attribute 
-	  native EventHandler onupdateready{}
+	  native EventHandler onupdateready{+;&;}
 //             attribute 
-	  native EventHandler oncached{}
+	  native EventHandler oncached{+;&;}
 //             attribute 
-	  native EventHandler onobsolete{}
+	  native EventHandler onobsolete{+;&;}
 
   }
 
@@ -1743,19 +1734,19 @@ public native interface NavigatorAbilities {
 
     // URL decomposition attributes
 //             attribute 
-	  native String protocol{}
+	  native String protocol{&;+;}
 //             attribute 
-	  native String host{}
+	  native String host{&;+;}
 //             attribute
-	  native String hostname{}
+	  native String hostname{&;+;}
 //             attribute 
-	  native String port{}
+	  native String port{&;+;}
 //             attribute
-	  native String pathname{}
+	  native String pathname{&;+;}
 //             attribute 
-	  native String search{}
+	  native String search{&;+;}
 //             attribute 
-	  native String hash{}
+	  native String hash{&;+;}
 
 	  // resolving relative URLs
 	  String resolveURL(final String url);
@@ -1763,21 +1754,21 @@ public native interface NavigatorAbilities {
 
   public native interface BeforeUnloadEvent extends Event {
 //             attribute 
-	  native String returnValue{}
+	  native String returnValue{&;+;}
   }
 
   public native interface Selection {
 //    stringifier;
 //    readonly attribute 
-	  native Node anchorNode{}
+	  native Node anchorNode{&;}
 //    readonly attribute
-	  native long anchorOffset{}
+	  native long anchorOffset{&;}
 //    readonly attribute 
-	  Node focusNode{}
+	  Node focusNode{&;}
 //    readonly attribute 
-	  native long focusOffset{}
+	  native long focusOffset{&;}
 //    readonly attribute 
-	  native boolean isCollapsed{}
+	  native boolean isCollapsed{&;}
 	  void collapse(final Node parentNode, final long offset);
 	  void collapseToStart();
 	  void collapseToEnd();
@@ -1793,11 +1784,11 @@ public native interface NavigatorAbilities {
 
   public native interface UndoManager {
 //    readonly attribute unsigned 
-	  long length{}
+	  long length{&;}
 //	  getter any item(final unsigned long index);
 	  Object this[final /*unsigned*/ long index];
 //	  readonly attribute unsigned
-	  long position{}
+	  long position{&;}
 	  /*unsigned*/ long add(final Object data, final String title);
 	  void remove(final /*unsigned*/ long index);
 	  void clearUndo();
@@ -1806,24 +1797,24 @@ public native interface NavigatorAbilities {
 
   public native interface UndoManagerEvent extends Event {
 //    readonly attribute 
-	  native Object data{}
+	  native Object data{&;}
 	  void initUndoManagerEvent(final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final Object dataArg);
 	  void initUndoManagerEventNS(final String namespaceURIArg, final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final Object dataArg);
   }
 
   public native interface MessageEvent extends Event {
 //    readonly attribute
-	  native Object data{}
+	  native Object data{&;}
 //    readonly attribute 
-	  native String origin{}
+	  native String origin{&;}
 //    readonly attribute 
-	  native String lastEventId{}
+	  native String lastEventId{&;}
 //    readonly attribute 
 	  /*WindowProxy*/
-	  native Window  source{}
+	  native Window  source{&;}
 //    readonly attribute 
 	  /*MessagePortArray*/
-	  native MessagePort[] ports{}
+	  native MessagePort[] ports{&;}
 	  void initMessageEvent(final String typeArg, final boolean canBubbleArg, final boolean cancelableArg, final Object dataArg, final String originArg, 
 			  final String lastEventIdArg, final /*WindowProxy*/Window  sourceArg, final /*MessagePortArray*/MessagePort[] portsArg);
 	  void initMessageEventNS(final String namespaceURI, final String typeArg, final boolean canBubbleArg, 
@@ -1834,14 +1825,14 @@ public native interface NavigatorAbilities {
 //  [Constructor]
   public native interface MessageChannel {
 //    readonly attribute 
-	  native MessagePort port1{}
+	  native MessagePort port1{&;}
 //    readonly attribute 
-	  native MessagePort port2{}
+	  native MessagePort port2{&;}
   }
 
   public native interface MessagePort {
 //    readonly attribute 
-	  native boolean active{}
+	  native boolean active{&;}
 	  void postMessage(final Object message);
 	  void postMessage(final Object message, final /*optional*/ /*MessagePortArray*/MessagePort[] ports);
 	  void start();
@@ -1849,7 +1840,7 @@ public native interface NavigatorAbilities {
 
     // event handler attributes
 //             attribute 
-	  EventHandler onmessage{}
+	  EventHandler onmessage{&;+;}
   }
 
 //  Window implements WindowTimers;
@@ -1895,13 +1886,13 @@ public native interface HTMLDataElement extends HTMLElement {
 
 public native interface HTMLTrackElement extends HTMLElement {
 //    attribute 
-	native String kind{}
+	native String kind{&;+;}
 //    attribute 
-	native String src{}
+	native String src{&;+;}
 //    attribute 
-	native String srclang{}
+	native String srclang{&;+;}
 //    attribute 
-	native String label{}
+	native String label{&;+;}
 //    attribute
 //	boolean default{}
 
@@ -1914,10 +1905,10 @@ public native interface HTMLTrackElement extends HTMLElement {
 //    const unsigned 
 	short ERROR = 3;
 //    readonly attribute unsigned 
-	native short readyState{}
+	native short readyState{&;}
 
 //    readonly attribute 
-	native TextTrack track{}
+	native TextTrack track{&;}
 }
 
 //enum 
@@ -1936,24 +1927,24 @@ public final class TextTrackKind {
 }
 interface TextTrack extends EventTarget {
 //  readonly attribute 
-	native TextTrackKind kind{}
+	native TextTrackKind kind{&;}
 //  readonly attribute 
-	native String label{}
+	native String label{&;}
 //  readonly attribute 
-	native String language{}
+	native String language{&;}
 
 //  readonly attribute 
-	native String id{}
+	native String id{&;}
 //  readonly attribute 
-	native String inBandMetadataTrackDispatchType{}
+	native String inBandMetadataTrackDispatchType{&;}
 
 //           attribute 
-	native TextTrackMode mode{}
+	native TextTrackMode mode{&;+;}
 
 //  readonly attribute 
-	native TextTrackCueList/*?*/ cues{}
+	native TextTrackCueList/*?*/ cues{&;}
 //  readonly attribute 
-	native TextTrackCueList/*?*/ activeCues{}
+	native TextTrackCueList/*?*/ activeCues{&;}
 
 	void addCue(TextTrackCue cue);
 	void removeCue(TextTrackCue cue);
@@ -1964,7 +1955,7 @@ interface TextTrack extends EventTarget {
 
 interface TextTrackCueList {
 //	  readonly attribute unsigned 
-	native long length{}
+	native long length{&;}
 //	  getter TextTrackCue (unsigned long index);
 	TextTrackCue this[long index];
 	TextTrackCue/*?*/ getCueById(String id);
@@ -1972,57 +1963,57 @@ interface TextTrackCueList {
 
 interface TextTrackCue extends EventTarget {
 //	  readonly attribute 
-	native TextTrack/*?*/ track{}
+	native TextTrack/*?*/ track{&;}
 
 //	           attribute 
-	native String id{}
+	native String id{&;+;}
 //	           attribute 
-	native double startTime{}
+	native double startTime{&;+;}
 //	           attribute 
-	native double endTime{}
+	native double endTime{&;+;}
 //	           attribute 
-	native boolean pauseOnExit{}
+	native boolean pauseOnExit{&;+;}
 
 //	           attribute 
-	native EventHandler onenter{}
+	native EventHandler onenter{&;+;}
 //	           attribute 
-	native EventHandler onexit{}
+	native EventHandler onexit{&;+;}
 }
 
 public native interface keygen /*HTMLKeygenElement*/ extends HTMLElement {
 //    attribute 
-	native boolean autofocus{}
+	native boolean autofocus{&;+;}
 //    attribute 
-	native String challenge{}
+	native String challenge{&;+;}
 //    attribute 
-	native boolean disabled{}
+	native boolean disabled{&;+;}
 //    readonly attribute 
-	HTMLFormElement /*?*/ form{}
+	HTMLFormElement /*?*/ form{&;}
 //    attribute 
-	native String keytype{}
+	native String keytype{&;+;}
 //    attribute 
-	native String name{}
+	native String name{&;}
 
 //    readonly attribute 
-	native String type{}
+	native String type{&;}
 
 //    readonly attribute 
-	native boolean willValidate{}
+	native boolean willValidate{&;}
 //    readonly attribute 
-	native ValidityState validity{}
+	native ValidityState validity{&;}
 //    readonly attribute 
-	native String validationMessage{}
+	native String validationMessage{&;}
     boolean checkValidity();
     void setCustomValidity(String error);
 
 //    readonly attribute 
-    native NodeList labels{}
+    native NodeList labels{&;}
 }
 
-public native interface template /*HTMLTemplateElement*/ extends HTMLElement {
-//	  readonly attribute 
-	native DocumentFragment content{}
-}
+//public native interface template /*HTMLTemplateElement*/ extends HTMLElement {
+////	  readonly attribute 
+//	native DocumentFragment content{}
+//}
 
 public interface HTMLBRElement extends HTMLElement {}
 //public interface wbr /*HTMLBRElement*/ extends HTMLElement {}

@@ -247,31 +247,31 @@ public class HashMap<K,V> implements Map<K,V> {
             return entries[lastRet = i];
         }
 
-        public void remove() {
-            if (lastRet < 0)
-                throw new IllegalStateException();
+//        public void remove() {
+//            if (lastRet < 0)
+//                throw new IllegalStateException();
+//
+//                ArrayList.this.remove(lastRet);
+//                cursor = lastRet;
+//                lastRet = -1;
+//        }
 
-                ArrayList.this.remove(lastRet);
-                cursor = lastRet;
-                lastRet = -1;
-        }
-
-        @Override
-        public void forEachRemaining(Consumer<? super E> consumer) {
-            if(consumer == null) throw new Error(1, "consumer may not be null!");
-            final int size = ArrayList.this.elements.length;
-            int i = cursor;
-            if (i >= size) {
-                return;
-            }
-            final E[] elements = ArrayList.this.elements;
-            while (i != size) {
-                consumer(elements[i++]);
-            }
-            // update once at end of iteration to reduce heap write traffic
-            cursor = i;
-            lastRet = i - 1;
-        }
+//        @Override
+//        public void forEachRemaining(Consumer<? super E> consumer) {
+//            if(consumer == null) throw new Error(1, "consumer may not be null!");
+//            final int size = ArrayList.this.elements.length;
+//            int i = cursor;
+//            if (i >= size) {
+//                return;
+//            }
+//            final E[] elements = ArrayList.this.elements;
+//            while (i != size) {
+//                consumer(elements[i++]);
+//            }
+//            // update once at end of iteration to reduce heap write traffic
+//            cursor = i;
+//            lastRet = i - 1;
+//        }
     }
 
 
