@@ -145,10 +145,6 @@ public final class Class<T> {
 		}
 	}
   
-	public int hashCode(){
-		return this._id;
-	}
-  
 	public native Object newInstance()/*-{
 	  	return new (this._factory)();
   	}-*/;
@@ -215,11 +211,6 @@ public native class Object {
 	public native Function constructor{}
 	
 	public native Object __proto__{}
-
-	
-	public int hashCode(){
-		return 0;
-	}
 	
 	public native Class<? extends Object> getClass()/*-
 	{
@@ -1396,15 +1387,6 @@ public abstract class Enum<E extends Enum<E>>
      */ 
     public final boolean equals(Object other) {  
         return this===other; 
-    } 
- 
-    /**
-     * Returns a hash code for this enum constant.
-     *
-     * @return a hash code for this enum constant.
-     */ 
-    public final int hashCode() { 
-        return super.hashCode(); 
     } 
  
     /**
