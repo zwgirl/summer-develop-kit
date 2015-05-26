@@ -37,7 +37,8 @@ public final class Class<T> {
 		if (obj == null)
 			return false; 
 
-		return this.isAssignableFrom(obj.getClass());
+//		return this.isAssignableFrom(obj.getClass());
+		return this.isAssignableFrom((Class<?>)obj.constructor["__class"]);
 	}
 	public boolean isAssignableFrom(Class<?> cls){
 		if (cls == null)
@@ -94,7 +95,7 @@ public final class Class<T> {
     	}
 
     	return false;
- 	}
+ 	} 
 	
 	public Object factory {
 		&{
@@ -156,22 +157,9 @@ public final class Class<T> {
 
 
 public native class Object { 
-	static{
-		registerPrimitiveClass();
-	}
+
 	public native Object();
-	private native static void registerPrimitiveClass() /*-{
-		var c = __lc('java.lang.Class');
-		__cache["<B"] = new c("<B", null, Object.prototype.__class, [], 0x21);
-		__cache["<C"] = new c("<C", null, Object.prototype.__class, [], 0x21);
-		__cache["<S"] = new c("<B", null, Object.prototype.__class, [], 0x21);
-		__cache["<I"] = new c("<B", null, Object.prototype.__class, [], 0x21);
-		__cache["<L"] = new c("<B", null, Object.prototype.__class, [], 0x21);
-		__cache["<F"] = new c("<B", null, Object.prototype.__class, [], 0x21);
-		__cache["<D"] = new c("<B", null, Object.prototype.__class, [], 0x21);
-		__cache["<Z"] = new c("<B", null, Object.prototype.__class, [], 0x21);
-		
-	}-*/; 
+
 	public native Object(Object value);
 	
 	public native Object this[String name];
@@ -212,19 +200,19 @@ public native class Object {
 	
 	public native Object __proto__{}
 	
-	public native Class<? extends Object> getClass()/*-
-	{
-		return this.__class; 
-	}
-	-*/;
-	
-	public boolean equals(Object that) {
-		if(this == that){
-			return true;
-		}
-		
-		return false;
-	}
+//	public native Class<? extends Object> getClass()/*-
+//	{
+//		return this.__class; 
+//	}
+//	-*/;
+//	
+//	public boolean equals(Object that) {
+//		if(this == that){
+//			return true;
+//		}
+//		
+//		return false;
+//	}
 	
   /**
    * Creates and returns a copy of this object. The precise meaning
@@ -286,10 +274,10 @@ public native class Object {
    *        be cloned.
    * @see java.lang.Cloneable
    */
-  protected Object clone() throws CloneNotSupportedException{
-		return __proto__;
-  	
-  }
+//  protected Object clone() throws CloneNotSupportedException{
+//		return __proto__;
+//  	
+//  }
   public static boolean equals(Object left, Object right) {
 	  return false;
   }
@@ -1299,7 +1287,8 @@ public function void Consumer<T>(T t);
  * @since   1.5
  */ 
 public abstract class Enum<E extends Enum<E>>
-        implements Comparable<E> { 
+//        implements Comparable<E> 
+{ 
 	/**
      * The name of this enum constant, as declared in the enum declaration.
      * Most programmers should use the {@link #toString} method rather than
@@ -1389,52 +1378,41 @@ public abstract class Enum<E extends Enum<E>>
         return this===other; 
     } 
  
-    /**
-     * Throws CloneNotSupportedException.  This guarantees that enums
-     * are never cloned, which is necessary to preserve their "singleton"
-     * status.
-     *
-     * @return (never returns)
-     */ 
-    protected final Object clone() throws CloneNotSupportedException { 
-    throw new CloneNotSupportedException(); 
-    } 
- 
-    /**
-     * Compares this enum with the specified object for order.  Returns a
-     * negative integer, zero, or a positive integer as this object is less
-     * than, equal to, or greater than the specified object.
-     * 
-     * Enum constants are only comparable to other enum constants of the
-     * same enum type.  The natural order implemented by this
-     * method is the order in which the constants are declared.
-     */ 
-    public final int compareTo(E o) { 
-	    Enum other = (Enum)o; 
-	    Enum self = this; 
-	    if (self.getClass() != other.getClass() && // optimization 
-	            self.getDeclaringClass() != other.getDeclaringClass()) 
-	        throw new Error(); 
-	    return self.ordinal - other.ordinal; 
-    } 
- 
-    /**
-     * Returns the Class object corresponding to this enum constant's
-     * enum type.  Two enum constants e1 and  e2 are of the
-     * same enum type if and only if
-     *   e1.getDeclaringClass() == e2.getDeclaringClass().
-     * (The value returned by this method may differ from the one returned
-     * by the {@link Object#getClass} method for enum constants with
-     * constant-specific class bodies.)
-     *
-     * @return the Class object corresponding to this enum constant's
-     *     enum type
-     */ 
-    public final Class<E> getDeclaringClass() { 
-	    Class clazz = getClass(); 
-	    Class zuper = clazz.superClass; 
-	    return (zuper == Enum.class) ? clazz : zuper; 
-    } 
+//    /**
+//     * Compares this enum with the specified object for order.  Returns a
+//     * negative integer, zero, or a positive integer as this object is less
+//     * than, equal to, or greater than the specified object.
+//     * 
+//     * Enum constants are only comparable to other enum constants of the
+//     * same enum type.  The natural order implemented by this
+//     * method is the order in which the constants are declared.
+//     */ 
+//    public final int compareTo(E o) { 
+//	    Enum other = (Enum)o; 
+//	    Enum self = this; 
+//	    if (self.getClass() != other.getClass() && // optimization 
+//	            self.getDeclaringClass() != other.getDeclaringClass()) 
+//	        throw new Error(); 
+//	    return self.ordinal - other.ordinal; 
+//    } 
+// 
+//    /**
+//     * Returns the Class object corresponding to this enum constant's
+//     * enum type.  Two enum constants e1 and  e2 are of the
+//     * same enum type if and only if
+//     *   e1.getDeclaringClass() == e2.getDeclaringClass().
+//     * (The value returned by this method may differ from the one returned
+//     * by the {@link Object#getClass} method for enum constants with
+//     * constant-specific class bodies.)
+//     *
+//     * @return the Class object corresponding to this enum constant's
+//     *     enum type
+//     */ 
+//    public final Class<E> getDeclaringClass() { 
+//	    Class clazz = getClass(); 
+//	    Class zuper = clazz.superClass; 
+//	    return (zuper == Enum.class) ? clazz : zuper; 
+//    } 
 } 
 
 /**
@@ -1444,8 +1422,7 @@ public abstract class Enum<E extends Enum<E>>
  * @author  unascribed
  * @since   JDK1.0
  */
-public
-class IllegalArgumentException extends RuntimeException {
+public class IllegalArgumentException extends RuntimeException {
     /**
      * Constructs an <code>IllegalArgumentException</code> with no
      * detail message.

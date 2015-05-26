@@ -93,19 +93,19 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws ClassCastException   {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
-    public boolean contains(Object o) {
-        Iterator<E> it = iterator();
-        if (o==null) {
-            while (it.hasNext())
-                if (it.next()==null)
-                    return true;
-        } else {
-            while (it.hasNext())
-                if (o.equals(it.next()))
-                    return true;
-        }
-        return false;
-    }
+//    public boolean contains(Object o) {
+//        Iterator<E> it = iterator();
+//        if (o==null) {
+//            while (it.hasNext())
+//                if (it.next()==null)
+//                    return true;
+//        } else {
+//            while (it.hasNext())
+//                if (o.equals(it.next()))
+//                    return true;
+//        }
+//        return false;
+//    }
 
     /**
      * {@inheritDoc}
@@ -172,25 +172,25 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      */
-    public boolean remove(Object o) {
-        Iterator<E> it = iterator();
-        if (o==null) {
-            while (it.hasNext()) {
-                if (it.next()==null) {
-                    it.remove();
-                    return true;
-                }
-            }
-        } else {
-            while (it.hasNext()) {
-                if (o.equals(it.next())) {
-                    it.remove();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    public boolean remove(Object o) {
+//        Iterator<E> it = iterator();
+//        if (o==null) {
+//            while (it.hasNext()) {
+//                if (it.next()==null) {
+//                    it.remove();
+//                    return true;
+//                }
+//            }
+//        } else {
+//            while (it.hasNext()) {
+//                if (o.equals(it.next())) {
+//                    it.remove();
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
 
     // Bulk Operations

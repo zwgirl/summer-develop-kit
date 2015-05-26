@@ -334,7 +334,6 @@ public interface List<E> extends Collection<E> {
     ListIterator<E> listIteratorAt(int index);
 
     // View
-
     /**
      * Returns a view of the portion of this list between the specified
      * <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive.  (If

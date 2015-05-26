@@ -12,7 +12,7 @@ public class RemotingModel {
 		this._parameterTypes = _parameterTypes;
 		this._parameters = parameters;  
 	}
-	 
+	
 	public String className{
 		&{
 			return this._className;

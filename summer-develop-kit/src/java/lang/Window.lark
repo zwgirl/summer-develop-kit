@@ -630,29 +630,8 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 		public native void trace(Object ... pars);
 		public native void warn(Object ... pars);
 	}
-	
-	
 
-////	[NoInterfaceObject]
-//	public interface XMLHttpRequestEventTarget extends EventTarget {
-//	  // event handlers
-////	  attribute 
-//		public EventHandler onloadstart{}
-////	  attribute 
-//		public EventHandler onprogress{}
-////	  attribute 
-//		public EventHandler onabort{}
-////	  attribute 
-//		public EventHandler onerror{}
-////	  attribute 
-//		public EventHandler onload{}
-////	  attribute 
-//		public EventHandler ontimeout{}
-////	  attribute 
-//		public EventHandler onloadend{}
-//	}
-
-	public interface XMLHttpRequestUpload extends EventTarget/*XMLHttpRequestEventTarget*/ {
+	public interface XMLHttpRequestUpload extends XMLHttpRequestEventTarget {
 		  // event handlers
 //		  attribute 
 			public EventHandler onloadstart{}
@@ -669,7 +648,8 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 //		  attribute 
 			public EventHandler onloadend{}
 	}
-//
+	
+	public function boolean XMLHttpRequestEventHandler(ProgressEvent event);
 //	enum XMLHttpRequestResponseType {
 //	  "",
 //	  "arraybuffer",
@@ -678,9 +658,42 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 //	  "json",
 //	  "text"
 //	};
+	
+	public native interface ProgressEvent extends Event {
+//	  readonly attribute 
+		boolean lengthComputable{}
+//	  readonly attribute unsigned long 
+		long loaded{}
+//	  readonly attribute unsigned long 
+		long total{}
+	}
+
+//	dictionary ProgressEventInit : EventInit {
+//	  boolean lengthComputable = false;
+//	  unsigned long long loaded = 0;
+//	  unsigned long long total = 0;
+//	};
+	
+	public native interface XMLHttpRequestEventTarget extends EventTarget{
+		  // event handlers
+//		  attribute 
+		public XMLHttpRequestEventHandler onloadstart{}
+//		  attribute 
+		public XMLHttpRequestEventHandler onprogress{}
+//		  attribute 
+		public XMLHttpRequestEventHandler onabort{}
+//		  attribute 
+		public XMLHttpRequestEventHandler onerror{}
+//		  attribute 
+		public XMLHttpRequestEventHandler onload{}
+//		  attribute 
+		public XMLHttpRequestEventHandler ontimeout{}
+//		  attribute 
+		public XMLHttpRequestEventHandler onloadend{}
+	}
 
 //	[Constructor]
-	public native class XMLHttpRequest implements EventTarget/*XMLHttpRequestEventTarget*/ {
+	public native class XMLHttpRequest implements XMLHttpRequestEventTarget {
 		// event handler
 //		attribute 
 		public EventHandler onreadystatechange{}
@@ -740,22 +753,6 @@ public native interface Navigator extends NavigatorID, NavigatorLanguage, Naviga
 	    public native void removeEventListener(String type, EventHandler listener, boolean useCapture);
 	    public native boolean dispatchEvent(Event evt) throws EventException;
 	    
-		  // event handlers
-//		  attribute 
-		public EventHandler onloadstart{}
-//		  attribute 
-		public EventHandler onprogress{}
-//		  attribute 
-		public EventHandler onabort{}
-//		  attribute 
-		public EventHandler onerror{}
-//		  attribute 
-		public EventHandler onload{}
-//		  attribute 
-		public EventHandler ontimeout{}
-//		  attribute 
-		public EventHandler onloadend{}
-
 		public native  void addEventListenerNS(String namespaceURI, String type,
 				EventHandler listener, boolean useCapture);
 		public native void removeEventListenerNS(String namespaceURI, String type,

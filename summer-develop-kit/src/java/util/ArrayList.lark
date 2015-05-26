@@ -99,8 +99,7 @@ package java.util;
  * @since   1.2
  */
 @RemotingBean
-public class ArrayList<E> extends AbstractList<E> 
-        implements List<E>, Cloneable
+public class ArrayList<E> implements List<E>
 {
     /**
      * The array buffer into which the elements of the ArrayList are stored.
@@ -682,7 +681,10 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public List<E> subList(int fromIndex, int toIndex) {
         subListRangeCheck(fromIndex, toIndex, elements.length);
-        return new SubList(this, 0, fromIndex, toIndex);
+        
+        ArrayList<E> r = new ArrayList<E>();
+        r["elements"] = this.elements.slice(fromIndex, toIndex);
+        return r;
     }
 
     static void subListRangeCheck(int fromIndex, int toIndex, int size) {
@@ -695,212 +697,6 @@ public class ArrayList<E> extends AbstractList<E>
                                                ") > toIndex(" + toIndex + ")");
     }
 
-    private class SubList extends AbstractList<E> {
-        private final AbstractList<E> parent;
-        private final int parentOffset;
-        private final int offset;
-        private int _size;
-
-        SubList(AbstractList<E> parent,
-                int offset, int fromIndex, int toIndex) {
-            this.parent = parent;
-            this.parentOffset = fromIndex;
-            this.offset = offset + fromIndex;
-            this._size = toIndex - fromIndex;
-        }
-
-        public E set(int index, E e) {
-            rangeCheck(index);
-            E oldValue = (E) ArrayList.this.elements[offset + index]; 
-            ArrayList.this.elements[offset + index] = e;
-            return oldValue;
-        }
-
-        public E get(int index) {
-            rangeCheck(index);
-            return (E) ArrayList.this.elements[offset + index];
-        }
-
-        public int size {
-        	&{
-                return this._size;
-        	}
-        }
-
-        public void add(int index, E e) {
-            rangeCheckForAdd(index);
-            parent.addAt(parentOffset + index, e);
-            this._size++;
-        }
-
-        public E remove(int index) {
-            rangeCheck(index);
-            E result = parent.removeAt(parentOffset + index);
-            this._size--;
-            return result;
-        }
-
-        protected void removeRange(int fromIndex, int toIndex) {
-            parent.removeRange(parentOffset + fromIndex,
-                               parentOffset + toIndex);
-            this._size -= toIndex - fromIndex;
-        }
-
-        public void addAll(Collection<? extends E> c) {
-            addAllAt(this.size, c);
-        }
-
-        public void addAllAt(int index, Collection<? extends E> c) {
-            rangeCheckForAdd(index);
-            parent.addAllAt(parentOffset + index, c);
-        }
-
-        public Iterator<E> iterator() {
-            return listIterator();
-        }
-
-        public ListIterator<E> listIteratorAt(final int index) {
-            rangeCheckForAdd(index);
-            final int offset = this.offset;
-
-            return new ListIterator<E>() {
-                int cursor = index;
-                int lastRet = -1;
-
-                public boolean hasNext() {
-                    return cursor != SubList.this.size;
-                }  
-
-                public E next() {
-                    int i = cursor;
-                    if (i >= SubList.this.size)
-                        throw new NoSuchElementException();
-                    E[] elementData = ArrayList.this.elements;
-                    cursor = i + 1;
-                    return (E) elementData[offset + (lastRet = i)];
-                }
-
-                public boolean hasPrevious() {  
-                    return cursor != 0;
-                }
-
-                public E previous() {
-                    int i = cursor - 1;
-                    if (i < 0)
-                        throw new NoSuchElementException();
-                    E[] elementData = ArrayList.this.elements;
-                    cursor = i;
-                    return (E) elementData[offset + (lastRet = i)];
-                }
-
-                public void forEachRemaining(Consumer<? super E> consumer) {
-                    if(consumer == null) throw new Error(0, "consumer may not be null!");
-                    final int size = SubList.this._size;
-                    int i = cursor;
-                    if (i >= size) {
-                        return;
-                    }
-                    final E[] elementData = ArrayList.this.elements;
-                    while (i != size) {
-                        consumer((E) elementData[offset + (i++)]);
-                    }
-                    // update once at end of iteration to reduce heap write traffic
-                    lastRet = cursor = i;
-                }
-
-                public int nextIndex() {
-                    return cursor;
-                }
-
-                public int previousIndex() {
-                    return cursor - 1;
-                }
-
-                public void remove() {
-                    if (lastRet < 0)
-                        throw new IllegalStateException();
-
-                    SubList.this.remove(lastRet);
-                    cursor = lastRet;
-                    lastRet = -1;
-                }
-
-                public void set(E e) {
-                    if (lastRet < 0)
-                        throw new IllegalStateException();
-
-                    ArrayList.this.set(offset + lastRet, e);
-                }
-
-                public void add(E e) {
-
-                    int i = cursor; 
-                    SubList.this.add(i, e);
-                    cursor = i + 1;
-                    lastRet = -1;
-                }
-            };
-        }
-
-        public List<E> subList(int fromIndex, int toIndex) {
-            subListRangeCheck(fromIndex, toIndex, _size);   
-            return new SubList(this, offset, fromIndex, toIndex);
-        }
-
-        private void rangeCheck(int index) {
-            if (index < 0 || index >= this._size)
-            	throw new Error(0, "Index out of boundsException! " + outOfBoundsMsg(index));
-        }
-
-        private void rangeCheckForAdd(int index) {
-            if (index < 0 || index > this._size)
-            	throw new Error(0, "Index out of boundsException! " + outOfBoundsMsg(index));
-        }
-
-        private String outOfBoundsMsg(int index) {
-            return "Index: "+index+", Size: "+this._size;
-        }
-    }
-
-    @Override
-    public void forEach(Consumer<? super E> action) {
-        final int size = this.elements.length;
-        for (int i=0; i < size; i++) {
-            action(elements[i]);
-        }
-    }
-
-//    @Override
-//    public boolean removeIf(Operator<? super E, Boolean> filter) {
-//        // figure out which elements are to be removed
-//        // any exception thrown from the filter predicate at this stage
-//        // will leave the collection unmodified
-//        int removeCount = 0;
-//        final BitSet removeSet = new BitSet(size);
-//        final int size = this.elements.length;
-//        for (int i=0; i < size; i++) {
-//            final E element = (E) elements[i];
-//            if (filter(element)) { 
-//                removeSet.set(i);
-//                removeCount++;
-//            }
-//        }
-//
-//        // shift surviving elements left over the spaces left by removed elements
-//        final boolean anyToRemove = removeCount > 0;
-//        if (anyToRemove) {
-//            final int newSize = size - removeCount;
-//            for (int i=0, j=0; (i < size) && (j < newSize); i++, j++) {
-//                i = removeSet.nextClearBit(i);
-//                elements[j] = elements[i];
-//            }
-//            for (int k=newSize; k < size; k++) {
-//            	elements[k] = null;  // Let gc do its work
-//            }
-//        }
-//
-//        return anyToRemove;
-//    }
 
     @Override
     public void replaceAll(Operator<? super E, E> operator) { 
@@ -914,4 +710,16 @@ public class ArrayList<E> extends AbstractList<E>
     public void sort(Comparator<? super E> c) {
         this.elements.sort((Comparator<E>) c);
     }
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

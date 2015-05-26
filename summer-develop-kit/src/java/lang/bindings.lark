@@ -1873,56 +1873,6 @@ public final class ParameterUtils{
 	}
 }
 
-//public interface NavigateExtension{
-//	public void inject(ProxyParameters target, String[] properties);
-//}
-//
-//public class ParameterBinding implements MarkupExtension{
-//	private ProxyParameters _target;
-//	private String _context;
-//	private String _property;
-//	private boolean _trace;
-//	
-//	public String context{
-//		&{
-//			return this._context;
-//		}
-//		+{
-//			this._context = value;
-//		}
-//	}
-//	
-//	public String property{
-//		&{
-//			return this._property;
-//		}
-//		+{
-//			this._property = value;
-//		}
-//	}
-//	
-//	public boolean trace{
-//		&{
-//			return this._trace;
-//		}
-//		+{
-//			this._trace = value;
-//		}
-//	}
-//	
-//	PropertyChange propertyChange = (Object source, PropertyChangeEvent evt)->{
-//		_target.updateProperty(this);
-//	};
-//
-//	@Override
-//	public void inject(Bindable target, String[] properties) {
-//		if(this._trace){
-//			((ProxyParameters)target).addParameter(properties[0], this);
-//		}
-//		((ProxyParameters)target).updateProperty(this);
-//	}
-//}
-
 public final class ProxyPage extends AbstractBindable{
 	private Class<Page> _page;
 	private HTMLAnchorElement _target;
@@ -1955,7 +1905,6 @@ public final class ProxyPage extends AbstractBindable{
 	}
 	
 	public void inject(Bindable target, String[] properties) {
-//		this._target = (HTMLAnchorElement) target;
 		update();
 	}
 	
